@@ -111,162 +111,156 @@ class Dataset1Controller extends Controller
 
     public function mining() {
         $dataset1 = Dataset1::all();
-    
-        // Total kasus
-        $total_kasus = $dataset1->count();
-        $total_gizi_baik = $dataset1->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-        $total_gizi_kurang = $dataset1->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-    
-        // Perhitungan entropy total
-        $entropy_total_gizi = (float)$this->calculateEntropy($total_kasus, $total_gizi_baik, $total_gizi_kurang);
-        // echo "Total Gizi Baik: " . $total_gizi_baik . "<br>";
-        // echo " Total Gizi Kurang: " . $total_gizi_kurang . "<br>";
-        // echo "Entropy Total Gizi: " . $entropy_total_gizi . "<br>";
-    
-        // Entropy bb/u normal
-        $dataset1_bbu_normal = Dataset1::where('berat_badan_per_usia', 'Normal');
-        $total_kasus_bbu_normal = $dataset1_bbu_normal->count();
-        $total_gizi_baik_bbu_normal = Dataset1::where('berat_badan_per_usia', 'Normal')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-        $total_gizi_kurang_bbu_normal = Dataset1::where('berat_badan_per_usia', 'Normal')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-        $entropy_total_bbu_normal = (float)$this->calculateEntropy($total_kasus_bbu_normal, $total_gizi_baik_bbu_normal, $total_gizi_kurang_bbu_normal);
-        // echo " BB/U Normal gizi baik: " . $total_gizi_baik_bbu_normal . "<br>";
-        // echo " BB/U Normal gizi kurang: " . $total_gizi_kurang_bbu_normal . "<br>";
-        // echo "Entropy BB/U Normal: " . $entropy_total_bbu_normal . "<br>";
-    
-        // Entropy bb/u kurang
-        $dataset1_bbu_kurang = Dataset1::where('berat_badan_per_usia', 'Kurang');
-        $total_kasus_bbu_kurang = $dataset1_bbu_kurang->count();
-        $total_gizi_baik_bbu_kurang = Dataset1::where('berat_badan_per_usia', 'Kurang')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-        $total_gizi_kurang_bbu_kurang = Dataset1::where('berat_badan_per_usia', 'Kurang')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-        $entropy_total_bbu_kurang = (float)$this->calculateEntropy($total_kasus_bbu_kurang, $total_gizi_baik_bbu_kurang, $total_gizi_kurang_bbu_kurang);
-        // echo " total kasus BB/U Kurang: " . $total_kasus_bbu_kurang . "<br>";
-        // echo " BB/U Kurang gizi baik: " . $total_gizi_baik_bbu_kurang . "<br>";
-        // echo " BB/U Kurang gizi kurang: " . $total_gizi_kurang_bbu_kurang . "<br>";
-        // echo "Entropy BB/U Kurang: " . $entropy_total_bbu_kurang . "<br>";
-    
-        // Entropy bb/u sangat kurang
-        $dataset1_bbu_sangat_kurang = Dataset1::where('berat_badan_per_usia', 'Sangat Kurang');
-        $total_kasus_bbu_sangat_kurang = $dataset1_bbu_sangat_kurang->count();
-        $total_gizi_baik_bbu_sangat_kurang = Dataset1::where('berat_badan_per_usia', 'Sangat Kurang')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-        $total_gizi_kurang_bbu_sangat_kurang = Dataset1::where('berat_badan_per_usia', 'Sangat Kurang')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-        $entropy_total_bbu_sangat_kurang = (float)$this->calculateEntropy($total_kasus_bbu_sangat_kurang, $total_gizi_baik_bbu_sangat_kurang, $total_gizi_kurang_bbu_sangat_kurang);
-        // echo ": " . $dataset1_bbu_sangat_kurang->get() . "<br>";
-        // echo "Total kasus BB/U Sangat Kurang: " . $total_kasus_bbu_sangat_kurang . "<br>";
-        // echo " BB/U Sangat Kurang gizi baik: " . $total_gizi_baik_bbu_sangat_kurang . "<br>";
-        // echo " BB/U Sangat Kurang gizi kurang: " . $total_gizi_kurang_bbu_sangat_kurang . "<br>";
-        // echo "Entropy BB/U Sangat Kurang: " . $entropy_total_bbu_sangat_kurang . "<br>";
-    
-        // Perhitungan Gain bb/u
-        $gain_bbu = $entropy_total_gizi - (
-            (($total_kasus_bbu_normal / $total_kasus) * $entropy_total_bbu_normal) +
-            (($total_kasus_bbu_kurang / $total_kasus) * $entropy_total_bbu_kurang) +
-            (($total_kasus_bbu_sangat_kurang / $total_kasus) * $entropy_total_bbu_sangat_kurang)
-        );
-        $gain_bbu=round($gain_bbu,5);
-    
-        // Format Gain bb/u ke 5 angka di belakang koma
-        // echo "Gain BB/U: " . number_format($gain_bbu, 5) . "<br>";
-    
-        // Final Gain dengan pembulatan 5 angka di belakang koma
-        // $gain_bbu = number_format($gain_bbu, 5);
-        // dd($dataset1_bbu_sangat_kurang->get(), $gain_bbu);
+        // dd($dataset1->where('berat_badan_per_usia', 'Normal'),$dataset1->where('berat_badan_per_usia', 'Kurang'));
+        foreach ($dataset1 as $key => $value) {
+            // dd($key,$value);
 
-        //entropy tb/u normal
-        $dataset1_tbu_normal = Dataset1::where('tinggi_badan_per_usia', 'Normal');
-        $total_kasus_tbu_normal = $dataset1_tbu_normal->count();
-        $total_gizi_baik_tbu_normal = Dataset1::where('tinggi_badan_per_usia', 'Normal')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-        $total_gizi_kurang_tbu_normal = Dataset1::where('tinggi_badan_per_usia', 'Normal')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-        $entropy_total_tbu_normal = (float)$this->calculateEntropy($total_kasus_tbu_normal, $total_gizi_baik_tbu_normal, $total_gizi_kurang_tbu_normal);
-    
-        //entropy tb/u pendek
-        $dataset1_tbu_pendek = Dataset1::where('tinggi_badan_per_usia', 'Pendek');
-        $total_kasus_tbu_pendek = $dataset1_tbu_pendek->count();
-        $total_gizi_baik_tbu_pendek = Dataset1::where('tinggi_badan_per_usia', 'Pendek')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-        $total_gizi_kurang_tbu_pendek = Dataset1::where('tinggi_badan_per_usia', 'Pendek')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-        $entropy_total_tbu_pendek = (float)$this->calculateEntropy($total_kasus_tbu_pendek, $total_gizi_baik_tbu_pendek, $total_gizi_kurang_tbu_pendek);
-    
-        //entropy tb/u sangat pendek
-        $dataset1_tbu_sangat_pendek = Dataset1::where('tinggi_badan_per_usia', 'Sangat Pendek');
-        $total_kasus_tbu_sangat_pendek = $dataset1_tbu_sangat_pendek->count();
-        $total_gizi_baik_tbu_sangat_pendek = Dataset1::where('tinggi_badan_per_usia', 'Sangat Pendek')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-        $total_gizi_kurang_tbu_sangat_pendek = Dataset1::where('tinggi_badan_per_usia', 'Sangat Pendek')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-        $entropy_total_tbu_sangat_pendek = (float)$this->calculateEntropy($total_kasus_tbu_sangat_pendek, $total_gizi_baik_tbu_sangat_pendek, $total_gizi_kurang_tbu_sangat_pendek);
-    
-    //  dd($entropy_total_tbu_normal,$entropy_total_tbu_pendek,$entropy_total_tbu_sangat_pendek);
+            //total kasus
+            $total_kasus=$value->count();
+            $total_gizi_baik = $value->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang = $value->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_gizi = (float)$this->calculateEntropy($total_kasus, $total_gizi_baik, $total_gizi_kurang);
 
-         // Perhitungan Gain tb/u
-         $gain_tbu = $entropy_total_gizi - (
+            //entropy bb/u normal
+            $dataset1_bbu_normal =$value->where('berat_badan_per_usia', 'Normal');
+            $total_kasus_bbu_normal = $dataset1_bbu_normal->count();
+            $total_gizi_baik_bbu_normal =$value->where('berat_badan_per_usia', 'Normal')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang_bbu_normal =$value->where('berat_badan_per_usia', 'Normal')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_bbu_normal = (float)$this->calculateEntropy($total_kasus_bbu_normal, $total_gizi_baik_bbu_normal, $total_gizi_kurang_bbu_normal);
+           
+            //entropy bb/u kurang
+            $dataset1_bbu_kurang = $value->where('berat_badan_per_usia', 'Kurang');
+            $total_kasus_bbu_kurang = $dataset1_bbu_kurang->count();
+            $total_gizi_baik_bbu_kurang = $value->where('berat_badan_per_usia', 'Kurang')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang_bbu_kurang = $value->where('berat_badan_per_usia', 'Kurang')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_bbu_kurang = (float)$this->calculateEntropy($total_kasus_bbu_kurang, $total_gizi_baik_bbu_kurang, $total_gizi_kurang_bbu_kurang);
+
+            //entropy bb/u sangat kurang
+            $dataset1_bbu_sangat_kurang =$value->where('berat_badan_per_usia', 'Sangat Kurang');
+            $total_kasus_bbu_sangat_kurang = $dataset1_bbu_sangat_kurang->count();
+            $total_gizi_baik_bbu_sangat_kurang =$value->where('berat_badan_per_usia', 'Sangat Kurang')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang_bbu_sangat_kurang =$value->where('berat_badan_per_usia', 'Sangat Kurang')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_bbu_sangat_kurang = (float)$this->calculateEntropy($total_kasus_bbu_sangat_kurang, $total_gizi_baik_bbu_sangat_kurang, $total_gizi_kurang_bbu_sangat_kurang);
+
+            //gain bb/u
+            $gain_bbu = $entropy_total_gizi - (
+                (($total_kasus_bbu_normal / $total_kasus) * $entropy_total_bbu_normal) +
+                (($total_kasus_bbu_kurang / $total_kasus) * $entropy_total_bbu_kurang) +
+                (($total_kasus_bbu_sangat_kurang / $total_kasus) * $entropy_total_bbu_sangat_kurang)
+            );
+            $gain_bbu=round($gain_bbu,5);
+
+            //entropy tb/u normal
+            $dataset1_tbu_normal = $value->where('tinggi_badan_per_usia', 'Normal');
+            $total_kasus_tbu_normal = $dataset1_tbu_normal->count();
+            $total_gizi_baik_tbu_normal = $value->where('tinggi_badan_per_usia', 'Normal')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang_tbu_normal = $value->where('tinggi_badan_per_usia', 'Normal')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_tbu_normal = (float)$this->calculateEntropy($total_kasus_tbu_normal, $total_gizi_baik_tbu_normal, $total_gizi_kurang_tbu_normal);
+           
+           //entropy tb/u pendek
+           $dataset1_tbu_pendek = $value->where('tinggi_badan_per_usia', 'Pendek');
+           $total_kasus_tbu_pendek = $dataset1_tbu_pendek->count();
+           $total_gizi_baik_tbu_pendek = $value->where('tinggi_badan_per_usia', 'Pendek')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+           $total_gizi_kurang_tbu_pendek = $value->where('tinggi_badan_per_usia', 'Pendek')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+           $entropy_total_tbu_pendek = (float)$this->calculateEntropy($total_kasus_tbu_pendek, $total_gizi_baik_tbu_pendek, $total_gizi_kurang_tbu_pendek);
+   
+           //entropy tb/u sangat pendek
+            $dataset1_tbu_sangat_pendek =$value->where('tinggi_badan_per_usia', 'Sangat Pendek');
+            $total_kasus_tbu_sangat_pendek = $dataset1_tbu_sangat_pendek->count();
+            $total_gizi_baik_tbu_sangat_pendek =$value->where('tinggi_badan_per_usia', 'Sangat Pendek')->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang_tbu_sangat_pendek =$value->where('tinggi_badan_per_usia', 'Sangat Pendek')->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_tbu_sangat_pendek = (float)$this->calculateEntropy($total_kasus_tbu_sangat_pendek, $total_gizi_baik_tbu_sangat_pendek, $total_gizi_kurang_tbu_sangat_pendek);
+    
+
+                 // Perhitungan Gain tb/u
+             $gain_tbu = $entropy_total_gizi - (
             (($total_kasus_tbu_normal / $total_kasus) * $entropy_total_tbu_normal) +
             (($total_kasus_tbu_pendek / $total_kasus) * $entropy_total_tbu_pendek) +
             (($total_kasus_tbu_sangat_pendek / $total_kasus) * $entropy_total_tbu_sangat_pendek)
-        );
+             );
 
-        $gain_tbu=round($gain_tbu,5);
+              $gain_tbu=round($gain_tbu,5);
 
-        // dd($gain_bbu,$gain_tbu,$dataset1->avg('Usia'));
-        $mean_umur= $dataset1->avg('Usia');
-        $umur_values = $dataset1->pluck('Usia')->toArray();
-        sort($umur_values);
-        $count = count($umur_values);
-        $median_umur=0;
-        if ($count % 2 == 0) {
-            $median_umur = ($umur_values[($count / 2) - 1] + $umur_values[$count / 2]) / 2;
-        } else {
-            $median_umur = $umur_values[floor($count / 2)];
-        }
-        // dd($gain_bbu,$gain_tbu,$mean_umur,$median_umur);
+             // dd($gain_bbu,$gain_tbu,$dataset1->avg('Usia'));
+            $mean_umur= $dataset1->avg('Usia');
+            $umur_values = $dataset1->pluck('Usia')->toArray();
+            sort($umur_values);
+            $count = count($umur_values);
+            $median_umur=0;
+            if ($count % 2 == 0) {
+                $median_umur = ($umur_values[($count / 2) - 1] + $umur_values[$count / 2]) / 2;
+            } else {
+                $median_umur = $umur_values[floor($count / 2)];
+            }
 
-        //entropy usia dibawah mean
-        $total_kasus_usia_dbwah_mean = Dataset1::where('Usia', '<=', $mean_umur)->count();
-        $total_gizi_baik_usia_dbwah_mean = Dataset1::where('Usia', '<=', $mean_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-        $total_gizi_kurang_usia_dbwah_mean = Dataset1::where('Usia', '<=', $mean_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-        $entropy_total_usia_dbwah_mean = (float)$this->calculateEntropy($total_kasus_usia_dbwah_mean, $total_gizi_baik_usia_dbwah_mean, $total_gizi_kurang_usia_dbwah_mean);
-    // dd( $total_kasus_usia_dbwah_mean,$total_gizi_baik_usia_dbwah_mean,$total_gizi_kurang_usia_dbwah_mean,$entropy_total_usia_dbwah_mean);
-   
-        //entropy usia diatas mean
-        $total_kasus_usia_diatas_mean = Dataset1::where('Usia', '>', $mean_umur)->count();
-        $total_gizi_baik_usia_diatas_mean = Dataset1::where('Usia', '>', $mean_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-        $total_gizi_kurang_usia_diatas_mean = Dataset1::where('Usia', '>', $mean_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-        $entropy_total_usia_diatas_mean = (float)$this->calculateEntropy($total_kasus_usia_diatas_mean, $total_gizi_baik_usia_diatas_mean, $total_gizi_kurang_usia_diatas_mean);
-    // dd( $total_kasus_usia_diatas_mean,$total_gizi_baik_usia_diatas_mean,$total_gizi_kurang_usia_diatas_mean,$entropy_total_usia_diatas_mean);
+              //entropy usia dibawah mean
+            $total_kasus_usia_dbwah_mean = $value->where('Usia', '<=', $mean_umur)->count();
+            $total_gizi_baik_usia_dbwah_mean = $value->where('Usia', '<=', $mean_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang_usia_dbwah_mean = $value->where('Usia', '<=', $mean_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_usia_dbwah_mean = (float)$this->calculateEntropy($total_kasus_usia_dbwah_mean, $total_gizi_baik_usia_dbwah_mean, $total_gizi_kurang_usia_dbwah_mean);
+          
+             //entropy usia diatas mean
+            $total_kasus_usia_diatas_mean = $value->where('Usia', '>', $mean_umur)->count();
+            $total_gizi_baik_usia_diatas_mean = $value->where('Usia', '>', $mean_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang_usia_diatas_mean = $value->where('Usia', '>', $mean_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_usia_diatas_mean = (float)$this->calculateEntropy($total_kasus_usia_diatas_mean, $total_gizi_baik_usia_diatas_mean, $total_gizi_kurang_usia_diatas_mean);
+            
 
-        //gain usia
-        $gain_usia = $entropy_total_gizi - (
-            (($total_kasus_usia_dbwah_mean / $total_kasus) * $entropy_total_usia_dbwah_mean) +
-            (($total_kasus_usia_diatas_mean / $total_kasus) * $entropy_total_usia_diatas_mean) 
-        
-        );
+               //gain usia
+            $gain_usia = $entropy_total_gizi - (
+                (($total_kasus_usia_dbwah_mean / $total_kasus) * $entropy_total_usia_dbwah_mean) +
+                (($total_kasus_usia_diatas_mean / $total_kasus) * $entropy_total_usia_diatas_mean) 
+            
+            );
 
-        $gain_usia=round($gain_usia,5);
+            $gain_usia=round($gain_usia,5);
     
 
-         //entropy usia dibawah median
-         $total_kasus_usia_dbwah_median = Dataset1::where('Usia', '<=', $median_umur)->count();
-         $total_gizi_baik_usia_dbwah_median = Dataset1::where('Usia', '<=', $median_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-         $total_gizi_kurang_usia_dbwah_median = Dataset1::where('Usia', '<=', $median_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-         $entropy_total_usia_dbwah_median = (float)$this->calculateEntropy($total_kasus_usia_dbwah_median, $total_gizi_baik_usia_dbwah_median, $total_gizi_kurang_usia_dbwah_median);
-    //  dd( $total_kasus_usia_dbwah_median,$total_gizi_baik_usia_dbwah_median,$total_gizi_kurang_usia_dbwah_median,$entropy_total_usia_dbwah_median);
-    
-         //entropy usia diatas median
-         $total_kasus_usia_diatas_median = Dataset1::where('Usia', '>', $median_umur)->count();
-         $total_gizi_baik_usia_diatas_median = Dataset1::where('Usia', '>', $median_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
-         $total_gizi_kurang_usia_diatas_median = Dataset1::where('Usia', '>', $median_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
-         $entropy_total_usia_diatas_median = (float)$this->calculateEntropy($total_kasus_usia_diatas_median, $total_gizi_baik_usia_diatas_median, $total_gizi_kurang_usia_diatas_median);
+            //entropy usia dibawah median
+            $total_kasus_usia_dbwah_median = $value->where('Usia', '<=', $median_umur)->count();
+            $total_gizi_baik_usia_dbwah_median = $value->where('Usia', '<=', $median_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang_usia_dbwah_median = $value->where('Usia', '<=', $median_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_usia_dbwah_median = (float)$this->calculateEntropy($total_kasus_usia_dbwah_median, $total_gizi_baik_usia_dbwah_median, $total_gizi_kurang_usia_dbwah_median);
+
+              //entropy usia diatas median
+            $total_kasus_usia_diatas_median = Dataset1::where('Usia', '>', $median_umur)->count();
+            $total_gizi_baik_usia_diatas_median = Dataset1::where('Usia', '>', $median_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Baik')->count();
+            $total_gizi_kurang_usia_diatas_median = Dataset1::where('Usia', '>', $median_umur)->where('berat_badan_per_tinggi_badan', 'Gizi Kurang')->count();
+            $entropy_total_usia_diatas_median = (float)$this->calculateEntropy($total_kasus_usia_diatas_median, $total_gizi_baik_usia_diatas_median, $total_gizi_kurang_usia_diatas_median);
     //  dd( $total_kasus_usia_diatas_median,$total_gizi_baik_usia_diatas_median,$total_gizi_kurang_usia_diatas_median,$entropy_total_usia_diatas_median);
  
          //gain usia
-         $gain_usia2 = $entropy_total_gizi - (
+           $gain_usia2 = $entropy_total_gizi - (
              (($total_kasus_usia_dbwah_median / $total_kasus) * $entropy_total_usia_dbwah_median) +
              (($total_kasus_usia_diatas_median / $total_kasus) * $entropy_total_usia_diatas_median) 
          
-         );
+             );
  
          $gain_usia2=round($gain_usia2,5);
-    //  dd($gain_usia2);
 
-    //menentukan gain tertinggi
-    $gain_tertinggi=max($gain_bbu,$gain_tbu,$gain_usia,$gain_usia2);
-    dd($gain_tertinggi);
+              //menentukan gain tertinggi
+            $gain_tertinggi=max($gain_bbu,$gain_tbu,$gain_usia,$gain_usia2);
+            // dd($gain_tertinggi);
+            
+            // dd(
+            //     $total_kasus,
+            //     $total_gizi_baik,
+            //     $total_gizi_kurang,
+            //     $entropy_total_gizi,
+            //     $total_kasus_bbu_normal,
+            //     $total_gizi_baik_bbu_normal,
+            //     $total_gizi_kurang_bbu_normal,
+            //     $entropy_total_bbu_normal,
+            // );
+
+        if ($gain_tertinggi==$gain_bbu){
+            if ($total_gizi_baik_bbu_normal>0||$total_gizi_kurang_bbu_normal>0) {
+                
+            }
+        }
+        }
+
+       
     }
     
     /**
@@ -291,7 +285,7 @@ class Dataset1Controller extends Controller
         return round($entropy, 7);
     }
     
-//    lorem ipsum"
+
     
 }
 
