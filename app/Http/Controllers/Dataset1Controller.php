@@ -30,7 +30,6 @@ class Dataset1Controller extends Controller
 	 */
 	public function store(Request $request)
 	{
-		// Validasi input
 		$this->validate($request, [
 			"Nama" => "required",
 			"Usia" => "required",
@@ -48,10 +47,9 @@ class Dataset1Controller extends Controller
 				$request->berat_badan_per_tinggi_badan,
 		]);
 
-		return redirect("/dataset1")->with(
-			"success",
-			"Data berhasil ditambahkan!"
-		);
+		return redirect()->route("dataset1.index")->with([
+			"success" => "Data berhasil ditambahkan!",
+		]);
 	}
 
 	/**
@@ -68,6 +66,7 @@ class Dataset1Controller extends Controller
 	public function edit(string $id)
 	{
 		$dataset1 = Dataset1::find($id);
+
 		return view("dataset1-edit", compact("dataset1"));
 	}
 
@@ -76,7 +75,6 @@ class Dataset1Controller extends Controller
 	 */
 	public function update(Request $request, string $id)
 	{
-		// Validasi input
 		$this->validate($request, [
 			"Nama" => "required",
 			"Usia" => "required",
@@ -86,6 +84,7 @@ class Dataset1Controller extends Controller
 		]);
 
 		$dataset1 = Dataset1::find($id);
+
 		$dataset1->update([
 			"Nama" => $request->Nama,
 			"Usia" => $request->Usia,
@@ -95,7 +94,9 @@ class Dataset1Controller extends Controller
 				$request->berat_badan_per_tinggi_badan,
 		]);
 
-		return redirect("/dataset1")->with("success", "Data berhasil diubah!");
+		return redirect()->route("dataset1.index")->with([
+			"success" => "Data berhasil diubah!"
+		]);
 	}
 
 	/**
@@ -106,7 +107,9 @@ class Dataset1Controller extends Controller
 		$dataset1 = Dataset1::find($id);
 		$dataset1->delete();
 
-		return redirect("/dataset1")->with("success", "Data berhasil dihapus!");
+		return redirect()->route("dataset1.index")->with([
+			"success" => "Data berhasil dihapus!"
+		]);
 	}
 
 	public function mining()

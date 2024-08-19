@@ -113,16 +113,20 @@
                     <td>{{ucwords( $dt1->berat_badan_per_tinggi_badan )}}</td>
                     
                     @hasanyrole('admin|admin puskesmas')
-                    <td>
-                        <section class="d-flex gap-2">
-                            <a href="{{ route('dataset1.edit', $dt1->id) }}" class="btn btn-sm btn-warning text-white">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <a href="{{ route('dataset1.destroy', $dt1->id) }}" class="btn btn-sm btn-danger text-white">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                        </section>
-                    </td>
+                        <td>
+                            <section class="d-flex gap-2">
+                                <a href="{{ route('dataset1.edit', $dt1->id) }}" class="btn btn-sm btn-warning text-white">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form action="{{ route('dataset1.destroy', $dt1->id) }}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger text-white">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </section>
+                        </td>
                     @endhasanyrole
                 </tr>
             @endforeach

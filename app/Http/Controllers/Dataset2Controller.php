@@ -30,7 +30,6 @@ class Dataset2Controller extends Controller
 	 */
 	public function store(Request $request)
 	{
-		// Validasi input
 		$this->validate($request, [
 			"Usia" => "required",
 			"berat_badan_per_tinggi_badan" => "required",
@@ -46,10 +45,9 @@ class Dataset2Controller extends Controller
 			"Keterangan" => $request->Keterangan,
 		]);
 
-		return redirect("/dataset2")->with(
-			"success",
-			"Data berhasil ditambahkan!"
-		);
+		return redirect()->route("dataset2.index")->with([
+			"success" => "Data berhasil ditambahkan!",
+		]);
 	}
 
 	/**
@@ -66,6 +64,7 @@ class Dataset2Controller extends Controller
 	public function edit(string $id)
 	{
 		$dataset2 = Dataset2::find($id);
+
 		return view("dataset2-edit", compact("dataset2"));
 	}
 
@@ -74,7 +73,6 @@ class Dataset2Controller extends Controller
 	 */
 	public function update(Request $request, string $id)
 	{
-		// Validasi input
 		$this->validate($request, [
 			"Usia" => "required",
 			"berat_badan_per_tinggi_badan" => "required",
@@ -91,7 +89,9 @@ class Dataset2Controller extends Controller
 			"Keterangan" => $request->Keterangan,
 		]);
 
-		return redirect("/dataset2")->with("success", "Data berhasil diubah!");
+		return redirect()->route("dataset2.index")->with([
+			"success" => "Data berhasil diubah!"
+		]);
 	}
 
 	/**
@@ -102,6 +102,8 @@ class Dataset2Controller extends Controller
 		$dataset2 = Dataset2::find($id);
 		$dataset2->delete();
 
-		return redirect("/dataset2")->with("success", "Data berhasil dihapus!");
+		return redirect()->route("dataset2.index")->with([
+			"success" => "Data berhasil dihapus!",
+		]);
 	}
 }
