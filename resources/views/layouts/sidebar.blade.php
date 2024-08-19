@@ -1,6 +1,6 @@
-<nav class="p-4" style="height:100%;">
+<nav id="c45-sidebar" class="p-4">
   <a href="" class="align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-    <span class=" fw-bolder fs-2" style="color:#435EBE">KLASIFIKASI C45</span>
+    <h2 class=" fw-bolder fs-2" style="color:#435EBE">KLASIFIKASI C4.5</h2>
   </a>
   <ul class="nav nav-pills flex-column mb-auto" style="color:#25396F">
     <li class="nav-item py-3 fw-bolder">Menu </li>
