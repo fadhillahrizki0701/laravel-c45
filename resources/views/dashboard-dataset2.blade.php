@@ -25,7 +25,7 @@
     <section>
         @hasanyrole('admin|admin puskesmas')
             <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                Tambah Data 1
+                Tambah Data
             </button>
         @endhasanyrole
 
@@ -106,12 +106,14 @@
                     
                     @hasanyrole('admin|admin puskesmas')
                         <td>
-                            <a href="{{ route('dataset2.edit', $db2->id) }}" class="btn -icon icon-left btn-warning text-white">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <a href="{{ route('dataset2.destroy', $db2->id) }}" class="btn -icon icon-left btn-danger text-white">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                            <section class="d-flex gap-2">
+                                <a href="{{ route('dataset2.edit', $db2->id) }}" class="btn btn-sm btn-warning text-white">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="{{ route('dataset2.destroy', $db2->id) }}" class="btn btn-sm btn-danger text-white">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </section>
                         </td>
                     @endhasanyrole
                 </tr>

@@ -114,15 +114,14 @@
                     
                     @hasanyrole('admin|admin puskesmas')
                     <td>
-                        <!-- Edit Button -->
-                        <a href="{{ route('dataset1.edit', $dt1->id) }}" class="btn -icon icon-left btn-warning text-white">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        
-                        <!-- Delete Button -->
-                        <a href="{{ route('dataset1.destroy', $dt1->id) }}" class="btn -icon icon-left btn-danger text-white">
-                            <i class="bi bi-trash"></i>
-                        </a>
+                        <section class="d-flex gap-2">
+                            <a href="{{ route('dataset1.edit', $dt1->id) }}" class="btn btn-sm btn-warning text-white">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a href="{{ route('dataset1.destroy', $dt1->id) }}" class="btn btn-sm btn-danger text-white">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </section>
                     </td>
                     @endhasanyrole
                 </tr>
