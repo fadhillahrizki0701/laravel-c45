@@ -16,6 +16,7 @@
                 margin: 0;
                 padding: 0;
                 display: flex;
+                background-color: #f2f7ff;
             }
 
             #c45-sidebar {
@@ -56,14 +57,18 @@
                 width: calc(100% - 210px);
                 background-color: #f4f4f4;
             }
+
+            footer {
+                color:#7a89bd;
+            }
         </style>
     </head>
-    <body style="background-color: #f2f7ff;">
+    <body>
         @include('layouts.sidebar')
 
         <div id="c45-content" class="d-flex flex-column">
             @yield('content')
-            <footer class="p-5" style="color:#7a89bd">
+            <footer class="p-5 text-end">
                 <small >CREATED by @RFR</small>
                 <small>2024 © WEB - Klasifikasi C4.5</small>
             </footer>
