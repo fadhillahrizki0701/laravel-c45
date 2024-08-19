@@ -3,20 +3,21 @@
 @section('title', 'Datatrain 1')
  
 @section('content')
+<section>
 <div class="container p-4">
     <h3 class="text-center" style="color:#435EBE">Mining</h3>
      
     @if(session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-@if(session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
-</div>
-@endif
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
 
     <form action="{{ route('datatrain2.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -26,47 +27,44 @@
         </div>
         <button type="submit" class="btn btn-success">Upload Data</button>
     </form>
+
     <br>
+
     <form action="{{ route('datatrain2.clear') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete all files and associated data?');">
         @csrf
         @method('DELETE')
         <button type="submit" class="btn btn-danger">Delete All</button>
     </form>
-    <p class="mt-3"> Harap pastikan file CSV mengikuti format di bawah ini:</p>
-    <pre class="mt-2">Nama;Usia (bulan);BB_U;TB_U;BB_TB
-      Fitri;25;Kurang;Normal;Gizi Baik
-      Yusuf;30;Normal;Pendek;Gizi Baik
-    ...</pre>
-  
+
+<p class="mt-3"> Harap pastikan file CSV mengikuti format di bawah ini:</p>
+<pre class="mt-2">Nama;Usia (bulan);BB_U;TB_U;BB_TB
+Fitri;25;Kurang;Normal;Gizi Baik
+Yusuf;30;Normal;Pendek;Gizi Baik
+...</pre>
+    
     <button type="submit" name="proses" class="btn btn-success">Proses Mining</button>
-  
-<table id="example" class="display" style="width:100%">
-    <thead>
-        <tr>
-            <th scope="col">No</th>
-            <th scope="col">Usia</th>
-            <th scope="col">BB/TB</th>
-            <th scope="col">Menu</th>
-            <th scope="col">Keterangan</th>
-        </tr>
-    </thead>
-    <tbody>
-        @php
-            $i = 1;
-        @endphp
-        @foreach ($dataset2 as $db2)
+    
+    <table id="example" class="display" style="width:100%">
+        <thead>
             <tr>
-                <td>{{ $i }}</td>
-                <td>{{ $db2->Usia }}</td>
-                <td>{{ $db2->berat_badan_per_tinggi_badan }}</td>
-                <td>{{ $db2->Menu }}</td>
-                <td>{{ $db2->Keterangan }}</td>
+                <th scope="col">No</th>
+                <th scope="col">Usia</th>
+                <th scope="col">BB/TB</th>
+                <th scope="col">Menu</th>
+                <th scope="col">Keterangan</th>
             </tr>
-            @php
-                $i++;
-            @endphp
-        @endforeach
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach ($dataset2 as $db2)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $db2->Usia }}</td>
+                    <td>{{ $db2->berat_badan_per_tinggi_badan }}</td>
+                    <td>{{ $db2->Menu }}</td>
+                    <td>{{ $db2->Keterangan }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 </section>
 @endsection
