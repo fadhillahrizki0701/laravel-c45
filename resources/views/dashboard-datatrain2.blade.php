@@ -1,12 +1,12 @@
 @extends('layouts.app')
- 
-@section('title', 'Datatrain 1')
- 
+
+@section('title', 'Datatrain 2')
+
 @section('content')
 <section>
 <div class="container p-4">
-    <h3 class="text-center" style="color:#435EBE">Mining</h3>
-     
+    <h3 class="text-center" style="color:#435EBE">Mining Datatrain 2</h3>
+
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -37,9 +37,9 @@
     </form>
 
 <p class="mt-3"> Harap pastikan file CSV mengikuti format di bawah ini:</p>
-<pre class="mt-2">Nama;Usia (bulan);BB_U;TB_U;BB_TB
-Fitri;25;Kurang;Normal;Gizi Baik
-Yusuf;30;Normal;Pendek;Gizi Baik
+<pre class="mt-2">Usia (bulan);BB_TB;Menu;Keterangan
+12;Gizi Baik;M15;Tidak Baik
+18;Gizi Baik;M9;Baik
 ...</pre>
     
     <button type="submit" name="proses" class="btn btn-success">Proses Mining</button>

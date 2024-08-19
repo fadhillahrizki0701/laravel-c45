@@ -5,7 +5,7 @@
 @section('content')
 <section>
     <div class="container p-4">
-        <h3 class="text-center" style="color:#435EBE">Mining</h3>
+        <h3 class="text-center" style="color:#435EBE">Mining Datatrain 1</h3>
     
     @if(session('success'))
         <div class="alert alert-success">
