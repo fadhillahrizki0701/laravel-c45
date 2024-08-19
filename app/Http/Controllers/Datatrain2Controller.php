@@ -33,52 +33,52 @@ class Datatrain2Controller extends Controller
 	 */
 	public function store(Request $request)
 	{
-		if ($request->hasFile('file')) {
+		if ($request->hasFile("file")) {
 			// Save the uploaded file into the 'uploads' directory
-			$path = $request->file('file')->store('uploads');
-	
+			$path = $request->file("file")->store("uploads");
+
 			// Save the file path into the Datatrain2 table
 			Datatrain2::create([
-				'path' => $path,
+				"path" => $path,
 			]);
-	
+
 			// Read the Excel file that has been saved
-			$spreadsheet = PhpSpreadsheet::load(storage_path('app/' . $path));
+			$spreadsheet = PhpSpreadsheet::load(storage_path("app/" . $path));
 			$worksheet = $spreadsheet->getActiveSheet();
-	
+
 			// Iterate over each row in the worksheet
 			foreach ($worksheet->getRowIterator() as $rowIndex => $row) {
 				// Skip header (assuming first row is the header)
 				if ($rowIndex == 1) {
 					continue;
 				}
-	
+
 				$cellIterator = $row->getCellIterator();
 				$cellIterator->setIterateOnlyExistingCells(false);
-	
+
 				$rowData = [];
 				foreach ($cellIterator as $cell) {
 					$rowData[] = $cell->getValue();
 				}
-	
+
 				// Ensure the row has at least 4 columns
 				if (count($rowData) < 4) {
 					continue; // Skip invalid rows
 				}
-	
+
 				// Save data to the database
 				Dataset2::create([
-					'Usia' => $rowData[1],
-					'berat_badan_per_tinggi_badan' => $rowData[2],
-					'Menu' => $rowData[3],
-					'Keterangan' => $rowData[4],
+					"Usia" => $rowData[1],
+					"berat_badan_per_tinggi_badan" => $rowData[2],
+					"Menu" => $rowData[3],
+					"Keterangan" => $rowData[4],
 				]);
 			}
 		}
 
-		return redirect()->back()->with([
-			'success', 'Data imported and file saved successfully.'
-		]);
+		return redirect()
+			->back()
+			->with(["success", "Data imported and file saved successfully."]);
 	}
 
 	/**
@@ -120,7 +120,9 @@ class Datatrain2Controller extends Controller
 
 		foreach ($dataTrains as $dataTrain) {
 			// Load the spreadsheet file using PhpSpreadsheet
-			$spreadsheet = PhpSpreadsheet::load(storage_path('app/' . $dataTrain->path));
+			$spreadsheet = PhpSpreadsheet::load(
+				storage_path("app/" . $dataTrain->path)
+			);
 
 			// Select the first worksheet
 			$sheet = $spreadsheet->getActiveSheet();
@@ -141,10 +143,10 @@ class Datatrain2Controller extends Controller
 				}
 
 				// Delete matching data in Dataset2
-				Dataset2::where('Usia', $rowData[1])
-					->where('berat_badan_per_tinggi_badan', $rowData[2])
-					->where('Menu', $rowData[3])
-					->where('Keterangan', $rowData[4])
+				Dataset2::where("Usia", $rowData[1])
+					->where("berat_badan_per_tinggi_badan", $rowData[2])
+					->where("Menu", $rowData[3])
+					->where("Keterangan", $rowData[4])
 					->delete();
 			}
 
@@ -157,8 +159,11 @@ class Datatrain2Controller extends Controller
 			$dataTrain->delete();
 		}
 
-		return redirect()->back()->with([
-			'success', 'All files and associated data deleted successfully.'
-		]);
+		return redirect()
+			->back()
+			->with([
+				"success",
+				"All files and associated data deleted successfully.",
+			]);
 	}
 }
