@@ -4,12 +4,21 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>C4.5 - @yield('title')</title>
-        <link rel="stylesheet" href="{{asset('datatables/datatables.min.css')}}">
-        <link rel="stylesheet" href="{{asset('bootstrap/bootstrap.min.css')}}">
-        <script src="{{asset('datatables/datatables.min.js')}}"></script>
-        <script defer src="{{asset('bootstrap/bootstrap.min.js')}}"></script>
+
+        {{-- Datatables --}}
+        <link rel="stylesheet" href="{{ asset('datatables/datatables.min.css') }}">
+        <script src="{{ asset('datatables/datatables.min.js') }}"></script>
+
+        {{-- Bootstrap --}}
+        <link rel="stylesheet" href="{{ asset('bootstrap/bootstrap.min.css') }}">
+        <script defer src="{{ asset('bootstrap/bootstrap.min.js') }}"></script>
+
+        {{-- Addition --}}
         <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+        {{-- AlpineJS --}}
+        <script defer src="{{ asset('alpinejs/alpine.min.js') }}"></script>
 
         <style>
             body {
@@ -20,17 +29,14 @@
             }
 
             #c45-sidebar {
-                width: 210px;
+                min-width: 250px;
+                max-width: 250px;
                 height: 100vh;
-                padding: 15px;
+                padding: 20px;
                 position: fixed;
                 left: 0;
                 top: 0;
                 overflow-y: auto;
-            }
-
-            #c45-sidebar h2 {
-                text-align: center;
             }
 
             @media (max-width: 575.98px) {
@@ -52,9 +58,9 @@
             }
 
             #c45-content {
-                margin-left: 210px;
+                margin-left: 250px;
                 padding: 20px;
-                width: calc(100% - 210px);
+                width: calc(100% - 250px);
                 background-color: #f4f4f4;
             }
 

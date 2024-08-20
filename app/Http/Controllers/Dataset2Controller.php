@@ -45,9 +45,11 @@ class Dataset2Controller extends Controller
 			"Keterangan" => $request->Keterangan,
 		]);
 
-		return redirect()->route("dataset2.index")->with([
-			"success" => "Data berhasil ditambahkan!",
-		]);
+		return redirect()
+			->route("dataset2.index")
+			->with([
+				"success" => "Data berhasil ditambahkan!",
+			]);
 	}
 
 	/**
@@ -89,9 +91,11 @@ class Dataset2Controller extends Controller
 			"Keterangan" => $request->Keterangan,
 		]);
 
-		return redirect()->route("dataset2.index")->with([
-			"success" => "Data berhasil diubah!"
-		]);
+		return redirect()
+			->route("dataset2.index")
+			->with([
+				"success" => "Data berhasil diubah!",
+			]);
 	}
 
 	/**
@@ -102,8 +106,10 @@ class Dataset2Controller extends Controller
 		$dataset2 = Dataset2::find($id);
 		$dataset2->delete();
 
-		return redirect()->route("dataset2.index")->with([
-			"success" => "Data berhasil dihapus!",
-		]);
+		return redirect()
+			->route("dataset2.index")
+			->with([
+				"success" => "Data berhasil dihapus!",
+			]);
 	}
 }

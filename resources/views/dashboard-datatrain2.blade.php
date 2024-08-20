@@ -43,28 +43,30 @@
 ...</pre>
     
     <button type="submit" name="proses" class="btn btn-success">Proses Mining</button>
-    
-    <table id="example" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th scope="col">No</th>
-                <th scope="col">Usia</th>
-                <th scope="col">BB/TB</th>
-                <th scope="col">Menu</th>
-                <th scope="col">Keterangan</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($dataset2 as $db2)
+
+    <section class="table-responsive">
+        <table id="example" class="display" style="width:100%">
+            <thead>
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $db2->Usia }}</td>
-                    <td>{{ $db2->berat_badan_per_tinggi_badan }}</td>
-                    <td>{{ $db2->Menu }}</td>
-                    <td>{{ $db2->Keterangan }}</td>
+                    <th scope="col">No</th>
+                    <th scope="col">Usia</th>
+                    <th scope="col">BB/TB</th>
+                    <th scope="col">Menu</th>
+                    <th scope="col">Keterangan</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($dataset2 as $db2)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $db2->Usia }}</td>
+                        <td>{{ $db2->berat_badan_per_tinggi_badan }}</td>
+                        <td>{{ $db2->Menu }}</td>
+                        <td>{{ $db2->Keterangan }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </section>
 </section>
 @endsection

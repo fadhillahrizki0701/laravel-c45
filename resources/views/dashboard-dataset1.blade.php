@@ -88,49 +88,51 @@
         </div>
     </section>
 
-    <table id="example" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th scope="col">No</th>
-                <th scope="col">Nama</th>
-                <th scope="col">Usia</th>
-                <th scope="col">BB/U</th>
-                <th scope="col">TB/U</th>
-                <th scope="col">BB/TB</th>
-                @hasanyrole('admin|admin puskesmas')
-                    <th scope="col">Opsi</th> <!-- New Actions column -->
-                @endhasanyrole
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($dataset1 as $dt1)
+    <section class="table-responsive">
+        <table id="example" class="display" style="width:100%">
+            <thead>
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $dt1->Nama }}</td>
-                    <td>{{ $dt1->Usia }}</td>
-                    <td>{{ucwords($dt1->berat_badan_per_usia)  }}</td>
-                    <td>{{ucwords($dt1->tinggi_badan_per_usia ) }}</td>
-                    <td>{{ucwords( $dt1->berat_badan_per_tinggi_badan )}}</td>
-                    
+                    <th scope="col">No</th>
+                    <th scope="col">Nama</th>
+                    <th scope="col">Usia</th>
+                    <th scope="col">BB/U</th>
+                    <th scope="col">TB/U</th>
+                    <th scope="col">BB/TB</th>
                     @hasanyrole('admin|admin puskesmas')
-                        <td>
-                            <section class="d-flex gap-2">
-                                <a href="{{ route('dataset1.edit', $dt1->id) }}" class="btn btn-sm btn-warning text-white">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <form action="{{ route('dataset1.destroy', $dt1->id) }}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger text-white">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </section>
-                        </td>
+                        <th scope="col">Opsi</th> <!-- New Actions column -->
                     @endhasanyrole
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($dataset1 as $dt1)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $dt1->Nama }}</td>
+                        <td>{{ $dt1->Usia }}</td>
+                        <td>{{ucwords($dt1->berat_badan_per_usia)  }}</td>
+                        <td>{{ucwords($dt1->tinggi_badan_per_usia ) }}</td>
+                        <td>{{ucwords( $dt1->berat_badan_per_tinggi_badan )}}</td>
+                        
+                        @hasanyrole('admin|admin puskesmas')
+                            <td>
+                                <section class="d-flex gap-2">
+                                    <a href="{{ route('dataset1.edit', $dt1->id) }}" class="btn btn-sm btn-warning text-white">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form action="{{ route('dataset1.destroy', $dt1->id) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger text-white">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </section>
+                            </td>
+                        @endhasanyrole
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </section>
 </section>
 @endsection

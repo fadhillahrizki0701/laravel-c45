@@ -82,47 +82,50 @@
         </div>
     </section>
 
-    <table id="example" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th scope="col">No</th>
-                <th scope="col">Usia</th>
-                <th scope="col">BB/TB</th>
-                <th scope="col">Menu</th>
-                <th scope="col">Keterangan</th>
-                @hasanyrole('admin|admin puskesmas')
-                    <th scope="col">Opsi</th>
-                @endhasanyrole
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($dataset2 as $dt2)
+    <section class="table-responsive">
+    
+        <table id="example" class="display" style="width:100%">
+            <thead>
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $dt2->Usia }}</td>
-                    <td>{{ ucwords($dt2->berat_badan_per_tinggi_badan) }}</td>
-                    <td>{{ $dt2->Menu }}</td>
-                    <td>{{ ucwords($dt2->Keterangan) }}</td>
-                    
+                    <th scope="col">No</th>
+                    <th scope="col">Usia</th>
+                    <th scope="col">BB/TB</th>
+                    <th scope="col">Menu</th>
+                    <th scope="col">Keterangan</th>
                     @hasanyrole('admin|admin puskesmas')
-                        <td>
-                            <section class="d-flex gap-2">
-                                <a href="{{ route('dataset2.edit', $dt2->id) }}" class="btn btn-sm btn-warning text-white">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <form action="{{ route('dataset2.destroy', $dt2->id) }}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger text-white">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </section>
-                        </td>
+                        <th scope="col">Opsi</th>
                     @endhasanyrole
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($dataset2 as $dt2)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $dt2->Usia }}</td>
+                        <td>{{ ucwords($dt2->berat_badan_per_tinggi_badan) }}</td>
+                        <td>{{ $dt2->Menu }}</td>
+                        <td>{{ ucwords($dt2->Keterangan) }}</td>
+                        
+                        @hasanyrole('admin|admin puskesmas')
+                            <td>
+                                <section class="d-flex gap-2">
+                                    <a href="{{ route('dataset2.edit', $dt2->id) }}" class="btn btn-sm btn-warning text-white">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form action="{{ route('dataset2.destroy', $dt2->id) }}" method="post">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger text-white">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </section>
+                            </td>
+                        @endhasanyrole
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </section>
 </section>
 @endsection

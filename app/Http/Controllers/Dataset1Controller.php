@@ -47,9 +47,11 @@ class Dataset1Controller extends Controller
 				$request->berat_badan_per_tinggi_badan,
 		]);
 
-		return redirect()->route("dataset1.index")->with([
-			"success" => "Data berhasil ditambahkan!",
-		]);
+		return redirect()
+			->route("dataset1.index")
+			->with([
+				"success" => "Data berhasil ditambahkan!",
+			]);
 	}
 
 	/**
@@ -94,9 +96,11 @@ class Dataset1Controller extends Controller
 				$request->berat_badan_per_tinggi_badan,
 		]);
 
-		return redirect()->route("dataset1.index")->with([
-			"success" => "Data berhasil diubah!"
-		]);
+		return redirect()
+			->route("dataset1.index")
+			->with([
+				"success" => "Data berhasil diubah!",
+			]);
 	}
 
 	/**
@@ -107,9 +111,11 @@ class Dataset1Controller extends Controller
 		$dataset1 = Dataset1::find($id);
 		$dataset1->delete();
 
-		return redirect()->route("dataset1.index")->with([
-			"success" => "Data berhasil dihapus!"
-		]);
+		return redirect()
+			->route("dataset1.index")
+			->with([
+				"success" => "Data berhasil dihapus!",
+			]);
 	}
 
 	public function mining()
