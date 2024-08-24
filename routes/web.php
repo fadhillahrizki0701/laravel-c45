@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Datatrain1Controller;
 use App\Http\Controllers\Datatrain2Controller;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,4 +37,7 @@ Route::middleware("auth")->group(function(){
     Route::delete('/datatrain2/clear/all', [Datatrain2Controller::class, 'clear'])->name('datatrain2.clear');
     Route::resource('/datatrain2', Datatrain2Controller::class);
     Route::get('/mining',[Dataset1Controller::class, 'mining']);
+
+    // test
+    Route::get('test', [TestController::class, 'index']);
 });
