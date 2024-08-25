@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>C4.5 | @yield('title')</title>
+        <title>Klasifikasi C4.5 | @yield('title')</title>
 
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,6 +55,7 @@
                 width: calc(100% - 250px);
                 background-color: #f4f4f4;
                 transition: margin-left 0.3s ease;
+                height: 100vh;
             }
         
             /* Content adjustment when sidebar is hidden */
@@ -102,8 +103,9 @@
                     display: block;
                 }
             }
-        
+
             footer {
+                width: 100%;
                 color:#7a89bd;
             }
         </style>
@@ -111,11 +113,10 @@
     <body x-data="{ open: false }">
         @include('layouts.sidebar')
 
-        <div id="c45-content" class="d-flex flex-column" :class="{ 'sidebar-open': open }">
+        <div id="c45-content" class="d-flex flex-column justify-content-between" :class="{ 'sidebar-open': open }">
             @yield('content')
-            <footer class="p-5 text-end">
-                <small >CREATED by @RFR</small>
-                <small>2024 © WEB - Klasifikasi C4.5</small>
+            <footer class="p-5 text-center align-self-end">
+                <small>Created by @RFR | © <span x-text="new Date().getFullYear()"></span> | Klasifikasi C4.5</small>
             </footer>
         </div>
 

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>C4.5 | Login</title>
+        <title>Klasifikasi C4.5 | Login</title>
 
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="{{asset('bootstrap/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{ asset('bootstrap/bootstrap.min.css') }}">
         <script defer src="{{ asset('bootstrap/bootstrap.min.js') }}"></script>
     </head>
     <body>
