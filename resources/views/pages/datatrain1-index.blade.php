@@ -20,16 +20,16 @@
 
     <form action="{{ route('datatrain1.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        <div class="form-group my-3">
-            <label for="file">Import data from excel</label>
-            <input type="file" name="file" class="form-control" accept=".csv">
+        <label for="file">Impor data dari Excel</label>
+        <div class="input-group my-3">
+            <input type="file" name="file" id="file" class="form-control" accept=".csv,.xlsx">
+            <button type="submit" class="btn btn-success">Upload Data</button>
         </div>
-        <button type="submit" name="upload" class="btn btn-success">Upload Data</button>
     </form>
 
     <br>
 
-    <form action="{{ route('datatrain1.clear') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete all files and associated data?');">
+    <form action="{{ route('datatrain1.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus seluruh file beserta isinya?');">
         @csrf
         @method('DELETE')
         <button type="submit" class="btn btn-danger">Delete All</button>
