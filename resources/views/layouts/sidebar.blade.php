@@ -10,11 +10,11 @@
         Dashboard
     </a>
     </li>
-    <li class="nav-item py-3 fw-bolder">Data & Tabel </li>
+    <li class="nav-item py-3 fw-bolder">Data & Tabel</li>
     <li>
       <a href="{{route('user.index')}}" class="nav-link link-dark " style="color:#25396F" aria-current="page">
         <i class="bi bi-people"></i>
-        Data Users
+        Data Pengguna
       </a>
     </li>
     <li>

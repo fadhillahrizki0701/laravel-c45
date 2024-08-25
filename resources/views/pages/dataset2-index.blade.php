@@ -1,10 +1,10 @@
 @extends('layouts.app')
- 
+
 @section('title', 'Dataset 2')
- 
+
 @section('content')
 <section class="container p-4">
-    <span class="fs-3 " style="color:#435EBE">Data 2</span>
+    <h2 style="color:#435EBE">Data 2</h2>
 
     @if(count($errors)>0)
     <div class="alert alert-danger">

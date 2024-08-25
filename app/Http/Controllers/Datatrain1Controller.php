@@ -17,7 +17,7 @@ class Datatrain1Controller extends Controller
 	{
 		$dataset1 = Dataset1::all();
 
-		return view("dashboard-datatrain1", compact("dataset1"));
+		return view("pages.datatrain1-index", compact("dataset1"));
 	}
 
 	/**

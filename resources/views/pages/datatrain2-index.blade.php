@@ -3,9 +3,8 @@
 @section('title', 'Datatrain 2')
 
 @section('content')
-<section>
-<div class="container p-4">
-    <h3 class="text-center" style="color:#435EBE">Mining Datatrain 2</h3>
+<section class="container p-4">
+    <h2 style="color:#435EBE">Datatrain 2</h2>
 
     @if(session('success'))
         <div class="alert alert-success">

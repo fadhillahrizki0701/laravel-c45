@@ -1,11 +1,11 @@
 @extends('layouts.app')
- 
-@section('title', 'Dataset 2')
- 
+
+@section('title', 'Dataset 2 Edit')
+
 @section('content')
 <section class="container p-4">
+    <h2 class="mb-4" style="color:#435EBE">Data 2</h2>
 
-    <h1>Data 2</h1>
     @if(count($errors)>0)
         <div class="alert alert-danger">
             <ul>

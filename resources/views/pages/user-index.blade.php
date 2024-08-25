@@ -3,11 +3,11 @@
 @section('title', 'user')
 
 @section('content')
-<section>
-  <h2 class="fs-3" style="color:#435EBE">User</h2>
+<section class="container p-4">
+  <h2 style="color:#435EBE">Pengguna</h2>
   <section>
     <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        Tambah User
+        Tambah Pengguna
     </button>
 
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -42,30 +42,36 @@
     <table id="example" class="display" style="width:100%">
         <thead>
             <tr>
-            <th scope="col">No</th>
-            <th scope="col">Nama</th>
-            <th scope="col">Email</th>
-            <th scope="col">Actions</th> 
+              <th scope="col">No</th>
+              <th scope="col">Nama</th>
+              <th scope="col">Email</th>
+              @hasanyrole('admin|admin puskesmas')
+                <th scope="col">Opsi</th>
+              @endhasanyrole
             </tr>
         </thead>
         <tbody>
-            @foreach ($users as $us)
+            @foreach ($users as $user)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $us->name }}</td>
-                    <td>{{ $us->email}}</td>
-                    <td>
-                        <a href="{{ route('user.edit', $us->id) }}" class="text-decoration-none text-success">
-                            Edit
-                        </a>
-                        <form action="{{ route('user.destroy', $us->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-decoration-none text-danger btnDelete" onclick="return confirm('Are you sure you want to delete this item?');">
-                                Delete
-                            </button>
-                        </form>
-                    </td>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->email}}</td>
+                    @hasanyrole('admin|admin puskesmas')
+                      <td>
+                          <section class="d-flex gap-2">
+                              <a href="{{ route('user.edit', $user->id) }}" class="btn btn-sm btn-warning text-white">
+                                  <i class="bi bi-pencil-square"></i>
+                              </a>
+                              <form action="{{ route('user.destroy', $user->id) }}" method="post">
+                                  @csrf
+                                  @method('DELETE')
+                                  <button type="submit" class="btn btn-sm btn-danger text-white">
+                                      <i class="bi bi-trash"></i>
+                                  </button>
+                              </form>
+                          </section>
+                      </td>
+                  @endhasanyrole
                 </tr>
             @endforeach
         </tbody>

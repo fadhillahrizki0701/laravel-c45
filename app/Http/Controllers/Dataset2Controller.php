@@ -14,7 +14,7 @@ class Dataset2Controller extends Controller
 	{
 		$dataset2 = Dataset2::all();
 
-		return view("dashboard-dataset2", compact("dataset2"));
+		return view("pages.dataset2-index", compact("dataset2"));
 	}
 
 	/**
@@ -22,7 +22,7 @@ class Dataset2Controller extends Controller
 	 */
 	public function create()
 	{
-		return view("dashboard-dataset2");
+		return view("pages.dataset2-index");
 	}
 
 	/**
@@ -67,7 +67,7 @@ class Dataset2Controller extends Controller
 	{
 		$dataset2 = Dataset2::find($id);
 
-		return view("dataset2-edit", compact("dataset2"));
+		return view("pages.dataset2-edit", compact("dataset2"));
 	}
 
 	/**

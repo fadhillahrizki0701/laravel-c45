@@ -1,12 +1,11 @@
 @extends('layouts.app')
- 
+
 @section('title', 'Datatrain 1')
- 
+
 @section('content')
-<section>
-    <div class="container p-4">
-        <h3 class="text-center" style="color:#435EBE">Mining Datatrain 1</h3>
-    
+<section class="container p-4">
+    <h2 style="color:#435EBE">Datatrain 1</h2>
+
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -35,7 +34,6 @@
         @method('DELETE')
         <button type="submit" class="btn btn-danger">Delete All</button>
     </form>
-
 
     <p class="mt-3"> Harap pastikan file CSV mengikuti format di bawah ini:</p>
 <pre class="mt-2">Nama;Usia (bulan);BB_U;TB_U;BB_TB

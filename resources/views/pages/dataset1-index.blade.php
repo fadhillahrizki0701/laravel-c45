@@ -1,10 +1,10 @@
 @extends('layouts.app')
- 
+
 @section('title', 'Dataset 1')
- 
+
 @section('content')
 <section class="container p-4">
-    <span class="fs-3 " style="color:#435EBE">Data 1</span>
+    <h2 style="color:#435EBE">Data 1</h2>
     
     @if(count($errors)>0)
         <div class="alert alert-danger">
@@ -99,7 +99,7 @@
                     <th scope="col">TB/U</th>
                     <th scope="col">BB/TB</th>
                     @hasanyrole('admin|admin puskesmas')
-                        <th scope="col">Opsi</th> <!-- New Actions column -->
+                        <th scope="col">Opsi</th>
                     @endhasanyrole
                 </tr>
             </thead>

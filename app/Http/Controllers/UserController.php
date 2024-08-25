@@ -12,9 +12,10 @@ class UserController extends Controller
 	 */
 	public function index()
 	{
-		$users = User::all();
+		// $users = User::all();
+		$users = User::where("name", "NOT LIKE", "%admin%")->get();
 
-		return view("user", compact("users"));
+		return view("pages.user-index", compact("users"));
 	}
 
 	/**
@@ -22,7 +23,6 @@ class UserController extends Controller
 	 */
 	public function create()
 	{
-		//
 	}
 
 	/**
