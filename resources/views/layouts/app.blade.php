@@ -29,8 +29,9 @@
                 display: flex;
                 background-color: #f2f7ff;
             }
-
+        
             #c45-sidebar {
+                background-color: inherit;
                 min-width: 250px;
                 max-width: 250px;
                 height: 100vh;
@@ -39,42 +40,78 @@
                 left: 0;
                 top: 0;
                 overflow-y: auto;
+                transition: all 0.3s ease;
+                z-index: 90;
             }
-
-            @media (max-width: 575.98px) {
-                #c45-sidebar {
-                    background-color: #333;
-                    color: #fff;
-                }
-
-                #c45-sidebar a {
-                    display: block;
-                    color: #fff;
-                    padding: 10px;
-                    text-decoration: none;
-                }
-
-                #c45-sidebar a:hover {
-                    background-color: #575757;
-                }
+        
+            /* Sidebar hidden */
+            #c45-sidebar.sidebar-open {
+                transform: translateX(-250px);
             }
-
+        
             #c45-content {
                 margin-left: 250px;
                 padding: 20px;
                 width: calc(100% - 250px);
                 background-color: #f4f4f4;
+                transition: margin-left 0.3s ease;
+            }
+        
+            /* Content adjustment when sidebar is hidden */
+            .sidebar-open ~ #c45-content {
+                margin-left: 0;
+                width: 100%;
             }
 
+            #sidebar-button {
+                display: none;
+                border: 0;
+                outline: 0;
+                width: 250px;
+                height: 40px;
+                position: fixed;
+                z-index: 90;
+                box-shadow: 0 0 6px #0000002d;
+            }
+        
+            @media (max-width: 575.98px) {
+                #c45-sidebar {
+                    background-color: #f2f7ffef;
+                    margin-top: 40px;
+                    left: -250px;
+                    box-shadow: 0 0 6px #0000002d;
+                }
+        
+                #c45-sidebar.sidebar-open {
+                    transform: translateX(250px);
+                }
+        
+                #c45-content {
+                    margin-left: 0px;
+                    padding: 0;
+                    margin-top: 40px;
+                    width: 100%;
+                }
+
+                #c45-content.sidebar-open {
+                    margin-left: 0;
+                    width: 100%;
+                }
+
+                #sidebar-button {
+                    display: block;
+                }
+            }
+        
             footer {
                 color:#7a89bd;
             }
         </style>
     </head>
-    <body>
+    <body x-data="{ open: false }">
         @include('layouts.sidebar')
 
-        <div id="c45-content" class="d-flex flex-column">
+        <div id="c45-content" class="d-flex flex-column" :class="{ 'sidebar-open': open }">
             @yield('content')
             <footer class="p-5 text-end">
                 <small >CREATED by @RFR</small>
