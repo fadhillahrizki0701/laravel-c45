@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>C4.5 - @yield('title')</title>
+        <title>C4.5 | @yield('title')</title>
 
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,8 +16,8 @@
         <script defer src="{{ asset('bootstrap/bootstrap.min.js') }}"></script>
 
         {{-- Addition --}}
-        <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="{{ asset('datatables/datatables.datatables.css') }}">
+        <link rel="stylesheet" href="{{ asset('bootstrap-icons/bootstrap-icons.min.css') }}">
 
         {{-- AlpineJS --}}
         <script defer src="{{ asset('alpinejs/alpine.min.js') }}"></script>
