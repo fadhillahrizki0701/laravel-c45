@@ -48,7 +48,7 @@
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <a href="{{ route('dataset1.index') }}" class="btn btn-secondary">Batal</a>
                 <button type="submit" class="btn btn-warning">Simpan</button>
             </div>
         </form>
