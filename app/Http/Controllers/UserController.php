@@ -115,6 +115,20 @@ class UserController extends Controller
 	 */
 	public function destroy(string $id)
 	{
-		//
+		$deletion = User::find($id)->delete();
+
+		if (!$deletion) {
+			return redirect()
+				->route('user.index')
+				->with([
+					'error' => 'Gagal menghapus data pengguna!',
+				]);
+		}
+
+		return redirect()
+			->route('user.index')
+			->with([
+				'success' => 'Berhasil menghapus data pengguna!',
+			]);
 	}
 }

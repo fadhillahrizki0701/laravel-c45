@@ -119,9 +119,9 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $dt1->Nama }}</td>
                         <td>{{ $dt1->Usia }}</td>
-                        <td>{{ucwords($dt1->berat_badan_per_usia)  }}</td>
-                        <td>{{ucwords($dt1->tinggi_badan_per_usia ) }}</td>
-                        <td>{{ucwords( $dt1->berat_badan_per_tinggi_badan )}}</td>
+                        <td>{{ ucwords($dt1->berat_badan_per_usia)  }}</td>
+                        <td>{{ ucwords($dt1->tinggi_badan_per_usia ) }}</td>
+                        <td>{{ ucwords( $dt1->berat_badan_per_tinggi_badan) }}</td>
                         @hasanyrole('admin|admin puskesmas')
                             <td>
                                 <section class="d-flex gap-2">

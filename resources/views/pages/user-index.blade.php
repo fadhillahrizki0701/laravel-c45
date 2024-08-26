@@ -71,17 +71,44 @@
                               <a href="{{ route('user.edit', $user->id) }}" class="btn btn-sm btn-warning text-white">
                                   <i class="bi bi-pencil-square"></i>
                               </a>
-                              <form action="{{ route('user.destroy', $user->id) }}" method="post">
-                                  @csrf
-                                  @method('DELETE')
-                                  <button type="submit" class="btn btn-sm btn-danger text-white">
-                                      <i class="bi bi-trash"></i>
-                                  </button>
-                              </form>
+                              <button type="button" class="btn btn-sm btn-danger text-white" data-bs-toggle="modal" data-bs-target="#delete_{{ $user->id }}">
+                                  <i class="bi bi-trash"></i>
+                              </button>
                           </section>
                       </td>
                   @endhasanyrole
                 </tr>
+
+                {{-- Delete --}}
+                <div class="modal fade" id="delete_{{ $user->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete_{{ $user->id }}_label" aria-hidden="true">
+                  <div class="modal-dialog">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="delete_{{ $user->id }}_label">Hapus Data</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                              <form action="{{ route('user.destroy', $user->id) }}" method="post">
+                                  @csrf
+                                  @method('DELETE')
+                                  <p>Yakin ingin menghapus data ini?</p>
+                                  <details class="mt-2 mb-3 p-2 bg-light rounded border">
+                                      <summary>Rincian</summary>
+                                      <ul>
+                                          <li>Nama: <i>{{ $user->name }}</i></li>
+                                          <li>Email: <i>{{ $user->email }}</i></li>
+                                      </ul>
+                                  </details>
+                                  <section class="d-flex gap-3">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                      <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                                  </section>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              {{-- End Delete --}}
             @endforeach
         </tbody>
     </table>
