@@ -55,7 +55,7 @@
                 width: calc(100% - 250px);
                 background-color: #f4f4f4;
                 transition: margin-left 0.3s ease;
-                height: 100vh;
+                height: max-content;
             }
         
             /* Content adjustment when sidebar is hidden */
@@ -73,6 +73,10 @@
                 position: fixed;
                 z-index: 90;
                 box-shadow: 0 0 6px #0000002d;
+            }
+
+            #c45-content section.container {
+                min-height: calc(100vh - 160px);
             }
         
             @media (max-width: 575.98px) {
