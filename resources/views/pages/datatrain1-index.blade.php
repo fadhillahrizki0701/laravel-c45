@@ -4,7 +4,7 @@
 
 @section('content')
 <section class="container p-4">
-    <h2 class="mb-4" style="color:#435EBE">Datatrain 1</h2>
+    <h2 class="pb-4" style="color:#435EBE">Datatrain 1</h2>
 
     @if(session('success'))
         <div class="alert alert-success">

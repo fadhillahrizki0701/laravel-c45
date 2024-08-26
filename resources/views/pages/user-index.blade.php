@@ -4,7 +4,7 @@
 
 @section('content')
 <section class="container p-4">
-  <h2 style="color:#435EBE">Data Pengguna</h2>
+  <h2 class="pb-4" style="color:#435EBE">Data Pengguna</h2>
   <section>
     @role('admin')
       <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
