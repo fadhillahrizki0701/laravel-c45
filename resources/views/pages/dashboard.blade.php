@@ -4,7 +4,6 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
 <section class="container p-4">
     <h2 class="pb-4" style="color:#435EBE">Dashboard</h2>
     <div class="row">

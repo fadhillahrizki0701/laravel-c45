@@ -12,11 +12,7 @@
         </div>
     @endif
 
-    @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
+    @include('pages.partials.session-notification')
 
     <form action="{{ route('datatrain2.store') }}" method="POST" enctype="multipart/form-data" class="">
         @csrf

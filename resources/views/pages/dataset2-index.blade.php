@@ -16,11 +16,7 @@
     </div>
     @endif
 
-    @if(session()->has('success'))
-    <div class="alert alert-success">
-        <p>{{ session()->get('success') }}</p>
-    </div>
-    @endif
+    @include('pages.partials.session-notification')
 
     <section>
         @hasanyrole('admin|admin puskesmas')

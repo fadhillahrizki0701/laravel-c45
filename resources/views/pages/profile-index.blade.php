@@ -6,6 +6,8 @@
 <section class="container p-4">
     <h2 class="pb-4" style="color:#435EBE">Profil | {{ $profile->name }}</h2>
 
+    @include('pages.partials.session-notification')
+
     <form action="{{ route('profile.update', $profile->id) }}" method="POST" autocomplete="off" aria-autocomplete="false">
         @csrf
         @method('PUT')
