@@ -108,6 +108,7 @@
                                       <ul>
                                           <li>Nama: <i>{{ $user->name }}</i></li>
                                           <li>Email: <i>{{ $user->email }}</i></li>
+                                          <li>Peran: <i>{{ ucwords($user->roles[0]->name) }}</i></li>
                                       </ul>
                                   </details>
                                   <section class="d-flex gap-3">
