@@ -36,10 +36,10 @@
                         <form action="{{ route('dataset2.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="Usia" class="form-label">Usia (bulan)</label>
-                                <select class="form-select" id="Usia" name="Usia">
+                                <label for="usia" class="form-label">Usia (bulan)</label>
+                                <select class="form-select" id="usia" name="usia">
                                     <option selected disabled>-- Silahkan Pilih --</option>
-                                    @for ($i = 0; $i <= 70; $i++)
+                                    @for ($i = 1; $i <= 70; $i++)
                                         <option value="{{ $i }}">{{ $i }}</option>
                                     @endfor
                                 </select>
@@ -53,17 +53,17 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="Menu" class="form-label">Menu Makanan</label>
-                                <select class="form-select" id="Menu" name="Menu">
+                                <label for="menu" class="form-label">Menu Makanan</label>
+                                <select class="form-select" id="menu" name="menu">
                                     <option selected disabled>-- Silahkan Pilih --</option>
-                                    @for ($i = 0; $i <= 18; $i++)
+                                    @for ($i = 1; $i <= 18; $i++)
                                         <option value="{{ "M$i" }}">{{ "M$i" }}</option>
                                     @endfor
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="Keterangan" class="form-label">Keterangan</label>
-                                <select class="form-select" id="Keterangan" name="Keterangan" placeholder="Silahkan Pilih">
+                                <label for="keterangan" class="form-label">Keterangan</label>
+                                <select class="form-select" id="keterangan" name="keterangan" placeholder="Silahkan Pilih">
                                     <option selected disabled>-- Silahkan Pilih --</option>
                                     <option value="{{ ucwords('baik') }}">Baik</option>
                                     <option value="{{ ucwords('tidak baik') }}">Tidak Baik</option>
@@ -105,10 +105,10 @@
                 @foreach ($dataset2 as $dt2)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $dt2->Usia }}</td>
+                        <td>{{ $dt2->usia }}</td>
                         <td>{{ ucwords($dt2->berat_badan_per_tinggi_badan) }}</td>
-                        <td>{{ $dt2->Menu }}</td>
-                        <td>{{ ucwords($dt2->Keterangan) }}</td>
+                        <td>{{ $dt2->menu }}</td>
+                        <td>{{ ucwords($dt2->keterangan) }}</td>
                         @hasanyrole('admin|admin puskesmas')
                             <td>
                                 <section class="d-flex gap-2">
@@ -139,10 +139,10 @@
                                         <details class="mt-2 mb-3 p-2 bg-light rounded border">
                                             <summary>Rincian</summary>
                                             <ul>
-                                                <li>Usia: <i>{{ $dt2->Usia }}</i></li>
+                                                <li>usia: <i>{{ $dt2->usia }}</i></li>
                                                 <li>BB/TB: <i>{{ ucwords($dt2->berat_badan_per_tinggi_badan) }}</i></li>
-                                                <li>Menu: <i>{{ ucwords($dt2->Menu) }}</i></li>
-                                                <li>Keterangan: <i>{{ ucwords($dt2->Keterangan) }}</i></li>
+                                                <li>menu: <i>{{ ucwords($dt2->menu) }}</i></li>
+                                                <li>keterangan: <i>{{ ucwords($dt2->keterangan) }}</i></li>
                                             </ul>
                                         </details>
                                         <section class="d-flex gap-3">

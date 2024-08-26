@@ -25,8 +25,8 @@
               <form action="{{ route('user.store') }}" method="POST" autocomplete="off" aria-autocomplete="false">
                 @csrf
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nama</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan Nama">
+                    <label for="name" class="form-label">nama</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama">
                   </div>
                   <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
@@ -64,7 +64,7 @@
         <thead>
             <tr>
               <th scope="col">No</th>
-              <th scope="col">Nama</th>
+              <th scope="col">nama</th>
               <th scope="col">Email</th>
               <th scope="col">Peran</th>
               @hasanyrole('admin|admin puskesmas')
@@ -109,7 +109,7 @@
                                   <details class="mt-2 mb-3 p-2 bg-light rounded border">
                                       <summary>Rincian</summary>
                                       <ul>
-                                          <li>Nama: <i>{{ $user->name }}</i></li>
+                                          <li>nama: <i>{{ $user->name }}</i></li>
                                           <li>Email: <i>{{ $user->email }}</i></li>
                                           <li>Peran: <i>{{ ucwords($user->roles[0]->name) }}</i></li>
                                       </ul>

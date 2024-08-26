@@ -8,8 +8,8 @@ class Dataset1 extends Model
 {
 	// The attributes that are mass assignable.
 	protected $fillable = [
-		"Nama",
-		"Usia",
+		"nama",
+		"usia",
 		"berat_badan_per_usia",
 		"tinggi_badan_per_usia",
 		"berat_badan_per_tinggi_badan",

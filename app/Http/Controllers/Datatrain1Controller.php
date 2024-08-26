@@ -68,8 +68,8 @@ class Datatrain1Controller extends Controller
 
 				// Save data to the database
 				Dataset1::create([
-					"Nama" => $rowData[1],
-					"Usia" => $rowData[2],
+					"nama" => $rowData[1],
+					"usia" => $rowData[2],
 					"berat_badan_per_usia" => $rowData[3],
 					"tinggi_badan_per_usia" => $rowData[4],
 					"berat_badan_per_tinggi_badan" => $rowData[5],
@@ -143,8 +143,8 @@ class Datatrain1Controller extends Controller
 				}
 
 				// Delete matching data in Dataset1
-				Dataset1::where("Nama", $rowData[1])
-					->where("Usia", $rowData[2])
+				Dataset1::where("nama", $rowData[1])
+					->where("usia", $rowData[2])
 					->where("berat_badan_per_usia", $rowData[3])
 					->where("tinggi_badan_per_usia", $rowData[4])
 					->where("berat_badan_per_tinggi_badan", $rowData[5])

@@ -132,8 +132,8 @@ class C45Controller extends Controller
 	public function fetchTreeDataset2()
 	{
 		$data = Dataset2::all()->toArray();
-		$attributes = ["Usia", "Menu"];
-		$labelAttribute = "Keterangan"; // Specify the label attribute
+		$attributes = ["Usia", "menu"];
+		$labelAttribute = "keterangan"; // Specify the label attribute
 		$tree = $this->buildTree($data, $attributes, $labelAttribute);
 		return response()->json($tree);
 	}

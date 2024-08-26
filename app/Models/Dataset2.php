@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Dataset2 extends Model
 {
 	protected $fillable = [
-		"Usia",
+		"usia",
 		"berat_badan_per_tinggi_badan",
-		"Menu",
-		"Keterangan",
+		"menu",
+		"keterangan",
 	];
 
 	public $timestamps = false;

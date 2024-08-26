@@ -3,7 +3,7 @@
     <h2 class="fw-bolder fs-2" style="color:#435EBE;">KLASIFIKASI C4.5</h2>
   </a>
   <ul class="nav nav-pills flex-column mb-auto" style="color:#25396F;">
-    <li class="nav-item py-3 fw-bolder">Menu</li>
+    <li class="nav-item py-3 fw-bolder">menu</li>
     <li class="nav-item">
       <a href="{{ route('dashboard.index') }}" class="nav-link link-dark" style="color:#25396F;" aria-current="page">
         <i class="bi bi-menu-down"></i>

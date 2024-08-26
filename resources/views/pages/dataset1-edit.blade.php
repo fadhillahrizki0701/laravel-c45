@@ -13,14 +13,14 @@
             @csrf
             @method('PUT')
             <div class="mb-3">
-                <label for="Nama" class="form-label">Nama</label>
-                <input type="text" class="form-control" id="Nama" name="Nama" placeholder="Masukkan Nama" value="{{ $dataset1->Nama }}">
+                <label for="nama" class="form-label">Nama</label>
+                <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama" value="{{ $dataset1->nama }}">
             </div>
             <div class="mb-3">
-                <label for="Usia" class="form-label">Usia (bulan)</label>
-                <select class="form-select" id="Usia" name="Usia">
-                    @for ($i = 0; $i <= 70; $i++)
-                        <option value="{{ $i }}" {{ $dataset1->Usia == $i ? 'selected' : '' }}>{{ $i }}</option>
+                <label for="usia" class="form-label">Usia (bulan)</label>
+                <select class="form-select" id="usia" name="usia">
+                    @for ($i = 1; $i <= 70; $i++)
+                        <option value="{{ $i }}" {{ $dataset1->usia == $i ? 'selected' : '' }}>{{ $i }}</option>
                     @endfor
                 </select>
             </div>

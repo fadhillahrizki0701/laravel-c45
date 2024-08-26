@@ -14,8 +14,8 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nama</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan Nama" value="{{ $user->name }}">
+                    <label for="name" class="form-label">nama</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama" value="{{ $user->name }}">
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>

@@ -36,14 +36,14 @@
                         <form action="{{ route('dataset1.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="Nama" class="form-label">Nama</label>
-                                <input type="text" class="form-control" id="Nama" name="Nama" placeholder="Masukkan Nama">
+                                <label for="nama" class="form-label">Nama</label>
+                                <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama">
                             </div>
                             <div class="mb-3">
-                                <label for="Usia" class="form-label">Usia (bulan)</label>
-                                <select class="form-select" id="Usia" name="Usia">
+                                <label for="usia" class="form-label">Usia (bulan)</label>
+                                <select class="form-select" id="usia" name="usia">
                                     <option selected disabled>-- Silahkan Pilih --</option>
-                                    @for ($i = 0; $i <= 70; $i++)
+                                    @for ($i = 1; $i <= 70; $i++)
                                         <option value="{{ $i }}">{{ $i }}</option>
                                     @endfor
                                 </select>
@@ -113,8 +113,8 @@
                 @foreach ($dataset1 as $dt1)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $dt1->Nama }}</td>
-                        <td>{{ $dt1->Usia }}</td>
+                        <td>{{ $dt1->nama }}</td>
+                        <td>{{ $dt1->usia }}</td>
                         <td>{{ ucwords($dt1->berat_badan_per_usia)  }}</td>
                         <td>{{ ucwords($dt1->tinggi_badan_per_usia ) }}</td>
                         <td>{{ ucwords( $dt1->berat_badan_per_tinggi_badan) }}</td>
@@ -148,8 +148,8 @@
                                         <details class="mt-2 mb-3 p-2 bg-light rounded border">
                                             <summary>Rincian</summary>
                                             <ul>
-                                                <li>Nama: <i>{{ $dt1->Nama }}</i></li>
-                                                <li>Usia: <i>{{ $dt1->Usia }}</i></li>
+                                                <li>nama: <i>{{ $dt1->nama }}</i></li>
+                                                <li>usia: <i>{{ $dt1->usia }}</i></li>
                                                 <li>BB/U: <i>{{ ucwords($dt1->berat_badan_per_usia) }}</i></li>
                                                 <li>TB/U: <i>{{ ucwords($dt1->tinggi_badan_per_usia) }}</i></li>
                                                 <li>BB/TB: <i>{{ ucwords($dt1->berat_badan_per_tinggi_badan) }}</i></li>

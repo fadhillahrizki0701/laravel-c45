@@ -13,10 +13,35 @@ return new class extends Migration
     {
         Schema::create('dataset2s', function (Blueprint $table) {
             $table->id();
-            $table->integer('Usia');
-            $table->string('berat_badan_per_tinggi_badan');
-            $table->string('Menu');
-            $table->string('Keterangan');
+            $table->integer('usia');
+            $table->enum('berat_badan_per_tinggi_badan', [
+                'Gizi Baik',
+                'Gizi Kurang'
+            ]);
+            $table->enum('menu', [
+                'M1',
+                'M2',
+                'M3',
+                'M4',
+                'M5',
+                'M6',
+                'M7',
+                'M8',
+                'M9',
+                'M10',
+                'M11',
+                'M12',
+                'M13',
+                'M14',
+                'M15',
+                'M16',
+                'M17',
+                'M18',
+            ]);
+            $table->enum('keterangan', [
+                'Baik',
+                'Tidak Baik',
+            ]);
         });
     }
 

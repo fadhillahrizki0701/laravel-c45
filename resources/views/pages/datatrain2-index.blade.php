@@ -39,7 +39,7 @@
     </details>
 
 <p class="mt-3"> Harap pastikan file CSV mengikuti format di bawah ini:</p>
-<pre class="mt-2">Usia (bulan);BB_TB;Menu;Keterangan
+<pre class="mt-2">usia (bulan);BB_TB;menu;keterangan
 12;Gizi Baik;M15;Tidak Baik
 18;Gizi Baik;M9;Baik
 ...</pre>
@@ -51,20 +51,20 @@
             <thead>
                 <tr>
                     <th scope="col">No</th>
-                    <th scope="col">Usia</th>
+                    <th scope="col">usia</th>
                     <th scope="col">BB/TB</th>
-                    <th scope="col">Menu</th>
-                    <th scope="col">Keterangan</th>
+                    <th scope="col">menu</th>
+                    <th scope="col">keterangan</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($dataset2 as $db2)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $db2->Usia }}</td>
+                        <td>{{ $db2->usia }}</td>
                         <td>{{ $db2->berat_badan_per_tinggi_badan }}</td>
-                        <td>{{ $db2->Menu }}</td>
-                        <td>{{ $db2->Keterangan }}</td>
+                        <td>{{ $db2->menu }}</td>
+                        <td>{{ $db2->keterangan }}</td>
                     </tr>
                 @endforeach
             </tbody>

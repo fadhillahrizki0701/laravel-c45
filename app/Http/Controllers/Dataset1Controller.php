@@ -31,16 +31,16 @@ class Dataset1Controller extends Controller
 	public function store(Request $request)
 	{
 		$this->validate($request, [
-			"Nama" => "required",
-			"Usia" => "required",
+			"nama" => "required",
+			"usia" => "required",
 			"berat_badan_per_usia" => "required",
 			"tinggi_badan_per_usia" => "required",
 			"berat_badan_per_tinggi_badan" => "required",
 		]);
 
 		Dataset1::create([
-			"Nama" => $request->Nama,
-			"Usia" => $request->Usia,
+			"nama" => $request->nama,
+			"usia" => $request->usia,
 			"berat_badan_per_usia" => $request->berat_badan_per_usia,
 			"tinggi_badan_per_usia" => $request->tinggi_badan_per_usia,
 			"berat_badan_per_tinggi_badan" =>
@@ -78,8 +78,8 @@ class Dataset1Controller extends Controller
 	public function update(Request $request, string $id)
 	{
 		$this->validate($request, [
-			"Nama" => "required",
-			"Usia" => "required",
+			"nama" => "required",
+			"usia" => "required",
 			"berat_badan_per_usia" => "required",
 			"tinggi_badan_per_usia" => "required",
 			"berat_badan_per_tinggi_badan" => "required",
@@ -88,8 +88,8 @@ class Dataset1Controller extends Controller
 		$dataset1 = Dataset1::find($id);
 
 		$dataset1->update([
-			"Nama" => $request->Nama,
-			"Usia" => $request->Usia,
+			"nama" => $request->nama,
+			"usia" => $request->usia,
 			"berat_badan_per_usia" => $request->berat_badan_per_usia,
 			"tinggi_badan_per_usia" => $request->tinggi_badan_per_usia,
 			"berat_badan_per_tinggi_badan" =>
@@ -287,9 +287,9 @@ class Dataset1Controller extends Controller
 
 			$gain_tbu = round($gain_tbu, 5);
 
-			// dd($gain_bbu,$gain_tbu,$dataset1->avg('Usia'));
-			$mean_umur = $dataset1->avg("Usia");
-			$umur_values = $dataset1->pluck("Usia")->toArray();
+			// dd($gain_bbu,$gain_tbu,$dataset1->avg('usia'));
+			$mean_umur = $dataset1->avg("usia");
+			$umur_values = $dataset1->pluck("usia")->toArray();
 			sort($umur_values);
 			$count = count($umur_values);
 			$median_umur = 0;
@@ -303,14 +303,14 @@ class Dataset1Controller extends Controller
 
 			//entropy usia dibawah mean
 			$total_kasus_usia_dbwah_mean = $value
-				->where("Usia", "<=", $mean_umur)
+				->where("usia", "<=", $mean_umur)
 				->count();
 			$total_gizi_baik_usia_dbwah_mean = $value
-				->where("Usia", "<=", $mean_umur)
+				->where("usia", "<=", $mean_umur)
 				->where("berat_badan_per_tinggi_badan", "Gizi Baik")
 				->count();
 			$total_gizi_kurang_usia_dbwah_mean = $value
-				->where("Usia", "<=", $mean_umur)
+				->where("usia", "<=", $mean_umur)
 				->where("berat_badan_per_tinggi_badan", "Gizi Kurang")
 				->count();
 			$entropy_total_usia_dbwah_mean = (float) $this->calculateEntropy(
@@ -321,14 +321,14 @@ class Dataset1Controller extends Controller
 
 			//entropy usia diatas mean
 			$total_kasus_usia_diatas_mean = $value
-				->where("Usia", ">", $mean_umur)
+				->where("usia", ">", $mean_umur)
 				->count();
 			$total_gizi_baik_usia_diatas_mean = $value
-				->where("Usia", ">", $mean_umur)
+				->where("usia", ">", $mean_umur)
 				->where("berat_badan_per_tinggi_badan", "Gizi Baik")
 				->count();
 			$total_gizi_kurang_usia_diatas_mean = $value
-				->where("Usia", ">", $mean_umur)
+				->where("usia", ">", $mean_umur)
 				->where("berat_badan_per_tinggi_badan", "Gizi Kurang")
 				->count();
 			$entropy_total_usia_diatas_mean = (float) $this->calculateEntropy(
@@ -349,14 +349,14 @@ class Dataset1Controller extends Controller
 
 			//entropy usia dibawah median
 			$total_kasus_usia_dbwah_median = $value
-				->where("Usia", "<=", $median_umur)
+				->where("usia", "<=", $median_umur)
 				->count();
 			$total_gizi_baik_usia_dbwah_median = $value
-				->where("Usia", "<=", $median_umur)
+				->where("usia", "<=", $median_umur)
 				->where("berat_badan_per_tinggi_badan", "Gizi Baik")
 				->count();
 			$total_gizi_kurang_usia_dbwah_median = $value
-				->where("Usia", "<=", $median_umur)
+				->where("usia", "<=", $median_umur)
 				->where("berat_badan_per_tinggi_badan", "Gizi Kurang")
 				->count();
 			$entropy_total_usia_dbwah_median = (float) $this->calculateEntropy(
@@ -367,19 +367,19 @@ class Dataset1Controller extends Controller
 
 			//entropy usia diatas median
 			$total_kasus_usia_diatas_median = Dataset1::where(
-				"Usia",
+				"usia",
 				">",
 				$median_umur
 			)->count();
 			$total_gizi_baik_usia_diatas_median = Dataset1::where(
-				"Usia",
+				"usia",
 				">",
 				$median_umur
 			)
 				->where("berat_badan_per_tinggi_badan", "Gizi Baik")
 				->count();
 			$total_gizi_kurang_usia_diatas_median = Dataset1::where(
-				"Usia",
+				"usia",
 				">",
 				$median_umur
 			)
@@ -654,13 +654,13 @@ class Dataset1Controller extends Controller
 
 // // Example usage:
 // $dataset = [
-//     ['Usia Bln' => 2, 'BB/U' => 'Kurang', 'TB/U' => 'Pendek', 'BB/TB' => 'Gizi Kurang'],
-//     ['Usia Bln' => 6, 'BB/U' => 'Kurang', 'TB/U' => 'Normal', 'BB/TB' => 'Gizi Kurang'],
-//     ['Usia Bln' => 11, 'BB/U' => 'Sangat Kurang', 'TB/U' => 'Pendek', 'BB/TB' => 'Gizi Kurang'],
+//     ['usia Bln' => 2, 'BB/U' => 'Kurang', 'TB/U' => 'Pendek', 'BB/TB' => 'Gizi Kurang'],
+//     ['usia Bln' => 6, 'BB/U' => 'Kurang', 'TB/U' => 'Normal', 'BB/TB' => 'Gizi Kurang'],
+//     ['usia Bln' => 11, 'BB/U' => 'Sangat Kurang', 'TB/U' => 'Pendek', 'BB/TB' => 'Gizi Kurang'],
 //     // Add more rows here
 // ];
 
-// $attributes = ['Usia Bln', 'BB/U', 'TB/U'];
+// $attributes = ['usia Bln', 'BB/U', 'TB/U'];
 // $target_attribute = 'BB/TB';
 
 // $best_attribute = find_best_split($dataset, $attributes, $target_attribute);

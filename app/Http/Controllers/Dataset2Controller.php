@@ -31,18 +31,18 @@ class Dataset2Controller extends Controller
 	public function store(Request $request)
 	{
 		$this->validate($request, [
-			"Usia" => "required",
+			"usia" => "required",
 			"berat_badan_per_tinggi_badan" => "required",
-			"Menu" => "required",
-			"Keterangan" => "required",
+			"menu" => "required",
+			"keterangan" => "required",
 		]);
 
 		Dataset2::create([
-			"Usia" => $request->Usia,
+			"usia" => $request->usia,
 			"berat_badan_per_tinggi_badan" =>
 				$request->berat_badan_per_tinggi_badan,
-			"Menu" => $request->Menu,
-			"Keterangan" => $request->Keterangan,
+			"menu" => $request->menu,
+			"keterangan" => $request->keterangan,
 		]);
 
 		return redirect()
@@ -76,19 +76,19 @@ class Dataset2Controller extends Controller
 	public function update(Request $request, string $id)
 	{
 		$this->validate($request, [
-			"Usia" => "required",
+			"usia" => "required",
 			"berat_badan_per_tinggi_badan" => "required",
-			"Menu" => "required",
-			"Keterangan" => "required",
+			"menu" => "required",
+			"keterangan" => "required",
 		]);
 
 		$dataset2 = Dataset2::find($id);
 		$dataset2->update([
-			"Usia" => $request->Usia,
+			"usia" => $request->usia,
 			"berat_badan_per_tinggi_badan" =>
 				$request->berat_badan_per_tinggi_badan,
-			"Menu" => $request->Menu,
-			"Keterangan" => $request->Keterangan,
+			"menu" => $request->menu,
+			"keterangan" => $request->keterangan,
 		]);
 
 		return redirect()

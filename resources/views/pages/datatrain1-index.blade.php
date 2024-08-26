@@ -41,7 +41,7 @@
     </details>
 
     <p class="mt-3"> Harap pastikan file CSV mengikuti format di bawah ini:</p>
-<pre class="mt-2">Nama;Usia (bulan);BB_U;TB_U;BB_TB
+<pre class="mt-2">nama;usia (bulan);BB_U;TB_U;BB_TB
 Fitri;25;Kurang;Normal;Gizi Baik
 Yusuf;30;Normal;Pendek;Gizi Baik
 ...</pre>
@@ -53,8 +53,8 @@ Yusuf;30;Normal;Pendek;Gizi Baik
             <thead>
                 <tr>
                 <th scope="col">No</th>
-                <th scope="col">Nama</th>
-                <th scope="col">Usia</th>
+                <th scope="col">nama</th>
+                <th scope="col">usia</th>
                 <th scope="col">BB/U</th>
                 <th scope="col">TB/U</th>
                 <th scope="col">BB/TB</th>
@@ -64,8 +64,8 @@ Yusuf;30;Normal;Pendek;Gizi Baik
                 @foreach ($dataset1 as $dt1)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $dt1->Nama }}</td>
-                        <td>{{ $dt1->Usia }}</td>
+                        <td>{{ $dt1->nama }}</td>
+                        <td>{{ $dt1->usia }}</td>
                         <td>{{ $dt1->berat_badan_per_usia }}</td>
                         <td>{{ $dt1->tinggi_badan_per_usia }}</td>
                         <td>{{ $dt1->berat_badan_per_tinggi_badan }}</td>           
