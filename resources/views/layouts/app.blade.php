@@ -68,7 +68,7 @@
                 display: none;
                 border: 0;
                 outline: 0;
-                width: 250px;
+                width: 100%;
                 height: 40px;
                 position: fixed;
                 z-index: 90;

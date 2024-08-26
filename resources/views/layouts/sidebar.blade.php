@@ -51,6 +51,9 @@
   </ul>
 </nav>
 
-<button id="sidebar-button" @click="open = !open">
-  <span x-text="open ? 'OPEN' : 'CLOSE'"></span>
+<button id="sidebar-button" @click="open = !open" x-data="{
+  openIcon: '<i class=\'bi bi-list fs-2\'></i>',
+  closeIcon: '<i class=\'bi bi-x fs-2\'></i>',
+}">
+  <span x-html="open ? closeIcon : openIcon"></span>
 </button>
