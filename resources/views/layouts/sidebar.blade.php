@@ -29,7 +29,7 @@
         Data 2
       </a>
     </li>
-    <li class="nav-item py-3 fw-bolder">Algoritma C45</li>
+    <li class="nav-item py-3 fw-bolder">Algoritma C4.5</li>
     <li>
       <a href="{{ route('datatrain1.index') }}" class="nav-link link-dark" style="color:#25396F;">
         <i class="bi bi-database-up"></i>
@@ -48,7 +48,7 @@
         <i class="bi bi-person-circle"></i>
         Profil
       </button>
-      <div class="collapse" id="profileDetail">
+      <div class="collapse mb-5" id="profileDetail">
         <div class="card card-body">
           <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
             <i class="bi bi-box-arrow-left"></i>

@@ -1,41 +1,50 @@
 @extends('layouts.app')
 
-@section('title', 'user')
+@section('title', 'Data Pengguna')
 
 @section('content')
 <section class="container p-4">
-  <h2 style="color:#435EBE">Pengguna</h2>
+  <h2 style="color:#435EBE">Data Pengguna</h2>
   <section>
-    <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        Tambah Pengguna
-    </button>
+    @role('admin')
+      <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+          Tambah Pengguna
+      </button>
 
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Input Data</h5>
+              <h5 class="modal-title" id="staticBackdropLabel">Tambah Data Pengguna</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nama</label>
-                        <input type="text" class="form-control" id="Nama" placeholder="Masukkan Nama">
-                      </div>
-                      <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="text" class="form-control" id="Nama" placeholder="Masukkan Nama">
-                      </div>
-                  </form>
-                </div>
+              <form action="{{ route('user.store') }}" method="POST" autocomplete="off" aria-autocomplete="false">
+                @csrf
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nama</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan Nama">
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan Email">
+                  </div>
+                  <div class="mb-3">
+                    <label for="password" class="form-label">Kata Sandi</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan Kata Sandi">
+                  </div>
+                  <div class="mt-4 mb-2">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                  </div>
+              </form>
+            </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
             </div>
           </div>
         </div>
-    </div>
+      </div>
+    @endrole
   </section>
 
   <section class="table-responsive">

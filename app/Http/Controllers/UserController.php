@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -23,6 +24,7 @@ class UserController extends Controller
 	 */
 	public function create()
 	{
+		//
 	}
 
 	/**
@@ -30,7 +32,31 @@ class UserController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		//
+		$validation = $request->validate([
+			'name' => ['required', 'string', 'min:1'],
+			'email' => ['required', 'email', 'string', 'min:1', 'unique:users,email'],
+			'password' => ['required', 'string', 'min:1'],
+		]);
+
+		$validation['password'] = Hash::make($validation['password']);
+		$validation['created_at'] = now();
+		$validation['updated_at'] = now();
+
+		$insertion = User::create($validation);
+
+		if (!$insertion) {
+			return redirect()
+				->route('user.index')
+				->with([
+					'error' => 'Gagal menambah data pengguna!',
+				]);
+		}
+
+		return redirect()
+			->route('user.index')
+			->with([
+				'success' => 'Berhasil menambah data pengguna!',
+			]);
 	}
 
 	/**
@@ -46,7 +72,9 @@ class UserController extends Controller
 	 */
 	public function edit(string $id)
 	{
-		//
+		$user = User::find($id);
+
+		return view('pages.user-edit', compact('user'));
 	}
 
 	/**
@@ -54,7 +82,32 @@ class UserController extends Controller
 	 */
 	public function update(Request $request, string $id)
 	{
-		//
+		$user = User::find($id);
+
+		$rules = [
+			'name' => ['required', 'string', 'min:1'],
+		];
+
+		if ($user->email != $request->email) {
+			$rules['email'] = ['required', 'email', 'string', 'min:1', 'unique:users,email'];
+		}
+
+		$validation = $request->validate($rules);
+		$update = $user->update($validation);
+
+		if (!$update) {
+			return redirect()
+				->route('user.edit', $id)
+				->with([
+					'error' => 'Gagal mengubah data pengguna!',
+				]);
+		}
+
+		return redirect()
+			->route('user.edit', $id)
+			->with([
+				'success' => 'Berhasil mengubah data pengguna!',
+			]);
 	}
 
 	/**
