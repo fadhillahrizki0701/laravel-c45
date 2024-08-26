@@ -70,9 +70,9 @@ class Datatrain1Controller extends Controller
 				Dataset1::create([
 					"nama" => $rowData[1],
 					"usia" => $rowData[2],
-					"berat_badan_per_usia" => $rowData[3],
-					"tinggi_badan_per_usia" => $rowData[4],
-					"berat_badan_per_tinggi_badan" => $rowData[5],
+					"berat_badan_per_usia" => ucwords($rowData[3]),
+					"tinggi_badan_per_usia" => ucwords($rowData[4]),
+					"berat_badan_per_tinggi_badan" => ucwords($rowData[5]),
 				]);
 			}
 		}

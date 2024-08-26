@@ -69,9 +69,9 @@ class Datatrain2Controller extends Controller
 				// Save data to the database
 				Dataset2::create([
 					"usia" => $rowData[1],
-					"berat_badan_per_tinggi_badan" => $rowData[2],
-					"menu" => $rowData[3],
-					"keterangan" => $rowData[4],
+					"berat_badan_per_tinggi_badan" => ucwords($rowData[2]),
+					"menu" => ucwords($rowData[3]),
+					"keterangan" => ucwords($rowData[4]),
 				]);
 			}
 		}
