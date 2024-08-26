@@ -35,6 +35,15 @@
         <button type="submit" class="btn btn-danger">Bersihkan Data</button>
     </form>
 
+    <details class="my-3 p-2">
+        <summary class="fs-5">Keterangan</summary>
+        <ul>
+            <li><strong>BB/U</strong>, berat badan per usia</li>
+            <li><strong>TB/U</strong>, tinggi badan per usia</li>
+            <li><strong>BB/TB</strong>, berat badan per tinggi badan</li>
+        </ul>
+    </details>
+
     <p class="mt-3"> Harap pastikan file CSV mengikuti format di bawah ini:</p>
 <pre class="mt-2">Nama;Usia (bulan);BB_U;TB_U;BB_TB
 Fitri;25;Kurang;Normal;Gizi Baik
