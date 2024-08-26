@@ -31,7 +31,7 @@
             }
         
             #c45-sidebar {
-                background-color: inherit;
+                background-color: #d9e7ff;
                 min-width: 250px;
                 max-width: 250px;
                 height: 100vh;
@@ -72,6 +72,7 @@
                 height: 40px;
                 position: fixed;
                 z-index: 90;
+                background-color: #d9e7ff;
                 box-shadow: 0 0 6px #0000002d;
             }
 
