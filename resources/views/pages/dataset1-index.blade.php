@@ -121,9 +121,9 @@
                         @hasanyrole('admin|admin puskesmas')
                             <td>
                                 <section class="d-flex gap-2">
-                                    <button type="button" class="btn btn-sm btn-warning text-white" data-bs-toggle="modal" data-bs-target="#edit_{{ $dt1->id }}">
+                                    <a href="{{ route('dataset1.edit', $dt1->id) }}" class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil-square"></i>
-                                    </button>
+                                    </a>
                                     <button type="button" class="btn btn-sm btn-danger text-white" data-bs-toggle="modal" data-bs-target="#delete_{{ $dt1->id }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
@@ -131,64 +131,6 @@
                             </td>
                         @endhasanyrole
                     </tr>
-
-                    {{-- Edit --}}
-                    <div class="modal fade" id="edit_{{ $dt1->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="edit_{{ $dt1->id }}_label" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="edit_{{ $dt1->id }}_label">Edit Data</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="{{ route('dataset1.update', $dt1->id) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="mb-3">
-                                            <label for="Nama" class="form-label">Nama</label>
-                                            <input type="text" class="form-control" id="Nama" name="Nama" placeholder="Masukkan Nama" value="{{ $dt1->Nama }}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="Usia" class="form-label">Usia (bulan)</label>
-                                            <select class="form-select" id="Usia" name="Usia">
-                                                @for ($i = 0; $i <= 70; $i++)
-                                                    <option value="{{ $i }}" {{ $dt1->Usia == $i ? 'selected' : '' }}>{{ $i }}</option>
-                                                @endfor
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="berat_badan_per_usia" class="form-label">BB/U</label>
-                                            <select class="form-select" id="berat_badan_per_usia" name="berat_badan_per_usia">
-                                                <option value="{{ ucwords('normal') }}"  @selected(strtolower($dt1->berat_badan_per_usia) == strtolower('normal'))>Normal</option>
-                                                <option value="{{ ucwords('kurang') }}"  @selected(strtolower($dt1->berat_badan_per_usia) == strtolower('kurang'))>Kurang</option>
-                                                <option value="{{ ucwords('sangat kurang') }}"  @selected(strtolower($dt1->berat_badan_per_usia) == strtolower('sangat kurang'))>Sangat Kurang</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="tinggi_badan_per_usia" class="form-label">TB/U</label>
-                                            <select class="form-select" id="tinggi_badan_per_usia" name="tinggi_badan_per_usia">
-                                                <option value="{{ ucwords('normal') }}" @selected(strtolower($dt1->tinggi_badan_per_usia) == strtolower('normal'))>Normal</option>
-                                                <option value="{{ ucwords('pendek') }}" @selected(strtolower($dt1->tinggi_badan_per_usia) == strtolower('pendek'))>Pendek</option>
-                                                <option value="{{ ucwords('sangat pendek') }}" @selected(strtolower($dt1->tinggi_badan_per_usia) == strtolower('sangat pendek'))>Sangat Pendek</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="berat_badan_per_tinggi_badan" class="form-label">BB/TB</label>
-                                            <select class="form-select" id="berat_badan_per_tinggi_badan" name="berat_badan_per_tinggi_badan">
-                                                <option value="{{ ucwords('gizi baik') }}" @selected(strtolower($dt1->berat_badan_per_tinggi_badan) == strtolower('gizi baik'))>Gizi Baik</option>
-                                                <option value="{{ ucwords('gizi kurang') }}" @selected(strtolower($dt1->berat_badan_per_tinggi_badan) == strtolower('gizi kurang'))>Gizi Kurang</option>
-                                            </select>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-warning">Simpan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- End Edit --}}
 
                     {{-- Delete --}}
                     <div class="modal fade" id="delete_{{ $dt1->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="delete_{{ $dt1->id }}_label" aria-hidden="true">
