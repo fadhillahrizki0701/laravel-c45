@@ -29,7 +29,7 @@
         Data 2
       </a>
     </li>
-    <li class="nav-item py-3 fw-bolder">Algoritma C45 </li>
+    <li class="nav-item py-3 fw-bolder">Algoritma C45</li>
     <li>
       <a href="{{ route('datatrain1.index') }}" class="nav-link link-dark" style="color:#25396F;">
         <i class="bi bi-database-up"></i>
@@ -42,11 +42,20 @@
         Data Training 2
       </a>
     </li>
+    <li class="nav-item py-3 fw-bolder">Profil</li>
     <li>
-      <a href="{{ route('login') }}" class="nav-link link-dark" style="color:#25396F;">
-        <i class="bi bi-box-arrow-left"></i>
-        Logout
-      </a>
+      <button class="nav-link link-dark mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#profileDetail" aria-expanded="false" aria-controls="profileDetail" style="color:#25396F;">
+        <i class="bi bi-person-circle"></i>
+        Profil
+      </button>
+      <div class="collapse" id="profileDetail">
+        <div class="card card-body">
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+            <i class="bi bi-box-arrow-left"></i>
+            Keluar
+          </button>
+        </div>
+      </div>
     </li>
   </ul>
 </nav>
@@ -57,3 +66,24 @@
 }">
   <span x-html="open ? closeIcon : openIcon"></span>
 </button>
+
+<div class="modal fade" id="logoutModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Keluar Aplikasi</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <form action="{{ route('logout') }}" method="POST">
+                  @csrf
+                  <p>Apakah Anda yakin ingin keluar dari Aplikasi Klasifikasi C4.5?</p>
+                  <section class="d-flex gap-3">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">Ya, Keluar</button>
+                  </section>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>

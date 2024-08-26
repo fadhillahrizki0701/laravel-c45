@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-	public function login(Request $request)
+	public function login()
 	{
 		return view("pages.auth.login");
 	}
@@ -34,5 +34,19 @@ class LoginController extends Controller
 			->with([
 				"error" => "Invalid email or password.",
 			]);
+	}
+
+	public function logout(Request $request)
+	{
+		Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()
+            ->route('login')
+            ->with([
+                "success" => "Berhasil keluar dari aplikasi!",
+            ]);
 	}
 }

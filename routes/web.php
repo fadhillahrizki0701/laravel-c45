@@ -20,13 +20,15 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', function (){
-return redirect('/login');
-
+Route::get('/', function () {
+    return redirect('/login');
 });
 
+// User Authentication
 Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/authenticate', [LoginController::class, 'authenticate'])->name('authenticate');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 Route::middleware("auth")->group(function(){
     Route::resource('/dataset1', Dataset1Controller::class);
     Route::resource('/dataset2', Dataset2Controller::class);
