@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Datatrain 2')
+@section('title', 'Data Training 2')
 
 @section('content')
 <section class="container p-4">
-    <h2 class="pb-4" style="color:#435EBE">Datatrain 2</h2>
+    <h2 class="pb-4" style="color:#435EBE">Data Training 2</h2>
 
     @if(session('success'))
         <div class="alert alert-success">
@@ -23,7 +23,7 @@
         <label for="file">Impor data dari Excel</label>
         <div class="input-group my-3">
             <input type="file" name="file" id="file" class="form-control" accept=".csv,.xlsx">
-            <button type="submit" class="btn btn-success">Upload Data</button>
+            <button type="submit" class="btn btn-success">Unggah Data</button>
         </div>
     </form>
 
@@ -32,7 +32,7 @@
     <form action="{{ route('datatrain2.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus seluruh file beserta isinya?');">
         @csrf
         @method('DELETE')
-        <button type="submit" class="btn btn-danger">Delete All</button>
+        <button type="submit" class="btn btn-danger">Bersihkan Data</button>
     </form>
 
 <p class="mt-3"> Harap pastikan file CSV mengikuti format di bawah ini:</p>
