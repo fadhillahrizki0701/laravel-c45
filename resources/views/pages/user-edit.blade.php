@@ -21,8 +21,9 @@
                 <div class="mb-3">
                     <label for="role" class="form-label">Peran</label>
                     <select name="role" id="role" class="form-select" aria-label="Pilih peran">
+                        <option disabled>-- Silahkan Pilih --</option>
                         @foreach ($roles as $role)
-                            <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower($user->roles[0]->name)) disabled>{{ strtolower($role->name) == strtolower($user->roles[0]->name) ? ucwords($role->name)." ⭐" : ucwords($role->name) }}</option>
+                            <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower($user->roles[0]->name)) @disabled(strtolower($role->name) == strtolower('admin'))>{{ strtolower($role->name) == strtolower($user->roles[0]->name) ? ucwords($role->name)." ⭐" : ucwords($role->name) }}</option>
                         @endforeach
                     </select>
                 </div>

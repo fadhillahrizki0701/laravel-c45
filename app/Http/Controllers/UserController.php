@@ -45,7 +45,7 @@ class UserController extends Controller
 				"min:1",
 				"unique:users,email",
 			],
-			"password" => ["required", "string", "min:1"],
+			"password" => ["required", "string", "min:8"],
 		]);
 
 		$validation["password"] = Hash::make($validation["password"]);
@@ -61,6 +61,8 @@ class UserController extends Controller
 					"error" => "Gagal menambah data pengguna!",
 				]);
 		}
+
+		$insertion->assignRole($request->role);
 
 		return redirect()
 			->route("user.index")
@@ -97,19 +99,27 @@ class UserController extends Controller
 
 		$rules = [
 			"name" => ["required", "string", "min:1"],
-		];
-
-		if ($user->email != $request->email) {
-			$rules["email"] = [
+			"email" => [
 				"required",
 				"email",
 				"string",
 				"min:1",
+			],
+		];
+
+		if ($user->email != $request->email) {
+			$rules["email"] = [
 				"unique:users,email",
 			];
 		}
 
 		$validation = $request->validate($rules);
+
+		$userCurrentRole = $user->roles[0]->name;
+
+		$user->removeRole($userCurrentRole);
+		$user->assignRole($request->role);
+
 		$update = $user->update($validation);
 
 		if (!$update) {
