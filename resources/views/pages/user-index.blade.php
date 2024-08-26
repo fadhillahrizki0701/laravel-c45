@@ -33,6 +33,15 @@
                     <label for="password" class="form-label">Kata Sandi</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan Kata Sandi">
                   </div>
+                  <div class="mb-3">
+                    <label for="role" class="form-label">Peran</label>
+                    <select name="role" id="role" class="form-select" aria-label="Pilih peran">
+                      <option disabled>-- Silahkan Pilih --</option>
+                      @foreach ($roles as $role)
+                        <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower('wali')) @disabled(strtolower($role->name) == strtolower('admin'))>{{ strtolower($role->name) == strtolower('wali') ? ucwords('Wali')." (default)" : ucwords($role->name) }}</option>
+                      @endforeach
+                    </select>
+                  </div>
                   <div class="mt-4 mb-2">
                     <button type="submit" class="btn btn-primary">Simpan</button>
                   </div>
