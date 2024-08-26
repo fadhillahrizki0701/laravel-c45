@@ -48,6 +48,12 @@
                 transition: 0.25s linear;
             }
 
+            #c45-sidebar button.nav-link {
+                display: flex;
+                gap: 6px;
+                width: 100%;
+            }
+
             #c45-sidebar .nav-link:hover {
                 background-color: #76a8ffc0;
             }
