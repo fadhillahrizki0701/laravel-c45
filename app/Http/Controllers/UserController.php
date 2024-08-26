@@ -18,7 +18,7 @@ class UserController extends Controller
 		// $users = User::all();
 		// $users = User::where("name", "NOT LIKE", "%admin%")->get();
 		$users = User::where("name", "!=", "admin")->get();
-		$roles = DB::table('roles')->get();
+		$roles = DB::table("roles")->get();
 
 		return view("pages.user-index", compact("users", "roles"));
 	}
@@ -37,29 +37,35 @@ class UserController extends Controller
 	public function store(Request $request)
 	{
 		$validation = $request->validate([
-			'name' => ['required', 'string', 'min:1'],
-			'email' => ['required', 'email', 'string', 'min:1', 'unique:users,email'],
-			'password' => ['required', 'string', 'min:1'],
+			"name" => ["required", "string", "min:1"],
+			"email" => [
+				"required",
+				"email",
+				"string",
+				"min:1",
+				"unique:users,email",
+			],
+			"password" => ["required", "string", "min:1"],
 		]);
 
-		$validation['password'] = Hash::make($validation['password']);
-		$validation['created_at'] = now();
-		$validation['updated_at'] = now();
+		$validation["password"] = Hash::make($validation["password"]);
+		$validation["created_at"] = now();
+		$validation["updated_at"] = now();
 
 		$insertion = User::create($validation);
 
 		if (!$insertion) {
 			return redirect()
-				->route('user.index')
+				->route("user.index")
 				->with([
-					'error' => 'Gagal menambah data pengguna!',
+					"error" => "Gagal menambah data pengguna!",
 				]);
 		}
 
 		return redirect()
-			->route('user.index')
+			->route("user.index")
 			->with([
-				'success' => 'Berhasil menambah data pengguna!',
+				"success" => "Berhasil menambah data pengguna!",
 			]);
 	}
 
@@ -78,7 +84,7 @@ class UserController extends Controller
 	{
 		$user = User::find($id);
 
-		return view('pages.user-edit', compact('user'));
+		return view("pages.user-edit", compact("user"));
 	}
 
 	/**
@@ -89,11 +95,17 @@ class UserController extends Controller
 		$user = User::find($id);
 
 		$rules = [
-			'name' => ['required', 'string', 'min:1'],
+			"name" => ["required", "string", "min:1"],
 		];
 
 		if ($user->email != $request->email) {
-			$rules['email'] = ['required', 'email', 'string', 'min:1', 'unique:users,email'];
+			$rules["email"] = [
+				"required",
+				"email",
+				"string",
+				"min:1",
+				"unique:users,email",
+			];
 		}
 
 		$validation = $request->validate($rules);
@@ -101,16 +113,16 @@ class UserController extends Controller
 
 		if (!$update) {
 			return redirect()
-				->route('user.edit', $id)
+				->route("user.edit", $id)
 				->with([
-					'error' => 'Gagal mengubah data pengguna!',
+					"error" => "Gagal mengubah data pengguna!",
 				]);
 		}
 
 		return redirect()
-			->route('user.edit', $id)
+			->route("user.edit", $id)
 			->with([
-				'success' => 'Berhasil mengubah data pengguna!',
+				"success" => "Berhasil mengubah data pengguna!",
 			]);
 	}
 
@@ -123,16 +135,16 @@ class UserController extends Controller
 
 		if (!$deletion) {
 			return redirect()
-				->route('user.index')
+				->route("user.index")
 				->with([
-					'error' => 'Gagal menghapus data pengguna!',
+					"error" => "Gagal menghapus data pengguna!",
 				]);
 		}
 
 		return redirect()
-			->route('user.index')
+			->route("user.index")
 			->with([
-				'success' => 'Berhasil menghapus data pengguna!',
+				"success" => "Berhasil menghapus data pengguna!",
 			]);
 	}
 }

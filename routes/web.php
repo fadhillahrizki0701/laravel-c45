@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Datatrain1Controller;
 use App\Http\Controllers\Datatrain2Controller;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +30,7 @@ Route::get('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/authenticate', [LoginController::class, 'authenticate'])->name('authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::middleware("auth")->group(function(){
+Route::middleware("auth")->group(function () {
     Route::resource('/dataset1', Dataset1Controller::class);
     Route::resource('/dataset2', Dataset2Controller::class);
     Route::resource('/dashboard', DashboardController::class);
@@ -39,6 +40,9 @@ Route::middleware("auth")->group(function(){
     Route::delete('/datatrain2/clear/all', [Datatrain2Controller::class, 'clear'])->name('datatrain2.clear');
     Route::resource('/datatrain2', Datatrain2Controller::class);
     Route::get('/mining',[Dataset1Controller::class, 'mining']);
+
+    Route::get('/profile/{id:id}', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile/{id:id}', [ProfileController::class, 'update'])->name('profile.update');
 
     // test
     Route::get('test', [TestController::class, 'index']);

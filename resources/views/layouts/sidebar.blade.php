@@ -50,7 +50,7 @@
       </button>
       <div class="collapse mb-5" id="profileDetail">
         <div class="card card-body">
-          <a href="#" class="btn btn-light mb-3 shadow-sm">
+          <a href="{{ route('profile.index', auth()->user()->id) }}" class="btn btn-light mb-3 shadow-sm border border-primary-subtle">
             <i class="bi bi-gear"></i>
             Pengaturan
           </a>

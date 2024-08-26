@@ -40,13 +40,13 @@ class LoginController extends Controller
 	{
 		Auth::logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+		$request->session()->invalidate();
+		$request->session()->regenerateToken();
 
-        return redirect()
-            ->route('login')
-            ->with([
-                "success" => "Berhasil keluar dari aplikasi!",
-            ]);
+		return redirect()
+			->route("login")
+			->with([
+				"success" => "Berhasil keluar dari aplikasi!",
+			]);
 	}
 }
