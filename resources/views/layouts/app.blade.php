@@ -90,7 +90,7 @@
                 #c45-content {
                     margin-left: 0px;
                     padding: 0;
-                    margin-top: 40px;
+                    padding-top: 40px;
                     width: 100%;
                 }
 
