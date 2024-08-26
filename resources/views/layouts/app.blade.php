@@ -43,6 +43,14 @@
                 transition: all 0.3s ease;
                 z-index: 90;
             }
+
+            #c45-sidebar .nav-link {
+                transition: 0.25s linear;
+            }
+
+            #c45-sidebar .nav-link:hover {
+                background-color: #76a8ffc0;
+            }
         
             /* Sidebar hidden */
             #c45-sidebar.sidebar-open {
