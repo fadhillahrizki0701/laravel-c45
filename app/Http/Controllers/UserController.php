@@ -83,8 +83,9 @@ class UserController extends Controller
 	public function edit(string $id)
 	{
 		$user = User::find($id);
+		$roles = DB::table("roles")->get();
 
-		return view("pages.user-edit", compact("user"));
+		return view("pages.user-edit", compact("user", "roles"));
 	}
 
 	/**

@@ -18,6 +18,14 @@
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="Masukkan Email" value="{{ $user->email }}">
                 </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Peran</label>
+                    <select name="role" id="role" class="form-select" aria-label="Pilih peran">
+                        @foreach ($roles as $role)
+                            <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower($user->roles[0]->name)) disabled>{{ strtolower($role->name) == strtolower($user->roles[0]->name) ? ucwords($role->name)." ⭐" : ucwords($role->name) }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="mt-4 mb-2">
                     <a href="{{ route('user.index') }}" class="btn btn-secondary">Kembali</a>
                     <button type="submit" class="btn btn-warning">Simpan</button>
