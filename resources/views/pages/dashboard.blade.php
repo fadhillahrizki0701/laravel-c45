@@ -6,6 +6,9 @@
 @section('content')
 <section class="container p-4">
     <h2 class="pb-4" style="color:#435EBE">Dashboard</h2>
+
+    @include('pages.partials.session-notification')
+
     <div class="row">
         <div class="col-12 col-md-6 col-lg-4 mb-4">
             <div class="card bg-white text-dark">

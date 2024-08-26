@@ -25,14 +25,14 @@ class LoginController extends Controller
 			return redirect()
 				->route("dashboard.index")
 				->with([
-					"success" => "Login successful!",
+					"success" => "Otentikasi berhasil. Selamat datang!",
 				]);
 		}
 
 		return redirect()
 			->back()
 			->with([
-				"error" => "Invalid email or password.",
+				"error" => "Email atau kata sandi salah! Coba lagi!",
 			]);
 	}
 
