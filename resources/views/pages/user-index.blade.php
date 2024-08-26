@@ -54,6 +54,7 @@
               <th scope="col">No</th>
               <th scope="col">Nama</th>
               <th scope="col">Email</th>
+              <th scope="col">Peran</th>
               @hasanyrole('admin|admin puskesmas')
                 <th scope="col">Opsi</th>
               @endhasanyrole
@@ -64,7 +65,8 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $user->name }}</td>
-                    <td>{{ $user->email}}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>{{ ucwords($user->roles[0]->name) }}</td>
                     @hasanyrole('admin|admin puskesmas')
                       <td>
                           <section class="d-flex gap-2">

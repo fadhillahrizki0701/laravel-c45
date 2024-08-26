@@ -50,6 +50,10 @@
       </button>
       <div class="collapse mb-5" id="profileDetail">
         <div class="card card-body">
+          <a href="#" class="btn btn-light mb-3 shadow-sm">
+            <i class="bi bi-gear"></i>
+            Pengaturan
+          </a>
           <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
             <i class="bi bi-box-arrow-left"></i>
             Keluar

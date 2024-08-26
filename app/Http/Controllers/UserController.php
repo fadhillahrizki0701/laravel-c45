@@ -14,7 +14,8 @@ class UserController extends Controller
 	public function index()
 	{
 		// $users = User::all();
-		$users = User::where("name", "NOT LIKE", "%admin%")->get();
+		// $users = User::where("name", "NOT LIKE", "%admin%")->get();
+		$users = User::where("name", "!=", "admin")->get();
 
 		return view("pages.user-index", compact("users"));
 	}
