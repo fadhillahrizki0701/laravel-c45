@@ -126,7 +126,11 @@
         </div>
 
         <script>
-            new DataTable('#example');
+            new DataTable('#example', {
+                language: {
+                    url: '{{ asset('datatables/i18n/id.json') }}'
+                }
+            });
         </script>
     </body>
 </html>
