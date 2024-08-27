@@ -123,7 +123,7 @@ class C45Controller extends Controller
 	public function fetchTreeDataset1()
 	{
 		$data = Dataset1::all()->toArray();
-		$attributes = ["Usia", "berat_badan_per_usia", "tinggi_badan_per_usia"];
+		$attributes = ["usia", "berat_badan_per_usia", "tinggi_badan_per_usia"];
 		$labelAttribute = "berat_badan_per_tinggi_badan"; // Specify the label attribute
 		$tree = $this->buildTree($data, $attributes, $labelAttribute);
 		return response()->json($tree);
@@ -132,7 +132,7 @@ class C45Controller extends Controller
 	public function fetchTreeDataset2()
 	{
 		$data = Dataset2::all()->toArray();
-		$attributes = ["Usia", "menu"];
+		$attributes = ["usia", "menu"];
 		$labelAttribute = "keterangan"; // Specify the label attribute
 		$tree = $this->buildTree($data, $attributes, $labelAttribute);
 		return response()->json($tree);

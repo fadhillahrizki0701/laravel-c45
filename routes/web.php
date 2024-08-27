@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\C45\C45Controller;
 use App\Http\Controllers\Dataset1Controller;
 use App\Http\Controllers\Dataset2Controller;
 use App\Http\Controllers\DashboardController;
@@ -43,6 +44,8 @@ Route::middleware("auth")->group(function () {
 
     Route::get('/profile/{id:id}', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile/{id:id}', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/mining-dataset-1', [C45Controller::class, 'fetchTreeDataset1']);
+    Route::get('/mining-dataset-2', [C45Controller::class, 'fetchTreeDataset2']);
 
     // test
     Route::get('test', [TestController::class, 'index']);
