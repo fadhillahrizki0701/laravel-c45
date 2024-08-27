@@ -25,7 +25,7 @@
               <form action="{{ route('user.store') }}" method="POST" autocomplete="off" aria-autocomplete="false">
                 @csrf
                 <div class="mb-3">
-                    <label for="name" class="form-label">nama</label>
+                    <label for="name" class="form-label">Nama</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama">
                   </div>
                   <div class="mb-3">
@@ -64,7 +64,7 @@
         <thead>
             <tr>
               <th scope="col">No</th>
-              <th scope="col">nama</th>
+              <th scope="col">Nama</th>
               <th scope="col">Email</th>
               <th scope="col">Peran</th>
               @hasanyrole('admin|admin puskesmas')
