@@ -23,13 +23,13 @@
         </div>
     </form>
 
-    <br>
-
-    <form action="{{ route('datatrain2.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus seluruh file beserta isinya?');">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="btn btn-danger">Bersihkan Data</button>
-    </form>
+    @role('admin')
+        <form action="{{ route('datatrain2.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus seluruh file beserta isinya?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger">Bersihkan Data</button>
+        </form>
+    @endrole
 
     <details class="my-3 p-2">
         <summary class="fs-5">Keterangan</summary>
