@@ -17,7 +17,7 @@ class UserController extends Controller
 	{
 		$roles = DB::table("roles")->get();
 
-		if (Auth::user()->hasRole('admin puskesmas')) {
+		if (Auth::user()->hasRole('admin puskesmas') || Auth::user()->hasRole('wali')) {
 			$users = User::where("name", "!=", "admin")
 				->where("name", "!=", "admin puskesmas")
 				->get();
