@@ -9,12 +9,12 @@
     @include('pages.partials.session-notification')
 
     <section>
-        @role('admin')
+        @role('admin|admin puskesmas')
             <form action="{{ route('user.update', $user->id) }}" method="POST" autocomplete="off" aria-autocomplete="false">
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
-                    <label for="name" class="form-label">nama</label>
+                    <label for="name" class="form-label">Nama</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan nama" value="{{ $user->name }}">
                 </div>
                 <div class="mb-3">
@@ -25,9 +25,16 @@
                     <label for="role" class="form-label">Peran</label>
                     <select name="role" id="role" class="form-select" aria-label="Pilih peran">
                         <option disabled>-- Silahkan Pilih --</option>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower($user->roles[0]->name)) @disabled(strtolower($role->name) == strtolower('admin'))>{{ strtolower($role->name) == strtolower($user->roles[0]->name) ? ucwords($role->name)." ⭐" : ucwords($role->name) }}</option>
-                        @endforeach
+                        @role('admin')
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower($user->roles[0]->name)) @disabled(strtolower($role->name) == strtolower('admin'))>{{ strtolower($role->name) == strtolower($user->roles[0]->name) ? ucwords($role->name)." ⭐" : ucwords($role->name) }}</option>
+                            @endforeach
+                        @endrole
+                        @role('admin puskesmas')
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower($user->roles[0]->name)) @disabled(strtolower($role->name) == strtolower('admin') || strtolower($role->name) == strtolower('admin puskesmas'))>{{ strtolower($role->name) == strtolower($user->roles[0]->name) ? ucwords($role->name)." ⭐" : ucwords($role->name) }}</option>
+                            @endforeach
+                        @endrole
                     </select>
                 </div>
                 <div class="mt-4 mb-2">

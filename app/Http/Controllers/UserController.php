@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Contracts\Role;
 
 class UserController extends Controller
 {
@@ -15,10 +15,19 @@ class UserController extends Controller
 	 */
 	public function index()
 	{
+		$roles = DB::table("roles")->get();
+
+		if (Auth::user()->hasRole('admin puskesmas')) {
+			$users = User::where("name", "!=", "admin")
+				->where("name", "!=", "admin puskesmas")
+				->get();
+
+			return view("pages.user-index", compact("users", "roles"));
+		}
+
 		// $users = User::all();
 		// $users = User::where("name", "NOT LIKE", "%admin%")->get();
 		$users = User::where("name", "!=", "admin")->get();
-		$roles = DB::table("roles")->get();
 
 		return view("pages.user-index", compact("users", "roles"));
 	}

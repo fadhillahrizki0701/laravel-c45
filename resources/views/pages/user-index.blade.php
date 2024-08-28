@@ -9,7 +9,7 @@
   @include('pages.partials.session-notification')
 
   <section>
-    @role('admin')
+    @role('admin|admin puskesmas')
       <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
           Tambah Pengguna
       </button>
@@ -40,9 +40,16 @@
                     <label for="role" class="form-label">Peran</label>
                     <select name="role" id="role" class="form-select" aria-label="Pilih peran">
                       <option disabled>-- Silahkan Pilih --</option>
-                      @foreach ($roles as $role)
-                        <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower('wali')) @disabled(strtolower($role->name) == strtolower('admin'))>{{ strtolower($role->name) == strtolower('wali') ? ucwords('Wali')." (default)" : ucwords($role->name) }}</option>
-                      @endforeach
+                      @role('admin')
+                        @foreach ($roles as $role)
+                          <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower('wali')) @disabled(strtolower($role->name) == strtolower('admin'))>{{ strtolower($role->name) == strtolower('wali') ? ucwords('Wali')." (default)" : ucwords($role->name) }}</option>
+                        @endforeach
+                      @endrole
+                      @role('admin puskesmas')
+                        @foreach ($roles as $role)
+                          <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower('wali')) @disabled(strtolower($role->name) == strtolower('admin') || strtolower($role->name) == strtolower('admin puskesmas'))>{{ strtolower($role->name) == strtolower('wali') ? ucwords('Wali')." (default)" : ucwords($role->name) }}</option>
+                        @endforeach
+                      @endrole
                     </select>
                   </div>
                   <div class="mt-4 mb-2">
