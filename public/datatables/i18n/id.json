@@ -48,9 +48,9 @@
         "createState": "Tambahkan Data",
         "removeAllStates": "Hapus Semua Data",
         "removeState": "Hapus Data",
-        "renameState": "Rubah Nama",
-        "savedStates": "SImpan Data",
-        "stateRestore": "Publihkan Data",
+        "renameState": "Ubah Nama",
+        "savedStates": "Simpan Data",
+        "stateRestore": "Pulihkan Data",
         "updateState": "Perbaharui data"
     },
     "searchBuilder": {
@@ -195,7 +195,7 @@
             "button": "Edit"
         },
         "error": {
-            "system": "Terjadi kesalahan pada system. (<a target=\"\\\" rel=\"\\ nofollow\" href=\"\\\">Informasi Selebihnya<\/a>)."
+            "system": "Terjadi kesalahan pada sistem. (<a target=\"\\\" rel=\"\\ nofollow\" href=\"\\\">Informasi Selebihnya<\/a>)."
         }
     },
     "stateRestore": {
