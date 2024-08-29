@@ -4,137 +4,134 @@ namespace App\Http\Controllers\C45;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Controllers\C45\DecisionTreeNodeController as DecisionTreeNode;
 use App\Models\Dataset1;
 use App\Models\Dataset2;
 
 class C45Controller extends Controller
 {
-	public function calculateEntropy($data, $labelAttribute)
-	{
-		$total = count($data);
-		$labels = array_column($data, $labelAttribute);
-		$labelCounts = array_count_values($labels);
-		$entropy = 0.0;
+    public function calculateEntropy($data, $labelAttribute)
+    {
+        $total = count($data);
+        $labels = array_column($data, $labelAttribute);
+        $labelCounts = array_count_values($labels);
+        $entropy = 0.0;
 
-		foreach ($labelCounts as $count) {
-			$probability = $count / $total;
-			$entropy -= $probability * log($probability, 2);
-		}
+        foreach ($labelCounts as $count) {
+            $probability = $count / $total;
+            $entropy -= $probability * log($probability, 2);
+        }
 
-		return $entropy;
-	}
+        return $entropy;
+    }
 
-	public function calculateGain($data, $attribute, $labelAttribute)
-	{
-		$totalEntropy = $this->calculateEntropy($data, $labelAttribute);
-		$values = array_unique(array_column($data, $attribute));
-		$subsetEntropy = 0.0;
+    public function calculateSplitInfo($data, $attribute)
+    {
+        $total = count($data);
+        $values = array_column($data, $attribute);
+        $valueCounts = array_count_values($values);
+        $splitInfo = 0.0;
 
-		foreach ($values as $value) {
-			$subset = array_filter($data, function ($row) use (
-				$attribute,
-				$value
-			) {
-				return $row[$attribute] == $value;
-			});
-			$subsetProbability = count($subset) / count($data);
-			$subsetEntropy +=
-				$subsetProbability *
-				$this->calculateEntropy($subset, $labelAttribute);
-		}
+        foreach ($valueCounts as $count) {
+            $probability = $count / $total;
+            $splitInfo -= $probability * log($probability, 2);
+        }
 
-		return $totalEntropy - $subsetEntropy;
-	}
+        return $splitInfo;
+    }
 
-	public function chooseBestAttribute($data, $attributes, $labelAttribute)
-	{
-		$bestAttribute = null;
-		$bestGain = -INF;
+    public function calculateGain($data, $attribute, $labelAttribute)
+    {
+        $totalEntropy = $this->calculateEntropy($data, $labelAttribute);
+        $values = array_unique(array_column($data, $attribute));
+        $subsetEntropy = 0.0;
 
-		foreach ($attributes as $attribute) {
-			$gain = $this->calculateGain($data, $attribute, $labelAttribute);
-			if ($gain > $bestGain) {
-				$bestGain = $gain;
-				$bestAttribute = $attribute;
-			}
-		}
+        foreach ($values as $value) {
+            $subset = array_filter($data, function ($row) use ($attribute, $value) {
+                return $row[$attribute] == $value;
+            });
+            $subsetProbability = count($subset) / count($data);
+            $subsetEntropy += $subsetProbability * $this->calculateEntropy($subset, $labelAttribute);
+        }
 
-		return $bestAttribute;
-	}
+        return $totalEntropy - $subsetEntropy;
+    }
 
-	public function buildTree($data, $attributes, $labelAttribute)
-	{
-		$labels = array_column($data, $labelAttribute);
-		if (count(array_unique($labels)) === 1) {
-			$leaf = new DecisionTreeNode();
-			$leaf->isLeaf = true;
-			$leaf->label = $labels[0];
-			return $leaf;
-		}
+    public function calculateGainRatio($data, $attribute, $labelAttribute)
+    {
+        $gain = $this->calculateGain($data, $attribute, $labelAttribute);
+        $splitInfo = $this->calculateSplitInfo($data, $attribute);
 
-		if (empty($attributes)) {
-			$leaf = new DecisionTreeNode();
-			$leaf->isLeaf = true;
-			$leaf->label = array_search(
-				max(array_count_values($labels)),
-				array_count_values($labels)
-			);
-			return $leaf;
-		}
+        if ($splitInfo == 0) {
+            return 0; // Avoid division by zero
+        }
 
-		$bestAttribute = $this->chooseBestAttribute(
-			$data,
-			$attributes,
-			$labelAttribute
-		);
-		$tree = new DecisionTreeNode($bestAttribute);
+        return $gain / $splitInfo;
+    }
 
-		$values = array_unique(array_column($data, $bestAttribute));
-		foreach ($values as $value) {
-			$subset = array_filter($data, function ($row) use (
-				$bestAttribute,
-				$value
-			) {
-				return $row[$bestAttribute] == $value;
-			});
+    public function processNode($data, $attributes, $labelAttribute)
+    {
+        $output = [];
+        $bestAttribute = null;
+        $bestGainRatio = -INF;
 
-			if (empty($subset)) {
-				$leaf = new DecisionTreeNode();
-				$leaf->isLeaf = true;
-				$leaf->label = array_search(
-					max(array_count_values($labels)),
-					array_count_values($labels)
-				);
-				$tree->children[$value] = $leaf;
-			} else {
-				$newAttributes = array_diff($attributes, [$bestAttribute]);
-				$tree->children[$value] = $this->buildTree(
-					$subset,
-					$newAttributes,
-					$labelAttribute
-				);
-			}
-		}
+        foreach ($attributes as $attribute) {
+            $gain = $this->calculateGain($data, $attribute, $labelAttribute);
+            $splitInfo = $this->calculateSplitInfo($data, $attribute);
+            $gainRatio = $this->calculateGainRatio($data, $attribute, $labelAttribute);
 
-		return $tree;
-	}
+            // Prepare the structure of the output based on the Excel calculation format
+            $attributeData = [
+                'GAIN' => $gain,
+                'SPLIT_INFO' => $splitInfo,
+                'GAIN_RATIO' => $gainRatio,
+            ];
 
-	public function fetchTreeDataset1()
-	{
-		$data = Dataset1::all()->toArray();
-		$attributes = ["usia", "berat_badan_per_usia", "tinggi_badan_per_usia"];
-		$labelAttribute = "berat_badan_per_tinggi_badan"; // Specify the label attribute
-		$tree = $this->buildTree($data, $attributes, $labelAttribute);
-		return response()->json($tree);
-	}
+            $values = array_unique(array_column($data, $attribute));
+            foreach ($values as $value) {
+                $subset = array_filter($data, function ($row) use ($attribute, $value) {
+                    return $row[$attribute] == $value;
+                });
+                $labelCounts = array_count_values(array_column($subset, $labelAttribute));
+                $entropy = $this->calculateEntropy($subset, $labelAttribute);
 
-	public function fetchTreeDataset2()
-	{
-		$data = Dataset2::all()->toArray();
-		$attributes = ["usia", "menu"];
-		$labelAttribute = "keterangan"; // Specify the label attribute
-		$tree = $this->buildTree($data, $attributes, $labelAttribute);
-		return response()->json($tree);
-	}
+                // Add details to attribute data
+                $attributeData[$value] = [
+                    'label_counts' => $labelCounts,
+                    'entropy' => $entropy,
+                    'probability' => count($subset) / count($data),
+                ];
+            }
+
+            $output[$attribute] = $attributeData;
+
+            // Select the best attribute based on Gain Ratio
+            if ($gainRatio > $bestGainRatio) {
+                $bestGainRatio = $gainRatio;
+                $bestAttribute = $attribute;
+            }
+        }
+
+        // Add the best attribute to the output
+        $output['best_attribute'] = $bestAttribute;
+
+        return $output;
+    }
+
+    public function fetchTreeDataset1()
+    {
+        $data = Dataset1::all()->toArray();
+        $attributes = ["usia", "berat_badan_per_usia", "tinggi_badan_per_usia"];
+        $labelAttribute = "berat_badan_per_tinggi_badan"; // Specify the label attribute
+        $rootNodeData = $this->processNode($data, $attributes, $labelAttribute);
+        return response()->json($rootNodeData);
+    }
+
+    public function fetchTreeDataset2()
+    {
+        $data = Dataset2::all()->toArray();
+        $attributes = ["usia", "menu"];
+        $labelAttribute = "keterangan"; // Specify the label attribute
+        $rootNodeData = $this->processNode($data, $attributes, $labelAttribute);
+        return response()->json($rootNodeData);
+    }
 }
