@@ -32,13 +32,13 @@ class C45Controller extends Controller
     public function groupByCustomAttributes($data, $mean, $median)
     {
         foreach ($data as &$row) {
-            if ($row['usia'] < $mean) {
+            if ($row['usia'] <= $mean) {
                 $row['usia_group'] = 'below_mean';
             } else {
                 $row['usia_group'] = 'above_mean';
             }
 
-            if ($row['usia'] < $median) {
+            if ($row['usia'] <= $median) {
                 $row['usia_group_median'] = 'below_median';
             } else {
                 $row['usia_group_median'] = 'above_median';
