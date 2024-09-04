@@ -112,61 +112,58 @@ class C45Controller extends Controller
 
     // Main function to process the node based on given data and attributes
     public function processNode($data, $attributes, $labelAttribute)
-    {
-        $output = [];
-        $bestAttribute = null;
-        $bestGainRatio = -INF;
+{
+    $bestAttribute = null;
+    $bestGainRatio = -INF;
 
-        // Calculate mean and median for Usia
-        $mean = $this->calculateMean($data, 'usia');
-        $median = $this->calculateMedian($data, 'usia');
+    // Calculate mean and median for Usia
+    $mean = $this->calculateMean($data, 'usia');
+    $median = $this->calculateMedian($data, 'usia');
 
-        // Group Usia based on mean and median
-        $groupedData = $this->groupByCustomAttributes($data, $mean, $median);
+    // Group Usia based on mean and median
+    $groupedData = $this->groupByCustomAttributes($data, $mean, $median);
 
-        // Iterate through attributes to find the best one based on Gain Ratio
-        foreach ($attributes as $attribute) {
-            $gain = $this->calculateGain($groupedData, $attribute, $labelAttribute);
-            $splitInfo = $this->calculateSplitInfo($groupedData, $attribute);
-            $gainRatio = $this->calculateGainRatio($groupedData, $attribute, $labelAttribute);
+    // Iterate through attributes to find the best one based on Gain Ratio
+    foreach ($attributes as $attribute) {
+        $gain = $this->calculateGain($groupedData, $attribute, $labelAttribute);
+        $splitInfo = $this->calculateSplitInfo($groupedData, $attribute);
+        $gainRatio = $this->calculateGainRatio($groupedData, $attribute, $labelAttribute);
 
-            // Prepare the structure of the output based on the Excel calculation format
-            $attributeData = [
-                'GAIN' => $gain,
-                'SPLIT_INFO' => $splitInfo,
-                'GAIN_RATIO' => $gainRatio,
-            ];
+        // Select the best attribute based on Gain Ratio
+        if ($gainRatio > $bestGainRatio) {
+            $bestGainRatio = $gainRatio;
+            $bestAttribute = $attribute;
+        }
+    }
 
-            $values = array_unique(array_column($groupedData, $attribute));
-            foreach ($values as $value) {
-                $subset = array_filter($groupedData, function ($row) use ($attribute, $value) {
-                    return $row[$attribute] == $value;
-                });
-                $labelCounts = array_count_values(array_column($subset, $labelAttribute));
-                $entropy = $this->calculateEntropy($subset, $labelAttribute);
+    // Create the decision tree node
+    if ($bestAttribute) {
+        $rootNode = new DecisionTreeNodeController($bestAttribute);
 
-                // Add details to attribute data
-                $attributeData[$value] = [
-                    'label_counts' => $labelCounts,
-                    'entropy' => $entropy,
-                    'probability' => count($subset) / count($groupedData),
-                ];
-            }
+        // Define $values here
+        $values = array_unique(array_column($groupedData, $bestAttribute));
 
-            $output[$attribute] = $attributeData;
+        // Create child nodes for each value of the best attribute
+        foreach ($values as $value) {
+            $subset = array_filter($groupedData, function ($row) use ($bestAttribute, $value) {
+                return $row[$bestAttribute] == $value;
+            });
 
-            // Select the best attribute based on Gain Ratio
-            if ($gainRatio > $bestGainRatio) {
-                $bestGainRatio = $gainRatio;
-                $bestAttribute = $attribute;
-            }
+            // Recursively process the subset to create child nodes
+            $childNode = $this->processNode($subset, array_diff($attributes, [$bestAttribute]), $labelAttribute);
+            $rootNode->addChild($childNode);
         }
 
-        // Add the best attribute to the output
-        $output['best_attribute'] = $bestAttribute;
-
-        return $output;
+        return $rootNode;
+    } else {
+        // If no attribute has a gain ratio above the threshold, set the node as a leaf
+        $labelCounts = array_count_values(array_column($groupedData, $labelAttribute));
+        $mostFrequentLabel = array_keys($labelCounts)[0]; // Assuming the most frequent label as the prediction
+        $rootNode = new DecisionTreeNodeController();
+        $rootNode->setAsLeaf($mostFrequentLabel);
+        return $rootNode;
     }
+}
 
     // Function to fetch and process the dataset for tree construction
     public function fetchTreeDataset1()

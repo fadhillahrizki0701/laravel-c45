@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\C45;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class DecisionTreeNodeController extends Controller
 {
@@ -17,5 +16,16 @@ class DecisionTreeNodeController extends Controller
     {
         $this->attribute = $attribute;
         $this->value = $value;
+    }
+
+    public function addChild(DecisionTreeNodeController $child)
+    {
+        $this->children[] = $child;
+    }
+
+    public function setAsLeaf($label)
+    {
+        $this->isLeaf = true;
+        $this->label = $label;
     }
 }
