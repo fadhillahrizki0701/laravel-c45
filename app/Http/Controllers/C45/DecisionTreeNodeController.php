@@ -11,6 +11,11 @@ class DecisionTreeNodeController extends Controller
     public $children = [];
     public $isLeaf = false;
     public $label;
+    public $entropy;
+    public $gain;
+    public $gainRatio;
+    public $probability;
+    public $splitInfo;
 
     public function __construct($attribute = null, $value = null)
     {
@@ -27,5 +32,14 @@ class DecisionTreeNodeController extends Controller
     {
         $this->isLeaf = true;
         $this->label = $label;
+    }
+
+    public function setNodeAttributes($entropy, $gain, $gainRatio, $probability, $splitInfo)
+    {
+        $this->entropy = $entropy;
+        $this->gain = $gain;
+        $this->gainRatio = $gainRatio;
+        $this->probability = $probability;
+        $this->splitInfo = $splitInfo;
     }
 }
