@@ -86,22 +86,22 @@ Yusuf;30;Normal;Pendek;Gizi Baik
 <style>
 #treeContainer {
     width: 100%;
-    height: 600px;
+    height: 800px;
 }
 
 .node circle {
     fill: #fff;
-    stroke: steelblue;
+    stroke: rgb(33, 150, 247);
     stroke-width: 3px;
 }
 
 .node text {
-    font-size: 12px;
+    font-size: 16px;
 }
 
 .link {
     fill: none;
-    stroke: #ccc;
+    stroke: #b6b6b6;
     stroke-width: 2px;
 }
 
@@ -116,8 +116,8 @@ document.getElementById('getMiningResultButton').addEventListener('click', (e) =
         .then(data => {
             // Define dimensions and margins
             const width = document.getElementById('treeContainer').offsetWidth;
-            const height = 600;
-            const margin = { top: 20, right: 120, bottom: 20, left: 120 };
+            const height = 800;
+            const margin = { top: 20, right: 200, bottom: 20, left: 200 };
 
             // Remove any previous SVG
             d3.select("#treeContainer").selectAll("*").remove();
