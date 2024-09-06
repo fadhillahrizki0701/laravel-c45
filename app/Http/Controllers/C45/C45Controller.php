@@ -4,18 +4,19 @@ namespace App\Http\Controllers\C45;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dataset1;
+use InvalidArgumentException;
 
 class C45Controller extends Controller
 {
     // Function to calculate the mean of a given attribute
-    public function calculateMean($data, $attribute)
+    private function calculateMean($data, $attribute)
     {
         $values = array_column($data, $attribute);
         return array_sum($values) / count($values);
     }
 
     // Function to calculate the median of a given attribute
-    public function calculateMedian($data, $attribute)
+    private function calculateMedian($data, $attribute)
     {
         $values = array_column($data, $attribute);
         sort($values);
@@ -29,13 +30,13 @@ class C45Controller extends Controller
     }
 
     // Function to group 'Usia' values based on mean and median
-    public function groupByCustomAttributes($data, $mean, $median)
+    private function groupByCustomAttributes($data, $mean, $median)
     {
         foreach ($data as &$row) {
             if ($row['usia'] <= $mean) {
-                $row['usia_group'] = 'below_mean';
+                $row['usia_group_mean'] = 'below_mean';
             } else {
-                $row['usia_group'] = 'above_mean';
+                $row['usia_group_mean'] = 'above_mean';
             }
 
             if ($row['usia'] <= $median) {
@@ -48,7 +49,7 @@ class C45Controller extends Controller
     }
 
     // Function to calculate entropy for a given set of data
-    public function calculateEntropy($data, $labelAttribute)
+    private function calculateEntropy($data, $labelAttribute)
     {
         $total = count($data);
         $labels = array_column($data, $labelAttribute);
@@ -64,7 +65,7 @@ class C45Controller extends Controller
     }
 
     // Function to calculate Split Info for a given attribute
-    public function calculateSplitInfo($data, $attribute)
+    private function calculateSplitInfo($data, $attribute)
     {
         $total = count($data);
         $values = array_column($data, $attribute);
@@ -80,7 +81,7 @@ class C45Controller extends Controller
     }
 
     // Function to calculate Gain for a given attribute
-    public function calculateGain($data, $attribute, $labelAttribute)
+    private function calculateGain($data, $attribute, $labelAttribute)
     {
         $totalEntropy = $this->calculateEntropy($data, $labelAttribute);
         $values = array_unique(array_column($data, $attribute));
@@ -98,7 +99,7 @@ class C45Controller extends Controller
     }
 
     // Function to calculate Gain Ratio for a given attribute
-    public function calculateGainRatio($data, $attribute, $labelAttribute)
+    private function calculateGainRatio($data, $attribute, $labelAttribute)
     {
         $gain = $this->calculateGain($data, $attribute, $labelAttribute);
         $splitInfo = $this->calculateSplitInfo($data, $attribute);
@@ -111,7 +112,7 @@ class C45Controller extends Controller
     }
 
     // Main function to process the node based on given data and attributes
-    public function processNode($data, $attributes, $labelAttribute)
+    private function processNode($data, $attributes, $labelAttribute)
     {
         $bestAttribute = null;
         $bestGainRatio = -INF;
@@ -136,73 +137,136 @@ class C45Controller extends Controller
             }
         }
 
-        // Create the decision tree node
-        if ($bestAttribute) {
-            $rootNode = new DecisionTreeNodeController($bestAttribute);
+        // Add the best attribute to the output
+        $output['best_attribute'] = $bestAttribute;
 
-            // Define $values here
-            $values = array_unique(array_column($groupedData, $bestAttribute));
+        return $output;
+    }
 
-            // Create child nodes for each value of the best attribute
-            foreach ($values as $value) {
-                $subset = array_filter($groupedData, function ($row) use ($bestAttribute, $value) {
-                    return $row[$bestAttribute] == $value;
-                });
-
-                // Recursively process the subset to create child nodes
-                $childNode = $this->processNode($subset, array_diff($attributes, [$bestAttribute]), $labelAttribute);
-
-                // Calculate and set node attributes
-                $entropy = $this->calculateEntropy($subset, $labelAttribute);
-                $gain = $this->calculateGain($subset, $bestAttribute, $labelAttribute);
-                $splitInfo = $this->calculateSplitInfo($subset, $bestAttribute);
-                $gainRatio = $this->calculateGainRatio($subset, $bestAttribute, $labelAttribute);
-                $probability = count($subset) / count($data);
-
-                $childNode->setNodeAttributes($entropy, $gain, $gainRatio, $probability, $splitInfo);
-
-                $rootNode->addChild($childNode);
+    /**
+     * Filters a dataset based on a specific attribute and comparison operator.
+     *
+     * @param array $data The dataset to filter.
+     * @param string $attribute The attribute to compare.
+     * @param string $filter The value to compare against.
+     * @param string $operator The comparison operator (default: 'strict equal'). Available operators:
+     *     - 'strict equal'
+     *     - 'equal'
+     *     - 'greater than'
+     *     - 'greater than or equal'
+     *     - 'less than'
+     *     - 'less than or equal'
+     * @return array The filtered dataset.
+     * @throws InvalidArgumentException If an invalid operator is provided.
+     */
+    private function filterDataOnAttribute(array $data, string $attribute, string $filter, string $operator = 'strict equal'): array
+    {
+        $_ = array_filter($data, function ($child) use ($attribute, $filter, $operator) {
+            switch ($operator) {
+                case 'strict equal':
+                    return strtolower($child[$attribute]) === strtolower($filter);
+                case 'equal':
+                    return strtolower($child[$attribute]) == strtolower($filter);
+                case 'greater than':
+                    return strtolower($child[$attribute]) > strtolower($filter);
+                case 'greater than or equal':
+                    return strtolower($child[$attribute]) >= strtolower($filter);
+                case 'less than':
+                    return strtolower($child[$attribute]) < strtolower($filter);
+                case 'less than or equal':
+                    return strtolower($child[$attribute]) <= strtolower($filter);
+                default:
+                    throw new InvalidArgumentException('Invalid operator: ' . $operator);
             }
+        });
 
-            return $rootNode;
-        } else {
-            // If no attribute has a gain ratio above the threshold, set the node as a leaf
-            $labelCounts = array_count_values(array_column($groupedData, $labelAttribute));
-            $mostFrequentLabel = array_keys($labelCounts)[0]; // Assuming the most frequent label as the prediction
-            $rootNode = new DecisionTreeNodeController();
-            $rootNode->setAsLeaf($mostFrequentLabel);
-            return $rootNode;
-        }
+        return $_;
+    }
+
+    private function defineMeanOnAttribute(array $data, string $attribute): int|float
+    {
+        return array_sum(array_column($data, $attribute)) / count(array_column($data, $attribute));
+    }
+
+    private function defineMedianOnAttribute(array $data, string $attribute): int|float
+    {
+        $values = array_column($data, $attribute);
+        $total = count($values);
+        sort($values);
+
+        return ($total % 2 === 0) ? ($values[$total / 2 - 1] + $values[$total / 2]) / 2 : $values[floor($total / 2)];
     }
 
     // Function to fetch and process the dataset for tree construction
     public function fetchTreeDataset1()
     {
         $data = Dataset1::all()->toArray();
-        $attributes = ["usia_group", "usia_group_median", "berat_badan_per_usia", "tinggi_badan_per_usia"];
-        $labelAttribute = "berat_badan_per_tinggi_badan"; // Specify the label attribute
-        $rootNodeData = $this->processNode($data, $attributes, $labelAttribute);
 
-        // Print node attributes for debugging
-        // $this->printNodeAttributes($rootNodeData);
+        // Berat Badan
+        $weightNormal = $this->filterDataOnAttribute($data, 'berat_badan_per_usia', 'normal');
+        $weightLess = $this->filterDataOnAttribute($data, 'berat_badan_per_usia', 'kurang');
+        $weightLesser = $this->filterDataOnAttribute($data, 'berat_badan_per_usia', 'sangat kurang');
+        
+        // Tinggi Badan
+        $heightNormal = $this->filterDataOnAttribute($data, 'tinggi_badan_per_usia', 'normal');
+        $heightLess = $this->filterDataOnAttribute($data, 'tinggi_badan_per_usia', 'pendek');
+        $heightLesser = $this->filterDataOnAttribute($data, 'tinggi_badan_per_usia', 'sangat pendek');
 
-        return response()->json($rootNodeData);
-    }
+        // Usia
+        $mean = $this->defineMeanOnAttribute($data, 'usia');
+        $median = $this->defineMedianOnAttribute($data, 'usia');
 
-    public function printNodeAttributes(DecisionTreeNodeController $node)
-    {
-        echo "Attribute: " . $node->attribute . "\n";
-        echo "Value: " . $node->value . "\n";
-        echo "Entropy: " . $node->entropy . "\n";
-        echo "Gain: " . $node->gain . "\n";
-        echo "Gain Ratio: " . $node->gainRatio . "\n";
-        echo "Probability: " . $node->probability . "\n";
-        echo "Split Info: " . $node->splitInfo . "\n";
+        // Mean
+        $belowOrEqualMean = array_filter($data, function ($child) use ($mean) {
+            return $child['usia'] <= $mean;
+        });
+        $aboveMean = array_filter($data, function ($child) use ($mean) {
+            return $child['usia'] > $mean;
+        });
+        
+        // Median
+        $belowOrEqualMedian = array_filter($data, function ($child) use ($median) {
+            return $child['usia'] <= $median;
+        });
+        $aboveMedian = array_filter($data, function ($child) use ($median) {
+            return $child['usia'] > $median;
+        });
+        
+        $attributeKeys = [
+            'berat badan',
+            'tinggi badan',
+            'usia',
+        ];
 
-        if (!$node->isLeaf) {
-            foreach ($node->children as $child) {
-                $this->printNodeAttributes($child);
-            }
-        }
+        $weights = [
+            $attributeKeys[0] => [
+                'normal' => $weightNormal,
+                'kurang' => $weightLess,
+                'sangat kurang' => $weightLesser,
+            ]
+        ];
+        $heights = [
+            $attributeKeys[1] => [
+                'normal' => $heightNormal,
+                'pendek' => $heightLess,
+                'sangat pendek' => $heightLesser,
+            ]
+        ];
+        $ages = [
+            $attributeKeys[2] => [
+                '<= mean' => $belowOrEqualMean,
+                '> mean' => $aboveMean,
+                '<= median' => $belowOrEqualMedian,
+                '> median' => $aboveMedian,
+            ]
+        ];
+
+        $filteredData = [
+            $weights,
+            $heights,
+            $ages,
+        ];
+
+        dd($filteredData);
     }
 }
