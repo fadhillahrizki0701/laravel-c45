@@ -322,16 +322,16 @@ class C45Controller extends Controller
         ];
 
         $filteredData = [
-            $weights,
-            $heights,
-            $ages,
+            $attributeKeys[0] => $weights[$attributeKeys[0]],
+            $attributeKeys[1] => $heights[$attributeKeys[1]],
+            $attributeKeys[2] => $ages[$attributeKeys[2]],
         ];
 
         $merged = $this->mergeDataOnAttribute(
             'id',
-            $filteredData[0]['berat badan']['normal'],
-            $filteredData[0]['berat badan']['kurang'],
-            $filteredData[0]['berat badan']['sangat kurang'],
+            $filteredData['berat badan']['normal'],
+            $filteredData['berat badan']['kurang'],
+            $filteredData['berat badan']['sangat kurang'],
         );
 
         dd($this->gain($merged, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia'));
