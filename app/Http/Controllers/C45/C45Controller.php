@@ -208,7 +208,12 @@ class C45Controller extends Controller
     // Function to fetch and process the dataset for tree construction
     public function fetchTreeDataset1()
     {
-        $data = Dataset1::all()->toArray();
+        $data = Dataset1::select([
+            'id',
+            'usia',
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+        ])->get()->toArray();
 
         // Berat Badan
         $weightNormal = $this->filterDataOnAttribute($data, 'berat_badan_per_usia', 'normal');
@@ -240,24 +245,24 @@ class C45Controller extends Controller
 
         $weights = [
             $attributeKeys[0] => [
-                'normal' => $weightNormal,
-                'kurang' => $weightLess,
-                'sangat kurang' => $weightLesser,
+                'normal' => array_values($weightNormal),
+                'kurang' => array_values($weightLess),
+                'sangat kurang' => array_values($weightLesser),
             ]
         ];
         $heights = [
             $attributeKeys[1] => [
-                'normal' => $heightNormal,
-                'pendek' => $heightLess,
-                'sangat pendek' => $heightLesser,
+                'normal' => array_values($heightNormal),
+                'pendek' => array_values($heightLess),
+                'sangat pendek' => array_values($heightLesser),
             ]
         ];
         $ages = [
             $attributeKeys[2] => [
-                '<= mean' => $belowOrEqualMean,
-                '> mean' => $aboveMean,
-                '<= median' => $belowOrEqualMedian,
-                '> median' => $aboveMedian,
+                '<= mean' => array_values($belowOrEqualMean),
+                '> mean' => array_values($aboveMean),
+                '<= median' => array_values($belowOrEqualMedian),
+                '> median' => array_values($aboveMedian),
             ]
         ];
 
