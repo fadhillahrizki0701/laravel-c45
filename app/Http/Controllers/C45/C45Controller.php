@@ -148,39 +148,47 @@ class C45Controller extends Controller
      *
      * @param array $data The dataset to filter.
      * @param string $attribute The attribute to compare.
-     * @param string $filter The value to compare against.
+     * @param string|int|float $filter The value to compare against.
      * @param string $operator The comparison operator (default: 'strict equal'). Available operators:
      *     - 'strict equal'
      *     - 'equal'
+     *     - 'not equal'
+     *     - 'strict not equal'
      *     - 'greater than'
      *     - 'greater than or equal'
      *     - 'less than'
      *     - 'less than or equal'
      * @return array The filtered dataset.
-     * @throws InvalidArgumentException If an invalid operator is provided.
+     * @throws InvalidArgumentException If an invalid operator or filter type is provided.
      */
-    private function filterDataOnAttribute(array $data, string $attribute, string $filter, string $operator = 'strict equal'): array
+    private function filterDataOnAttribute(array $data, string $attribute, string|int|float $filter, string $operator = 'strict equal'): array
     {
-        $_ = array_filter($data, function ($child) use ($attribute, $filter, $operator) {
+        if (!is_string($filter) && !is_numeric($filter)) {
+            throw new InvalidArgumentException('Filter must be a string, integer, or float.');
+        }
+
+        return array_filter($data, function ($child) use ($attribute, $filter, $operator) {
             switch ($operator) {
                 case 'strict equal':
-                    return strtolower($child[$attribute]) === strtolower($filter);
+                    return strtolower($child[$attribute]) === (is_string($filter) ? strtolower($filter) : $filter);
                 case 'equal':
-                    return strtolower($child[$attribute]) == strtolower($filter);
+                    return strtolower($child[$attribute]) == (is_string($filter) ? strtolower($filter) : $filter);
+                case 'not equal':
+                    return strtolower($child[$attribute]) != (is_string($filter) ? strtolower($filter) : $filter);
+                case 'strict not equal':
+                    return strtolower($child[$attribute]) !== (is_string($filter) ? strtolower($filter) : $filter);
                 case 'greater than':
-                    return strtolower($child[$attribute]) > strtolower($filter);
+                    return $child[$attribute] > $filter;
                 case 'greater than or equal':
-                    return strtolower($child[$attribute]) >= strtolower($filter);
+                    return $child[$attribute] >= $filter;
                 case 'less than':
-                    return strtolower($child[$attribute]) < strtolower($filter);
+                    return $child[$attribute] < $filter;
                 case 'less than or equal':
-                    return strtolower($child[$attribute]) <= strtolower($filter);
+                    return $child[$attribute] <= $filter;
                 default:
                     throw new InvalidArgumentException('Invalid operator: ' . $operator);
             }
         });
-
-        return $_;
     }
 
     private function defineMeanOnAttribute(array $data, string $attribute): int|float
@@ -217,20 +225,12 @@ class C45Controller extends Controller
         $median = $this->defineMedianOnAttribute($data, 'usia');
 
         // Mean
-        $belowOrEqualMean = array_filter($data, function ($child) use ($mean) {
-            return $child['usia'] <= $mean;
-        });
-        $aboveMean = array_filter($data, function ($child) use ($mean) {
-            return $child['usia'] > $mean;
-        });
-        
+        $belowOrEqualMean = $this->filterDataOnAttribute($data, 'usia', $mean, 'less than or equal');
+        $aboveMean = $this->filterDataOnAttribute($data, 'usia', $mean, 'greater than');
+
         // Median
-        $belowOrEqualMedian = array_filter($data, function ($child) use ($median) {
-            return $child['usia'] <= $median;
-        });
-        $aboveMedian = array_filter($data, function ($child) use ($median) {
-            return $child['usia'] > $median;
-        });
+        $belowOrEqualMedian = $this->filterDataOnAttribute($data, 'usia', $median, 'less than or equal');
+        $aboveMedian = $this->filterDataOnAttribute($data, 'usia', $median, 'greater than');
         
         $attributeKeys = [
             'berat badan',
