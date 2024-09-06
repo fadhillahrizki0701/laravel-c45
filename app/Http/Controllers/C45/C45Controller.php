@@ -210,6 +210,21 @@ class C45Controller extends Controller
         return array_values($data);
     }
 
+    private function entropy(array $data, string $labelAttribute): float
+    {
+        $total = count($data);
+        $labels = array_column($data, 'berat_badan_per_tinggi_badan');
+        $labelCounts = array_count_values($labels);
+        $entropy = 0.0;
+
+        foreach ($labelCounts as $count) {
+            $probability = $count / $total;
+            $entropy -= $probability * log($probability, 2);
+        }
+
+        return round($entropy, 10);
+    }
+
     // Function to fetch and process the dataset for tree construction
     public function fetchTreeDataset1()
     {
@@ -218,6 +233,7 @@ class C45Controller extends Controller
             'usia',
             'berat_badan_per_usia',
             'tinggi_badan_per_usia',
+            'berat_badan_per_tinggi_badan',
         ])->get()->toArray();
 
         // Berat Badan
@@ -277,6 +293,8 @@ class C45Controller extends Controller
             $ages,
         ];
 
-        dd($filteredData);
+        // $this->entropy($filteredData[0]['berat badan']['kurang'], 'berad_badan_per_tinggi_badan')
+
+        dd($filteredData[0]);
     }
 }
