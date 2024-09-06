@@ -210,6 +210,20 @@ class C45Controller extends Controller
         return array_values($data);
     }
 
+    private function mergeDataOnAttribute(string $key = 'id', array ...$data): array
+    {
+        $_ = array_merge(...$data);
+
+        // Sort merged array based on their corresponding $key value
+        usort($_, function ($a, $b) use ($key) {
+            return $a[$key] <=> $b[$key];
+        });
+
+        $_ = $this->resetArrayKeys($_);
+
+        return $_;
+    }
+
     private function entropy(array $data, string $labelAttribute): float
     {
         $total = count($data);
@@ -223,6 +237,26 @@ class C45Controller extends Controller
         }
 
         return round($entropy, 10);
+    }
+
+    private function gain(array $data, string $label, string $attribute)
+    {
+        $parentEntropy = $this->entropy($data, $label);
+        $values = array_unique(array_column($data, $attribute));
+        $subsetEntropy = 0.0;
+
+        foreach ($values as $value) {
+            $subset = array_filter($data, function ($row) use ($attribute, $value) {
+                return $row[$attribute] == $value;
+            });
+
+            $subsetProbability = count($subset) / count($data);
+            $subsetEntropy += $subsetProbability * $this->entropy($subset, $label);
+        }
+
+        $subsetEntropy = round($subsetEntropy, 10);
+
+        return round($parentEntropy - $subsetEntropy, 10);
     }
 
     // Function to fetch and process the dataset for tree construction
@@ -293,8 +327,16 @@ class C45Controller extends Controller
             $ages,
         ];
 
-        // $this->entropy($filteredData[0]['berat badan']['kurang'], 'berad_badan_per_tinggi_badan')
+        $merged = $this->mergeDataOnAttribute(
+            'id',
+            $filteredData[0]['berat badan']['normal'],
+            $filteredData[0]['berat badan']['kurang'],
+            $filteredData[0]['berat badan']['sangat kurang'],
+        );
 
-        dd($filteredData[0]);
+        dd($this->gain($merged, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia'));
+
+        // dd($filteredData[0]['berat badan']);
+        // dd($parentEntropy, $values);
     }
 }
