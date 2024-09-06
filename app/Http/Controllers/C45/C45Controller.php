@@ -205,6 +205,11 @@ class C45Controller extends Controller
         return ($total % 2 === 0) ? ($values[$total / 2 - 1] + $values[$total / 2]) / 2 : $values[floor($total / 2)];
     }
 
+    private function resetArrayKeys(array $data): array
+    {
+        return array_values($data);
+    }
+
     // Function to fetch and process the dataset for tree construction
     public function fetchTreeDataset1()
     {
@@ -245,24 +250,24 @@ class C45Controller extends Controller
 
         $weights = [
             $attributeKeys[0] => [
-                'normal' => array_values($weightNormal),
-                'kurang' => array_values($weightLess),
-                'sangat kurang' => array_values($weightLesser),
+                'normal' => $this->resetArrayKeys($weightNormal),
+                'kurang' => $this->resetArrayKeys($weightLess),
+                'sangat kurang' => $this->resetArrayKeys($weightLesser),
             ]
         ];
         $heights = [
             $attributeKeys[1] => [
-                'normal' => array_values($heightNormal),
-                'pendek' => array_values($heightLess),
-                'sangat pendek' => array_values($heightLesser),
+                'normal' => $this->resetArrayKeys($heightNormal),
+                'pendek' => $this->resetArrayKeys($heightLess),
+                'sangat pendek' => $this->resetArrayKeys($heightLesser),
             ]
         ];
         $ages = [
             $attributeKeys[2] => [
-                '<= mean' => array_values($belowOrEqualMean),
-                '> mean' => array_values($aboveMean),
-                '<= median' => array_values($belowOrEqualMedian),
-                '> median' => array_values($aboveMedian),
+                '<= mean' => $this->resetArrayKeys($belowOrEqualMean),
+                '> mean' => $this->resetArrayKeys($aboveMean),
+                '<= median' => $this->resetArrayKeys($belowOrEqualMedian),
+                '> median' => $this->resetArrayKeys($aboveMedian),
             ]
         ];
 
