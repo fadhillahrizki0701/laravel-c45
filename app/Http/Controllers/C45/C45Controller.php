@@ -348,8 +348,40 @@ class C45Controller extends Controller
             'tinggi_badan_per_usia'
         );
 
+        // ---
+        $parentEntropy = $this->entropy($data, 'berat_badan_per_tinggi_badan');
+        $subsetEntropy = 0.0;
 
-        dd($heightsGain);
+        $comparisons = [
+            '<= mean',
+            '> mean',
+        ];
+
+        foreach ($comparisons as $comparison) {
+            $subset = $filteredData['usia'][$comparison];
+            $subsetProbability = count($subset) / count($data);
+            $subsetEntropy += $subsetProbability * $this->entropy($subset, 'berat_badan_per_tinggi_badan');
+        }
+        $a_1 = round($parentEntropy - $subsetEntropy, 10);
+        // --
+        // ---
+        $parentEntropy = $this->entropy($data, 'berat_badan_per_tinggi_badan');
+        $subsetEntropy = 0.0;
+
+        $comparisons = [
+            '<= median',
+            '> median',
+        ];
+
+        foreach ($comparisons as $comparison) {
+            $subset = $filteredData['usia'][$comparison];
+            $subsetProbability = count($subset) / count($data);
+            $subsetEntropy += $subsetProbability * $this->entropy($subset, 'berat_badan_per_tinggi_badan');
+        }
+        $a_2 = round($parentEntropy - $subsetEntropy, 10);
+        // --
+
+        dd($subsetEntropy, $a_1, $a_2);
 
         // dd($filteredData[0]['berat badan']);
         // dd($parentEntropy, $values);
