@@ -239,7 +239,7 @@ class C45Controller extends Controller
         return round($entropy, 10);
     }
 
-    private function gain(array $data, string $label, string $attribute)
+    private function gain(array $data, string $label, string $attribute): float
     {
         $parentEntropy = $this->entropy($data, $label);
         $values = array_unique(array_column($data, $attribute));
@@ -334,7 +334,7 @@ class C45Controller extends Controller
             $filteredData['berat badan']['sangat kurang'],
         );
 
-        dd($this->gain($merged, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia'));
+        dd($merged);
 
         // dd($filteredData[0]['berat badan']);
         // dd($parentEntropy, $values);
