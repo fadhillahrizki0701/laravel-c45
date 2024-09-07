@@ -474,10 +474,6 @@ class C45Controller extends Controller
                         $highestGain = max($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
 
                         // --
-                        /**
-                         * Reverse1stAnniv
-                         * 0919Vereinsamt
-                         */
 
                         // dd($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
 
@@ -506,7 +502,7 @@ class C45Controller extends Controller
 
                         // dd($w, $nodes, $nodes[0]['children'][1]['children'][2]['node']);
 
-                        dd($nodes);
+                        // dd($nodes);
                     }
                 }
 
@@ -514,17 +510,16 @@ class C45Controller extends Controller
 
             if ($this->entropy($filteredData['berat badan']['sangat kurang']) == 0) {
                 $v_ = array_unique(array_column($filteredData['berat badan']['sangat kurang'], 'berat_badan_per_tinggi_badan'));
-                dd($v_);
 
                 $nodes[0]['children'][] = [
-                    'parentNode' => $nodes[0]['root'],
+                    'parentNode' => $nodes[0]['node'],
                     'node' => $v_,
-                    'attribute' => 'Sangat Kurang',
+                    'attribute' => 'Normal',
+                    'isLeaf' => true,
                 ];
             }
         }
 
         dd($nodes);
-        // dd($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain, $highestGain);
     }
 }
