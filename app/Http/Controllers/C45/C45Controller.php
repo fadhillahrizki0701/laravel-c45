@@ -188,7 +188,7 @@ class C45Controller extends Controller
                         '> median' => $c45->resetArrayKeys($aboveMedian),
                     ]
                 ];
-                $filteredData = [
+                $filteredDataProcess2 = [
                     $attributeKeys[0] => $weights[$attributeKeys[0]],
                     $attributeKeys[1] => $heights[$attributeKeys[1]],
                     $attributeKeys[2] => $ages[$attributeKeys[2]],
@@ -196,11 +196,11 @@ class C45Controller extends Controller
 
                 $weightsGain = $c45->gain($v, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
                 $heightsGain = $c45->gain($v, 'berat_badan_per_tinggi_badan', 'tinggi_badan_per_usia');
-                $ageMeanGain = $c45->gainOnNumericalWithComparison($v, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
+                $ageMeanGain = $c45->gainOnNumericalWithComparison($v, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
                     '<= mean',
                     '> mean',
                 ]);
-                $ageMedianGain = $c45->gainOnNumericalWithComparison($v, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
+                $ageMedianGain = $c45->gainOnNumericalWithComparison($v, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
                     '<= median',
                     '> median',
                 ]);
@@ -214,8 +214,8 @@ class C45Controller extends Controller
                         'isLeaf' => false,
                     ];
                     
-                    if ($c45->entropy($filteredData['tinggi badan']['normal']) == 0) {
-                        $_v = array_unique(array_column($filteredData['tinggi badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
+                    if ($c45->entropy($filteredDataProcess2['tinggi badan']['normal']) == 0) {
+                        $_v = array_unique(array_column($filteredDataProcess2['tinggi badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
 
                         $tree[0]['children'][1]['children'][] = [
                             'parentNode' => $tree[0]['children'][1]['node'],
@@ -226,8 +226,8 @@ class C45Controller extends Controller
                         // dd($tree);
                     }
 
-                    if ($c45->entropy($filteredData['tinggi badan']['pendek']) == 0) {
-                        $__v = array_unique(array_column($filteredData['tinggi badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
+                    if ($c45->entropy($filteredDataProcess2['tinggi badan']['pendek']) == 0) {
+                        $__v = array_unique(array_column($filteredDataProcess2['tinggi badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
 
                         $tree[0]['children'][1]['children'][] = [
                             'parentNode' => $tree[0]['children'][1]['node'],
@@ -237,20 +237,18 @@ class C45Controller extends Controller
                         ];
                     }
 
-                    if ($c45->entropy($filteredData['tinggi badan']['sangat pendek']) == 0) {
+                    if ($c45->entropy($filteredDataProcess2['tinggi badan']['sangat pendek']) == 0) {
                     } else {
                         $w = $c45->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'sangat pendek');
                         $mean = $c45->defineMeanOnAttribute($w, 'usia');
                         $median = $c45->defineMedianOnAttribute($w, 'usia');
-                        $parentEntropy = $c45->entropy($w);
-                        $gain = $c45->gain($w, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
 
                         $heightsGain = $c45->gain(
                             $c45->mergeDataOnAttribute(
                                 'id',
-                                $filteredData['tinggi badan']['normal'],
-                                $filteredData['tinggi badan']['pendek'],
-                                $filteredData['tinggi badan']['sangat pendek'],
+                                $filteredDataProcess2['tinggi badan']['normal'],
+                                $filteredDataProcess2['tinggi badan']['pendek'],
+                                $filteredDataProcess2['tinggi badan']['sangat pendek'],
                             ),
                             'berat_badan_per_tinggi_badan',
                             'tinggi_badan_per_usia'
@@ -294,7 +292,7 @@ class C45Controller extends Controller
                                 '> median' => $c45->resetArrayKeys($aboveMedian),
                             ]
                         ];
-                        $filteredData = [
+                        $filteredDataProcess2 = [
                             $attributeKeys[0] => $weights[$attributeKeys[0]],
                             $attributeKeys[1] => $heights[$attributeKeys[1]],
                             $attributeKeys[2] => $ages[$attributeKeys[2]],
@@ -302,11 +300,11 @@ class C45Controller extends Controller
 
                         $weightsGain = $c45->gain($w, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
                         $heightsGain = $c45->gain($w, 'berat_badan_per_tinggi_badan', 'tinggi_badan_per_usia');
-                        $ageMeanGain = $c45->gainOnNumericalWithComparison($w, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
+                        $ageMeanGain = $c45->gainOnNumericalWithComparison($w, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
                             '<= mean',
                             '> mean',
                         ]);
-                        $ageMedianGain = $c45->gainOnNumericalWithComparison($w, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
+                        $ageMedianGain = $c45->gainOnNumericalWithComparison($w, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
                             '<= median',
                             '> median',
                         ]);
@@ -319,34 +317,34 @@ class C45Controller extends Controller
                                 'node' => 'Usia',
                                 'attribute' => 'Sangat Pendek',
                                 'isLeaf' => false,
-                                'children' => [
-                                    [
-                                        'parentNode' => 'Usia',
-                                        'node' => 'Usia',
-                                        'attribute' => "<= {$mean}",
-                                        'isLeaf' => true,
-                                    ],
-                                    [
-                                        'parentNode' => 'Usia',
-                                        'node' => 'Usia',
-                                        'attribute' => "> {$median}",
-                                        'isLeaf' => true,
-                                    ]
+                            ];
+
+                            $tree[0]['children'][1]['children'][2]['children'] = [
+                                [
+                                    'parentNode' => $tree[0]['children'][1]['children'][2]['node'],
+                                    'node' => 'Usia',
+                                    'attribute' => "<= {$mean}",
+                                    'isLeaf' => true,
+                                ],
+                                [
+                                    'parentNode' => $tree[0]['children'][1]['children'][2]['node'],
+                                    'node' => 'Usia',
+                                    'attribute' => "> {$median}",
+                                    'isLeaf' => true,
                                 ],
                             ];
                         }
                     }
                 }
-
             }
 
             if ($c45->entropy($filteredData['berat badan']['sangat kurang']) == 0) {
-                $v_ = array_unique(array_column($filteredData['berat badan']['sangat kurang'], 'berat_badan_per_tinggi_badan'));
+                $_leaf_3 = array_unique(array_column($filteredData['berat badan']['sangat kurang'], 'berat_badan_per_tinggi_badan'))[0];
 
                 $tree[0]['children'][] = [
                     'parentNode' => $tree[0]['node'],
-                    'node' => $v_,
-                    'attribute' => 'Normal',
+                    'node' => $_leaf_3,
+                    'attribute' => 'Sangat Kurang',
                     'isLeaf' => true,
                 ];
             }
