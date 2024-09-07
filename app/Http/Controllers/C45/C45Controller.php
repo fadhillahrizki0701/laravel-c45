@@ -246,15 +246,20 @@ class C45Controller extends Controller
         $nodes = [];
         if ($highestGain == $weightsGain) {
             $nodes[0] = [
-                'name' => 'Berat Badan',
+                'parentNode' => null,
+                'node' => 'Berat Badan',
+                'attribute' => null,
+                'isLeaf' => false,
             ];
 
             if ($this->entropy($filteredData['berat badan']['normal']) == 0) {
                 $v = array_unique(array_column($filteredData['berat badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
 
                 $nodes[0]['children'][] = [
-                    'name' => $v,
+                    'parentNode' => $nodes[0]['node'],
+                    'node' => $v,
                     'attribute' => 'Normal',
+                    'isLeaf' => true,
                 ];
             }
 
@@ -292,7 +297,7 @@ class C45Controller extends Controller
                 $weightNormal = $this->filterDataOnAttribute($v, 'berat_badan_per_usia', 'normal');
                 $weightLess = $this->filterDataOnAttribute($v, 'berat_badan_per_usia', 'kurang');
                 $weightLesser = $this->filterDataOnAttribute($v, 'berat_badan_per_usia', 'sangat kurang');
-                
+
                 // Tinggi Badan
                 $heightNormal = $this->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'normal');
                 $heightLess = $this->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'pendek');
@@ -332,6 +337,7 @@ class C45Controller extends Controller
                     $attributeKeys[2] => $ages[$attributeKeys[2]],
                 ];
 
+                $weightsGain = $this->gain($v, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
                 $heightsGain = $this->gain($v, 'berat_badan_per_tinggi_badan', 'tinggi_badan_per_usia');
                 $ageMeanGain = $this->gainOnNumericalWithComparison($v, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
                     '<= mean',
@@ -344,32 +350,175 @@ class C45Controller extends Controller
 
                 // dd($mean, $median, $parentEntropy, $gain, $heightsGain, $ageMeanGain, $ageMedianGain);
 
-                $highestGain = max($heightsGain, $ageMeanGain, $ageMedianGain);
+                $highestGain = max($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
 
                 if ($highestGain == $heightsGain) {
-                    if ($this->entropy($filteredData['tinggi badan']['normal'])) {
-                        dd('normal');
+                    $nodes[0]['children'][] = [
+                        'parentNode' => $nodes[0]['node'],
+                        'node' => 'Tinggi Badan',
+                        'attribute' => 'Kurang',
+                        'isLeaf' => false,
+                    ];
+                    
+                    if ($this->entropy($filteredData['tinggi badan']['normal']) == 0) {
+                        $_v = array_unique(array_column($filteredData['tinggi badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
+
+                        $nodes[0]['children'][1]['children'][] = [
+                            'parentNode' => $nodes[0]['children'][1]['node'],
+                            'node' => $_v,
+                            'attribute' => 'Normal',
+                            'isLeaf' => true,
+                        ];
+                        // dd($nodes);
                     }
 
-                    if ($this->entropy($filteredData['tinggi badan']['pendek'])) {
-                        dd('pendek');
+                    if ($this->entropy($filteredData['tinggi badan']['pendek']) == 0) {
+                        $__v = array_unique(array_column($filteredData['tinggi badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
+
+                        $nodes[0]['children'][1]['children'][] = [
+                            'parentNode' => $nodes[0]['children'][1]['node'],
+                            'node' => $__v,
+                            'attribute' => 'Pendek',
+                            'isLeaf' => true,
+                        ];
                     }
 
-                    if ($this->entropy($filteredData['tinggi badan']['sangat pendek'])) {
-                        $v = $this->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'sangat pendek');
+                    if ($this->entropy($filteredData['tinggi badan']['sangat pendek']) == 0) {
+                    } else {
+                        // $nodes[0]['children'][1]['children'][] = [
+                        //     'parentNode' => $nodes[0]['children'][1]['node'],
+                        //     'node' => $__v,
+                        //     'attribute' => 'Pendek',
+                        //     'isLeaf' => true,
+                        // ];
 
+                        // $v__ = $this->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'sangat pendek');
 
+                        // dd('sangat pendek',  $v__, $nodes);
 
-                        dd('sangat pendek', $filteredData, $v);
+                        // --
+                        $w = $this->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'sangat pendek');
+                        $mean = $this->defineMeanOnAttribute($w, 'usia');
+                        $median = $this->defineMedianOnAttribute($w, 'usia');
+                        $parentEntropy = $this->entropy($w);
+                        $gain = $this->gain($w, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
+        
+                        $heightsGain = $this->gain(
+                            $this->mergeDataOnAttribute(
+                                'id',
+                                $filteredData['tinggi badan']['normal'],
+                                $filteredData['tinggi badan']['pendek'],
+                                $filteredData['tinggi badan']['sangat pendek'],
+                            ),
+                            'berat_badan_per_tinggi_badan',
+                            'tinggi_badan_per_usia'
+                        );
+        
+                        // Berat Badan
+                        $weightNormal = $this->filterDataOnAttribute($w, 'berat_badan_per_usia', 'normal');
+                        $weightLess = $this->filterDataOnAttribute($w, 'berat_badan_per_usia', 'kurang');
+                        $weightLesser = $this->filterDataOnAttribute($w, 'berat_badan_per_usia', 'sangat kurang');
+        
+                        // Tinggi Badan
+                        $heightNormal = $this->filterDataOnAttribute($w, 'tinggi_badan_per_usia', 'normal');
+                        $heightLess = $this->filterDataOnAttribute($w, 'tinggi_badan_per_usia', 'pendek');
+                        $heightLesser = $this->filterDataOnAttribute($w, 'tinggi_badan_per_usia', 'sangat pendek');
+        
+                        // Usia
+                        $belowOrEqualMean = $this->filterDataOnAttribute($w, 'usia', $mean, 'less than or equal');
+                        $aboveMean = $this->filterDataOnAttribute($w, 'usia', $mean, 'greater than');
+                        $belowOrEqualMedian = $this->filterDataOnAttribute($w, 'usia', $median, 'less than or equal');
+                        $aboveMedian = $this->filterDataOnAttribute($w, 'usia', $median, 'greater than');
+        
+                        $weights = [
+                            $attributeKeys[0] => [
+                                'normal' => $this->resetArrayKeys($weightNormal),
+                                'kurang' => $this->resetArrayKeys($weightLess),
+                                'sangat kurang' => $this->resetArrayKeys($weightLesser),
+                            ]
+                        ];
+                        $heights = [
+                            $attributeKeys[1] => [
+                                'normal' => $this->resetArrayKeys($heightNormal),
+                                'pendek' => $this->resetArrayKeys($heightLess),
+                                'sangat pendek' => $this->resetArrayKeys($heightLesser),
+                            ]
+                        ];
+                        $ages = [
+                            $attributeKeys[2] => [
+                                '<= mean' => $this->resetArrayKeys($belowOrEqualMean),
+                                '> mean' => $this->resetArrayKeys($aboveMean),
+                                '<= median' => $this->resetArrayKeys($belowOrEqualMedian),
+                                '> median' => $this->resetArrayKeys($aboveMedian),
+                            ]
+                        ];
+                        $filteredData = [
+                            $attributeKeys[0] => $weights[$attributeKeys[0]],
+                            $attributeKeys[1] => $heights[$attributeKeys[1]],
+                            $attributeKeys[2] => $ages[$attributeKeys[2]],
+                        ];
+        
+                        $weightsGain = $this->gain($w, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
+                        $heightsGain = $this->gain($w, 'berat_badan_per_tinggi_badan', 'tinggi_badan_per_usia');
+                        $ageMeanGain = $this->gainOnNumericalWithComparison($w, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
+                            '<= mean',
+                            '> mean',
+                        ]);
+                        $ageMedianGain = $this->gainOnNumericalWithComparison($w, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
+                            '<= median',
+                            '> median',
+                        ]);
+        
+                        // dd($mean, $median, $parentEntropy, $gain, $heightsGain, $ageMeanGain, $ageMedianGain);
+        
+                        $highestGain = max($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
+
+                        // --
+                        /**
+                         * Reverse1stAnniv
+                         * 0919Vereinsamt
+                         */
+
+                        // dd($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
+
+                        if ($highestGain == 1.0) {
+                            $nodes[0]['children'][1]['children'][] = [
+                                'parentNode' => $nodes[0]['children'][1]['node'],
+                                'node' => 'Usia',
+                                'attribute' => 'Sangat Pendek',
+                                'isLeaf' => false,
+                                'children' => [
+                                    [
+                                        'parentNode' => 'Usia',
+                                        'node' => 'Usia',
+                                        'attribute' => "<= {$mean}",
+                                        'isLeaf' => true,
+                                    ],
+                                    [
+                                        'parentNode' => 'Usia',
+                                        'node' => 'Usia',
+                                        'attribute' => "> {$median}",
+                                        'isLeaf' => true,
+                                    ]
+                                ],
+                            ];
+                        }
+
+                        // dd($w, $nodes, $nodes[0]['children'][1]['children'][2]['node']);
+
+                        dd($nodes);
                     }
                 }
+
             }
 
             if ($this->entropy($filteredData['berat badan']['sangat kurang']) == 0) {
-                $v = array_unique(array_column($filteredData['berat badan']['sangat kurang'], 'berat_badan_per_tinggi_badan'))[0];
+                $v_ = array_unique(array_column($filteredData['berat badan']['sangat kurang'], 'berat_badan_per_tinggi_badan'));
+                dd($v_);
 
                 $nodes[0]['children'][] = [
-                    'name' => $v,
+                    'parentNode' => $nodes[0]['root'],
+                    'node' => $v_,
                     'attribute' => 'Sangat Kurang',
                 ];
             }
