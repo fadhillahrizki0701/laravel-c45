@@ -8,141 +8,6 @@ use InvalidArgumentException;
 
 class C45Controller extends Controller
 {
-    // Function to calculate the mean of a given attribute
-    private function calculateMean($data, $attribute)
-    {
-        $values = array_column($data, $attribute);
-        return array_sum($values) / count($values);
-    }
-
-    // Function to calculate the median of a given attribute
-    private function calculateMedian($data, $attribute)
-    {
-        $values = array_column($data, $attribute);
-        sort($values);
-        $count = count($values);
-        $middle = floor(($count - 1) / 2);
-        if ($count % 2) {
-            return $values[$middle];
-        } else {
-            return ($values[$middle] + $values[$middle + 1]) / 2.0;
-        }
-    }
-
-    // Function to group 'Usia' values based on mean and median
-    private function groupByCustomAttributes($data, $mean, $median)
-    {
-        foreach ($data as &$row) {
-            if ($row['usia'] <= $mean) {
-                $row['usia_group_mean'] = 'below_mean';
-            } else {
-                $row['usia_group_mean'] = 'above_mean';
-            }
-
-            if ($row['usia'] <= $median) {
-                $row['usia_group_median'] = 'below_median';
-            } else {
-                $row['usia_group_median'] = 'above_median';
-            }
-        }
-        return $data;
-    }
-
-    // Function to calculate entropy for a given set of data
-    private function calculateEntropy($data, $labelAttribute)
-    {
-        $total = count($data);
-        $labels = array_column($data, $labelAttribute);
-        $labelCounts = array_count_values($labels);
-        $entropy = 0.0;
-
-        foreach ($labelCounts as $count) {
-            $probability = $count / $total;
-            $entropy -= $probability * log($probability, 2);
-        }
-
-        return $entropy;
-    }
-
-    // Function to calculate Split Info for a given attribute
-    private function calculateSplitInfo($data, $attribute)
-    {
-        $total = count($data);
-        $values = array_column($data, $attribute);
-        $valueCounts = array_count_values($values);
-        $splitInfo = 0.0;
-
-        foreach ($valueCounts as $count) {
-            $probability = $count / $total;
-            $splitInfo -= $probability * log($probability, 2);
-        }
-
-        return $splitInfo;
-    }
-
-    // Function to calculate Gain for a given attribute
-    private function calculateGain($data, $attribute, $labelAttribute)
-    {
-        $totalEntropy = $this->calculateEntropy($data, $labelAttribute);
-        $values = array_unique(array_column($data, $attribute));
-        $subsetEntropy = 0.0;
-
-        foreach ($values as $value) {
-            $subset = array_filter($data, function ($row) use ($attribute, $value) {
-                return $row[$attribute] == $value;
-            });
-            $subsetProbability = count($subset) / count($data);
-            $subsetEntropy += $subsetProbability * $this->calculateEntropy($subset, $labelAttribute);
-        }
-
-        return $totalEntropy - $subsetEntropy;
-    }
-
-    // Function to calculate Gain Ratio for a given attribute
-    private function calculateGainRatio($data, $attribute, $labelAttribute)
-    {
-        $gain = $this->calculateGain($data, $attribute, $labelAttribute);
-        $splitInfo = $this->calculateSplitInfo($data, $attribute);
-
-        if ($splitInfo == 0) {
-            return 0; // Avoid division by zero
-        }
-
-        return $gain / $splitInfo;
-    }
-
-    // Main function to process the node based on given data and attributes
-    private function processNode($data, $attributes, $labelAttribute)
-    {
-        $bestAttribute = null;
-        $bestGainRatio = -INF;
-
-        // Calculate mean and median for Usia
-        $mean = $this->calculateMean($data, 'usia');
-        $median = $this->calculateMedian($data, 'usia');
-
-        // Group Usia based on mean and median
-        $groupedData = $this->groupByCustomAttributes($data, $mean, $median);
-
-        // Iterate through attributes to find the best one based on Gain Ratio
-        foreach ($attributes as $attribute) {
-            $gain = $this->calculateGain($groupedData, $attribute, $labelAttribute);
-            $splitInfo = $this->calculateSplitInfo($groupedData, $attribute);
-            $gainRatio = $this->calculateGainRatio($groupedData, $attribute, $labelAttribute);
-
-            // Select the best attribute based on Gain Ratio
-            if ($gainRatio > $bestGainRatio) {
-                $bestGainRatio = $gainRatio;
-                $bestAttribute = $attribute;
-            }
-        }
-
-        // Add the best attribute to the output
-        $output['best_attribute'] = $bestAttribute;
-
-        return $output;
-    }
-
     /**
      * Filters a dataset based on a specific attribute and comparison operator.
      *
@@ -259,6 +124,23 @@ class C45Controller extends Controller
         return round($parentEntropy - $subsetEntropy, 10);
     }
 
+    private function gainOnNumericalWithComparison(array $data, array $filteredData, string $label = 'berat_badan_per_tinggi_badan', string $attribute, array $comparisons = [
+        '<= mean',
+        '> mean',
+    ]): float
+    {
+        $parentEntropy = $this->entropy($data, $label);
+        $subsetEntropy = 0.0;
+
+        foreach ($comparisons as $comparison) {
+            $subset = $filteredData[$attribute][$comparison];
+            $subsetProbability = count($subset) / count($data);
+            $subsetEntropy += $subsetProbability * $this->entropy($subset, $label);
+        }
+
+        return round($parentEntropy - $subsetEntropy, 10);
+    }
+
     // Function to fetch and process the dataset for tree construction
     public function fetchTreeDataset1()
     {
@@ -348,42 +230,15 @@ class C45Controller extends Controller
             'tinggi_badan_per_usia'
         );
 
-        // ---
-        $parentEntropy = $this->entropy($data, 'berat_badan_per_tinggi_badan');
-        $subsetEntropy = 0.0;
-
-        $comparisons = [
+        $a_1 = $this->gainOnNumericalWithComparison($data, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
             '<= mean',
             '> mean',
-        ];
-
-        foreach ($comparisons as $comparison) {
-            $subset = $filteredData['usia'][$comparison];
-            $subsetProbability = count($subset) / count($data);
-            $subsetEntropy += $subsetProbability * $this->entropy($subset, 'berat_badan_per_tinggi_badan');
-        }
-        $a_1 = round($parentEntropy - $subsetEntropy, 10);
-        // --
-        // ---
-        $parentEntropy = $this->entropy($data, 'berat_badan_per_tinggi_badan');
-        $subsetEntropy = 0.0;
-
-        $comparisons = [
+        ]);
+        $a_2 = $this->gainOnNumericalWithComparison($data, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
             '<= median',
             '> median',
-        ];
-
-        foreach ($comparisons as $comparison) {
-            $subset = $filteredData['usia'][$comparison];
-            $subsetProbability = count($subset) / count($data);
-            $subsetEntropy += $subsetProbability * $this->entropy($subset, 'berat_badan_per_tinggi_badan');
-        }
-        $a_2 = round($parentEntropy - $subsetEntropy, 10);
-        // --
+        ]);
 
         dd($a_1, $a_2);
-
-        // dd($filteredData[0]['berat badan']);
-        // dd($parentEntropy, $values);
     }
 }
