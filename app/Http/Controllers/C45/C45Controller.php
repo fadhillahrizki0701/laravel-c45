@@ -381,7 +381,7 @@ class C45Controller extends Controller
         $a_2 = round($parentEntropy - $subsetEntropy, 10);
         // --
 
-        dd($subsetEntropy, $a_1, $a_2);
+        dd($a_1, $a_2);
 
         // dd($filteredData[0]['berat badan']);
         // dd($parentEntropy, $values);
