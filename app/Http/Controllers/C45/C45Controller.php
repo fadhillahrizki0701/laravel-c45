@@ -224,10 +224,10 @@ class C45Controller extends Controller
         return $_;
     }
 
-    private function entropy(array $data, string $labelAttribute): float
+    private function entropy(array $data, string $labelAttribute = 'berat_badan_per_tinggi_badan'): float
     {
         $total = count($data);
-        $labels = array_column($data, 'berat_badan_per_tinggi_badan');
+        $labels = array_column($data, $labelAttribute);
         $labelCounts = array_count_values($labels);
         $entropy = 0.0;
 
@@ -327,14 +327,29 @@ class C45Controller extends Controller
             $attributeKeys[2] => $ages[$attributeKeys[2]],
         ];
 
-        $merged = $this->mergeDataOnAttribute(
-            'id',
-            $filteredData['berat badan']['normal'],
-            $filteredData['berat badan']['kurang'],
-            $filteredData['berat badan']['sangat kurang'],
+        $weightsGain = $this->gain(
+            $this->mergeDataOnAttribute(
+                'id',
+                $filteredData['berat badan']['normal'],
+                $filteredData['berat badan']['kurang'],
+                $filteredData['berat badan']['sangat kurang'],
+            ),
+            'berat_badan_per_tinggi_badan',
+            'berat_badan_per_usia'
+        );
+        $heightsGain = $this->gain(
+            $this->mergeDataOnAttribute(
+                'id',
+                $filteredData['tinggi badan']['normal'],
+                $filteredData['tinggi badan']['pendek'],
+                $filteredData['tinggi badan']['sangat pendek'],
+            ),
+            'berat_badan_per_tinggi_badan',
+            'tinggi_badan_per_usia'
         );
 
-        dd($merged);
+
+        dd($heightsGain);
 
         // dd($filteredData[0]['berat badan']);
         // dd($parentEntropy, $values);
