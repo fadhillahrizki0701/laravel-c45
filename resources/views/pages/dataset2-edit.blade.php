@@ -13,11 +13,12 @@
             @csrf
             @method('PUT')
             <div class="mb-3">
-                <label for="usia" class="form-label">Usia (bulan)</label>
+                <label for="usia" class="form-label">Usia</label>
                 <select class="form-select" id="usia" name="usia">
-                    @for ($i = 1; $i <= 70; $i++)
-                        <option value="{{ $i }}" {{ $dataset2->usia == $i ? 'selected' : '' }}>{{ $i }}</option>
-                    @endfor
+                    <option value="{{ ucwords('fase 1') }}"@selected(strtolower($dataset2->usia) == strtolower('fase 1'))>Fase 1</option>
+                    <option value="{{ ucwords ('fase 2') }}"@selected(strtolower($dataset2->usia) == strtolower('fase 2'))>Fase 2</option>
+                    <option value="{{ ucwords ('fase 3') }}"@selected(strtolower($dataset2->usia) == strtolower('fase 3'))>Fase 3</option>
+                    <option value="{{ ucwords ('fase 4') }}"@selected(strtolower($dataset2->usia) == strtolower('fase 4'))>Fase 4</option>
                 </select>
             </div>
             <div class="mb-3">

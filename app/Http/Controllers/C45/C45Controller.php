@@ -24,24 +24,18 @@ class C45Controller extends Controller
         $weightNormal = $c45->filterDataOnAttribute($data, 'berat_badan_per_usia', 'normal');
         $weightLess = $c45->filterDataOnAttribute($data, 'berat_badan_per_usia', 'kurang');
         $weightLesser = $c45->filterDataOnAttribute($data, 'berat_badan_per_usia', 'sangat kurang');
-        
+
         // Tinggi Badan
         $heightNormal = $c45->filterDataOnAttribute($data, 'tinggi_badan_per_usia', 'normal');
         $heightLess = $c45->filterDataOnAttribute($data, 'tinggi_badan_per_usia', 'pendek');
         $heightLesser = $c45->filterDataOnAttribute($data, 'tinggi_badan_per_usia', 'sangat pendek');
 
         // Usia
-        $mean = $c45->defineMeanOnAttribute($data, 'usia');
-        $median = $c45->defineMedianOnAttribute($data, 'usia');
+        $fase_satu = $c45->filterDataOnAttribute($data, 'usia', 'fase 1');
+        $fase_dua = $c45->filterDataOnAttribute($data, 'usia', 'fase 2');
+        $fase_tiga = $c45->filterDataOnAttribute($data, 'usia', 'fase 3');
+        $fase_empat = $c45->filterDataOnAttribute($data, 'usia', 'fase 4');
 
-        // Mean
-        $belowOrEqualMean = $c45->filterDataOnAttribute($data, 'usia', $mean, 'less than or equal');
-        $aboveMean = $c45->filterDataOnAttribute($data, 'usia', $mean, 'greater than');
-
-        // Median
-        $belowOrEqualMedian = $c45->filterDataOnAttribute($data, 'usia', $median, 'less than or equal');
-        $aboveMedian = $c45->filterDataOnAttribute($data, 'usia', $median, 'greater than');
-        
         $attributeKeys = [
             'berat badan',
             'tinggi badan',
@@ -64,10 +58,10 @@ class C45Controller extends Controller
         ];
         $ages = [
             $attributeKeys[2] => [
-                '<= mean' => $c45->resetArrayKeys($belowOrEqualMean),
-                '> mean' => $c45->resetArrayKeys($aboveMean),
-                '<= median' => $c45->resetArrayKeys($belowOrEqualMedian),
-                '> median' => $c45->resetArrayKeys($aboveMedian),
+                'fase 1' => $c45->resetArrayKeys($fase_satu),
+                'fase 2' => $c45->resetArrayKeys($fase_dua),
+                'fase 3' => $c45->resetArrayKeys($fase_tiga),
+                'fase 4' => $c45->resetArrayKeys($fase_empat),
             ]
         ];
 
@@ -97,15 +91,20 @@ class C45Controller extends Controller
             'berat_badan_per_tinggi_badan',
             'tinggi_badan_per_usia'
         );
-        $ageMeanGain = $c45->gainOnNumericalWithComparison($data, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
-            '<= mean',
-            '> mean',
-        ]);
-        $ageMedianGain = $c45->gainOnNumericalWithComparison($data, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
-            '<= median',
-            '> median',
-        ]);
-        $highestGain = max($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
+        $ageGain = $c45->gain(
+            $c45->mergeDataOnAttribute(
+                'id',
+                $filteredData['usia']['fase 1'],
+                $filteredData['usia']['fase 2'],
+                $filteredData['usia']['fase 3'],
+                $filteredData['usia']['fase 4'],
+
+            ),
+            'berat_badan_per_tinggi_badan',
+            'usia'
+        );
+
+        $highestGain = max($weightsGain, $heightsGain, $ageGain);
 
         $tree = [];
         if ($highestGain == $weightsGain) {
@@ -125,6 +124,7 @@ class C45Controller extends Controller
                     'attribute' => 'Normal',
                     'isLeaf' => true,
                 ];
+
             }
 
             if ($c45->entropy($filteredData['berat badan']['kurang']) == 0) {
@@ -161,10 +161,10 @@ class C45Controller extends Controller
                 $heightLesser = $c45->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'sangat pendek');
 
                 // Usia
-                $belowOrEqualMean = $c45->filterDataOnAttribute($v, 'usia', $mean, 'less than or equal');
-                $aboveMean = $c45->filterDataOnAttribute($v, 'usia', $mean, 'greater than');
-                $belowOrEqualMedian = $c45->filterDataOnAttribute($v, 'usia', $median, 'less than or equal');
-                $aboveMedian = $c45->filterDataOnAttribute($v, 'usia', $median, 'greater than');
+                $fase_satu = $c45->filterDataOnAttribute($v, 'usia', 'fase 1');
+                $fase_dua = $c45->filterDataOnAttribute($v, 'usia', 'fase 2');
+                $fase_tiga = $c45->filterDataOnAttribute($v, 'usia', 'fase 3');
+                $fase_empat = $c45->filterDataOnAttribute($v, 'usia', 'fase 4');
 
                 $weights = [
                     $attributeKeys[0] => [
@@ -182,10 +182,10 @@ class C45Controller extends Controller
                 ];
                 $ages = [
                     $attributeKeys[2] => [
-                        '<= mean' => $c45->resetArrayKeys($belowOrEqualMean),
-                        '> mean' => $c45->resetArrayKeys($aboveMean),
-                        '<= median' => $c45->resetArrayKeys($belowOrEqualMedian),
-                        '> median' => $c45->resetArrayKeys($aboveMedian),
+                        'fase 1' => $c45->resetArrayKeys($fase_satu),
+                        'fase 2' => $c45->resetArrayKeys($fase_dua),
+                        'fase 3' => $c45->resetArrayKeys($fase_tiga),
+                        'fase 4' => $c45->resetArrayKeys($fase_empat),
                     ]
                 ];
                 $filteredDataProcess2 = [
@@ -196,15 +196,9 @@ class C45Controller extends Controller
 
                 $weightsGain = $c45->gain($v, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
                 $heightsGain = $c45->gain($v, 'berat_badan_per_tinggi_badan', 'tinggi_badan_per_usia');
-                $ageMeanGain = $c45->gainOnNumericalWithComparison($v, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
-                    '<= mean',
-                    '> mean',
-                ]);
-                $ageMedianGain = $c45->gainOnNumericalWithComparison($v, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
-                    '<= median',
-                    '> median',
-                ]);
-                $highestGain = max($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
+                $ageGain = $c45->gainOnNumericalWithComparison($v, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia');
+
+                $highestGain = max($weightsGain, $heightsGain, $ageGain);
 
                 if ($highestGain == $heightsGain) {
                     $tree[0]['children'][] = [
@@ -213,7 +207,7 @@ class C45Controller extends Controller
                         'attribute' => 'Kurang',
                         'isLeaf' => false,
                     ];
-                    
+
                     if ($c45->entropy($filteredDataProcess2['tinggi badan']['normal']) == 0) {
                         $_v = array_unique(array_column($filteredDataProcess2['tinggi badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
 
@@ -265,11 +259,10 @@ class C45Controller extends Controller
                         $heightLesser = $c45->filterDataOnAttribute($w, 'tinggi_badan_per_usia', 'sangat pendek');
 
                         // Usia
-                        $belowOrEqualMean = $c45->filterDataOnAttribute($w, 'usia', $mean, 'less than or equal');
-                        $aboveMean = $c45->filterDataOnAttribute($w, 'usia', $mean, 'greater than');
-                        $belowOrEqualMedian = $c45->filterDataOnAttribute($w, 'usia', $median, 'less than or equal');
-                        $aboveMedian = $c45->filterDataOnAttribute($w, 'usia', $median, 'greater than');
-
+                        $fase_satu = $c45->filterDataOnAttribute($w, 'usia', 'fase 1');
+                        $fase_dua = $c45->filterDataOnAttribute($w, 'usia', 'fase 2');
+                        $fase_tiga = $c45->filterDataOnAttribute($w, 'usia', 'fase 3');
+                        $fase_empat = $c45->filterDataOnAttribute($w, 'usia', 'fase 4');
                         $weights = [
                             $attributeKeys[0] => [
                                 'normal' => $c45->resetArrayKeys($weightNormal),
@@ -286,10 +279,10 @@ class C45Controller extends Controller
                         ];
                         $ages = [
                             $attributeKeys[2] => [
-                                '<= mean' => $c45->resetArrayKeys($belowOrEqualMean),
-                                '> mean' => $c45->resetArrayKeys($aboveMean),
-                                '<= median' => $c45->resetArrayKeys($belowOrEqualMedian),
-                                '> median' => $c45->resetArrayKeys($aboveMedian),
+                                'fase 1' => $c45->resetArrayKeys($fase_satu),
+                                'fase 2' => $c45->resetArrayKeys($fase_dua),
+                                'fase 3' => $c45->resetArrayKeys($fase_tiga),
+                                'fase 4' => $c45->resetArrayKeys($fase_empat),
                             ]
                         ];
                         $filteredDataProcess2 = [
@@ -300,16 +293,10 @@ class C45Controller extends Controller
 
                         $weightsGain = $c45->gain($w, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
                         $heightsGain = $c45->gain($w, 'berat_badan_per_tinggi_badan', 'tinggi_badan_per_usia');
-                        $ageMeanGain = $c45->gainOnNumericalWithComparison($w, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
-                            '<= mean',
-                            '> mean',
-                        ]);
-                        $ageMedianGain = $c45->gainOnNumericalWithComparison($w, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
-                            '<= median',
-                            '> median',
-                        ]);
+                        $ageGain = $c45->gainOnNumericalWithComparison($w, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia');
 
-                        $highestGain = max($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
+
+                        $highestGain = max($weightsGain, $heightsGain, $ageGain);
 
                         if ($highestGain == 1.0) {
                             $tree[0]['children'][1]['children'][] = [
@@ -323,13 +310,25 @@ class C45Controller extends Controller
                                 [
                                     'parentNode' => $tree[0]['children'][1]['children'][2]['node'],
                                     'node' => 'Usia',
-                                    'attribute' => "<= {$mean}",
+                                    'attribute' => "{$fase_satu}",
                                     'isLeaf' => true,
                                 ],
                                 [
                                     'parentNode' => $tree[0]['children'][1]['children'][2]['node'],
                                     'node' => 'Usia',
-                                    'attribute' => "> {$median}",
+                                    'attribute' => " {$fase_dua}",
+                                    'isLeaf' => true,
+                                ],
+                                [
+                                    'parentNode' => $tree[0]['children'][1]['children'][2]['node'],
+                                    'node' => 'Usia',
+                                    'attribute' => " {$fase_tiga}",
+                                    'isLeaf' => true,
+                                ],
+                                [
+                                    'parentNode' => $tree[0]['children'][1]['children'][2]['node'],
+                                    'node' => 'Usia',
+                                    'attribute' => " {$fase_empat}",
                                     'isLeaf' => true,
                                 ],
                             ];
@@ -349,6 +348,7 @@ class C45Controller extends Controller
                 ];
             }
         }
+
 
         dd($tree);
     }

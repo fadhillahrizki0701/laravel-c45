@@ -39,9 +39,10 @@
                                 <label for="usia" class="form-label">Usia (bulan)</label>
                                 <select class="form-select" id="usia" name="usia">
                                     <option selected disabled>-- Silahkan Pilih --</option>
-                                    @for ($i = 1; $i <= 70; $i++)
-                                        <option value="{{ $i }}">{{ $i }}</option>
-                                    @endfor
+                                    <option value="{{ ucwords('fase 1') }}">Fase 1</option>
+                                    <option value="{{ ucwords ('fase 2') }}">Fase 2</option>
+                                    <option value="{{ ucwords ('fase 3') }}">Fase 3</option>
+                                    <option value="{{ ucwords ('fase 4') }}">Fase 4</option>
                                 </select>
                             </div>
                             <div class="mb-3">
