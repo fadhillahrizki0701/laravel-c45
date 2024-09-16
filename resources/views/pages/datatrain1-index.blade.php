@@ -43,7 +43,7 @@ Yusuf;30;Normal;Pendek;Gizi Baik
     <button type="button" name="proses" class="btn btn-success" id="getMiningResultButton">Proses Mining</button>
 
     <section class="my-2" style="overflow: auto;">
-        <section id="treeContainer"></section>
+        <svg width="960" height="600"></svg>
     </section>
 
     <section class="table-responsive">
@@ -75,32 +75,26 @@ Yusuf;30;Normal;Pendek;Gizi Baik
     </section>
 </section>
 
-<script defer src="https://d3js.org/d3.v7.min.js"></script>
 
 <style>
-#treeContainer {
-    width: 100%;
-    height: 800px;
-}
-
 .node circle {
     fill: #fff;
-    stroke: rgb(33, 150, 247);
+    stroke: steelblue;
     stroke-width: 3px;
 }
 
 .node text {
-    font-size: 16px;
+    font: 12px sans-serif;
 }
 
 .link {
     fill: none;
-    stroke: #b6b6b6;
+    stroke: #ccc;
     stroke-width: 2px;
 }
-
 </style>
-    
+
+<script defer src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 document.getElementById('getMiningResultButton').addEventListener('click', (e) => {
     e.preventDefault();
@@ -108,50 +102,70 @@ document.getElementById('getMiningResultButton').addEventListener('click', (e) =
     fetch('{{ route('proses-mining-dataset-1') }}')
         .then(response => response.json())
         .then(data => {
-            // Define dimensions and margins
-            const width = document.getElementById('treeContainer').offsetWidth;
-            const height = 800;
-            const margin = { top: 20, right: 200, bottom: 20, left: 200 };
+            // Create a tree layout and assign the data
+            const svg = d3.select("svg"),
+                width = +svg.attr("width"),
+                height = +svg.attr("height");
 
-            // Remove any previous SVG
-            d3.select("#treeContainer").selectAll("*").remove();
+            const g = svg.append("g")
+                .attr("transform", "translate(40, 0)");
 
-            // Append new SVG
-            const svg = d3.select("#treeContainer").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
+            const tree = d3.tree().size([height, width - 160]);
 
-            const treeLayout = d3.tree().size([height - margin.top - margin.bottom, width - margin.left - margin.right]);
-            const root = d3.hierarchy(data);
+            // Function to process JSON structure into D3 hierarchy and attach "attribute_value" to links
+            function processNode(node, attributeValue = null) {
+                if (node.isLeaf) {
+                    return { name: node.name, attribute_value: attributeValue };
+                } else {
+                    return {
+                        name: node.name,
+                        attribute_value: attributeValue,
+                        children: node.children.map(child => processNode(child.node, child.attribute_value))
+                    };
+                }
+            }
 
-            treeLayout(root);
+            const root = d3.hierarchy(processNode(data));
 
-            // Links
-            svg.selectAll('.link')
-                .data(root.links())
-                .enter().append('path')
-                .attr('class', 'link')
-                .attr('d', d3.linkHorizontal()
+            // Generate the tree structure
+            const treeDataLayout = tree(root);
+
+            // Add the links (lines connecting nodes)
+            const link = g.selectAll(".link")
+                .data(treeDataLayout.links())
+                .enter().append("g");
+
+            // Draw the paths (lines between nodes)
+            link.append("path")
+                .attr("class", "link")
+                .attr("d", d3.linkHorizontal()
                     .x(d => d.y)
                     .y(d => d.x));
 
-            // Nodes
-            const node = svg.selectAll('.node')
-                .data(root.descendants())
-                .enter().append('g')
-                .attr('class', 'node')
-                .attr('transform', d => `translate(${d.y},${d.x})`);
+            // Add the attribute_value text above the paths
+            link.append("text")
+                .attr("class", "link-text")
+                .attr("dy", -5)  // Position the text slightly above the link
+                .attr("x", d => (d.source.y + d.target.y) / 2)  // Mid-point of the path (X)
+                .attr("y", d => (d.source.x + d.target.x) / 2)  // Mid-point of the path (Y)
+                .text(d => d.target.data.attribute_value);  // Display the attribute_value
 
-            node.append('circle')
-                .attr('r', 5);
+            // Add the nodes (circles and labels)
+            const node = g.selectAll(".node")
+                .data(treeDataLayout.descendants())
+                .enter().append("g")
+                .attr("class", "node")
+                .attr("transform", d => `translate(${d.y},${d.x})`);
 
-            node.append('text')
-                .attr('dy', 3)
-                .attr('x', d => d.children ? -10 : 10)
-                .style('text-anchor', d => d.children ? 'end' : 'start')
-                .text(d => d.data.label || d.data.attribute || "Node");
+            node.append("circle")
+                .attr("r", 5)
+                .style("fill", d => d.children ? "#fff" : "lightsteelblue");
+
+            node.append("text")
+                .attr("dy", 3)
+                .attr("x", d => d.children ? -10 : 10)
+                .style("text-anchor", d => d.children ? "end" : "start")
+                .text(d => d.data.name);
         })
         .catch(error => console.error('Error fetching mining result:', error));
 });
