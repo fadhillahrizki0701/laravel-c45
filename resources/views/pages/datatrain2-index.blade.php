@@ -38,7 +38,7 @@
 18;Gizi Baik;M9;Baik
 ...</pre>
     
-    <button type="submit" name="proses" class="btn btn-success">Proses Mining</button>
+    <a href="{{ route('datatrain2-mining') }}" class="btn btn-success">Proses Mining</a>
 
     <section class="table-responsive">
         <table id="example" class="display" style="width:100%">

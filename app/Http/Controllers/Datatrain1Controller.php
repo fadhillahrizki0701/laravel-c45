@@ -168,4 +168,9 @@ class Datatrain1Controller extends Controller
 				"All files and associated data deleted successfully.",
 			]);
 	}
+
+	public function mining()
+	{
+		return view('pages.datatrain1-mining');
+	}
 }
