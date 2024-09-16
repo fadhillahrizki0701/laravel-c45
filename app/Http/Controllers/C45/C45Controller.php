@@ -4,6 +4,7 @@ namespace App\Http\Controllers\C45;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dataset1;
+use App\Models\Dataset2;
 
 class C45Controller extends Controller
 {
@@ -111,8 +112,6 @@ class C45Controller extends Controller
         return $tree;
     }
 
-
-    // Function to fetch and process the dataset for tree construction
     public function fetchTreeDataset1()
     {
         $data = Dataset1::select([
@@ -123,6 +122,10 @@ class C45Controller extends Controller
             'berat_badan_per_tinggi_badan',
         ])->get()->toArray();
 
+        if ($data == []) {
+            return response()->json([]);
+        }
+
         $attributes = [
             'berat_badan_per_usia',
             'tinggi_badan_per_usia',
@@ -130,7 +133,31 @@ class C45Controller extends Controller
         ];
         $label = 'berat_badan_per_tinggi_badan';
 
-        // Build the decision tree
+        $tree = $this->buildTree($data, $label, $attributes);
+
+        return response()->json($tree);
+    }
+
+    public function fetchTreeDataset2()
+    {
+        $data = Dataset2::select([
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+            'keterangan'
+        ])->get()->toArray();
+
+        if ($data == []) {
+            return response()->json([]);
+        }
+
+        $attributes = [
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+        ];
+        $label = 'keterangan';
+
         $tree = $this->buildTree($data, $label, $attributes);
 
         return response()->json($tree);
