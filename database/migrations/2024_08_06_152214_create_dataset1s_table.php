@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('dataset1s', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->enum('usia', allowed: [
+            $table->enum('usia', [
                 'Fase 1',
                 'Fase 2',
                 'Fase 3',
