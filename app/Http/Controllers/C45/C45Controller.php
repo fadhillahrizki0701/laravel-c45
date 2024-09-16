@@ -133,6 +133,6 @@ class C45Controller extends Controller
         // Build the decision tree
         $tree = $this->buildTree($data, $label, $attributes);
 
-        dd($tree);  // Debug the result
+        return response()->json($tree);
     }
 }
