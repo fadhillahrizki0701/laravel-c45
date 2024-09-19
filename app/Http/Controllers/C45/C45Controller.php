@@ -112,6 +112,34 @@ class C45Controller extends Controller
         return $tree;
     }
 
+    private function extractRules(array $tree, string $parentRule = ''): array
+    {
+        $rules = [];
+
+        // Check if the current node is not a leaf
+        if (!$tree['isLeaf']) {
+            $root = $tree['name'];
+
+            // Loop through the children of the current node
+            foreach ($tree['children'] as $child) {
+                // Build the current rule
+                $currentRule = $parentRule . "IF '{$root}' IS '{$child['attribute_value']}'\n";
+
+                if (!$child['node']['isLeaf']) {
+                    // If the child node is not a leaf, recursively append rules from the subtree
+                    $subRules = $this->extractRules($child['node'], $currentRule);
+                    $rules = array_merge($rules, $subRules); // Merge the recursive results
+                } else {
+                    // For leaf nodes, append the final classification rule
+                    $rules[] = $currentRule . "  THEN '{$child['node']['name']}'";
+                }
+            }
+        }
+
+        return $rules;
+    }
+
+
     public function fetchTreeDataset1()
     {
         $data = Dataset1::select([
@@ -134,8 +162,11 @@ class C45Controller extends Controller
         $label = 'berat_badan_per_tinggi_badan';
 
         $tree = $this->buildTree($data, $label, $attributes);
+        $rules = $this->extractRules($tree);
 
-        return response()->json($tree);
+        $data = array_merge($tree, ['rules' => $rules]);
+
+        return response()->json($data);
     }
 
     public function fetchTreeDataset2()
@@ -159,7 +190,10 @@ class C45Controller extends Controller
         $label = 'keterangan';
 
         $tree = $this->buildTree($data, $label, $attributes);
+        $rules = $this->extractRules($tree);
 
-        return response()->json($tree);
+        $data = array_merge($tree, ['rules' => $rules]);
+
+        return response()->json($data);
     }
 }
