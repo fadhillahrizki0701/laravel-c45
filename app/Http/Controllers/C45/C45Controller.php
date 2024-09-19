@@ -112,17 +112,6 @@ class C45Controller extends Controller
         return $tree;
     }
 
-    public function stepByStepCalculation(array $data, $label, $attributes)
-    {
-        if ($data == []) {
-            return response()->json([]);
-        }
-
-        $gains = $this->calculateGain($data, $label, $attributes);
-    
-        return $gains;
-    }
-
     public function fetchTreeDataset1()
     {
         $data = Dataset1::select([
@@ -147,57 +136,6 @@ class C45Controller extends Controller
         $tree = $this->buildTree($data, $label, $attributes);
 
         return response()->json($tree);
-    }
-
-    public function fetchCalculationTableDataset1()
-    {
-        $data = Dataset1::select([
-            'id',
-            'usia',
-            'berat_badan_per_usia',
-            'tinggi_badan_per_usia',
-            'berat_badan_per_tinggi_badan',
-        ])->get()->toArray();
-
-        if ($data == []) {
-            return response()->json([]);
-        }
-
-        $attributes = [
-            'berat_badan_per_usia',
-            'tinggi_badan_per_usia',
-            'usia',
-        ];
-        $label = 'berat_badan_per_tinggi_badan';
-
-        $gains = $this->stepByStepCalculation($data, $label, $attributes);
-
-        return view('pages.c45.step-by-step', compact('gains'));
-    }
-
-    public function fetchCalculationTableDataset2()
-    {
-        $data = Dataset2::select([
-            'usia',
-            'berat_badan_per_tinggi_badan',
-            'menu',
-            'keterangan'
-        ])->get()->toArray();
-
-        if ($data == []) {
-            return response()->json([]);
-        }
-
-        $attributes = [
-            'usia',
-            'berat_badan_per_tinggi_badan',
-            'menu',
-        ];
-        $label = 'keterangan';
-
-        $gains = $this->stepByStepCalculation($data, $label, $attributes);
-
-        return view('pages.c45.step-by-step', compact('gains'));
     }
 
     public function fetchTreeDataset2()
