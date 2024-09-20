@@ -43,9 +43,10 @@
                                 <label for="usia" class="form-label">Usia (bulan)</label>
                                 <select class="form-select" id="usia" name="usia">
                                     <option selected disabled>-- Silahkan Pilih --</option>
-                                    @for ($i = 1; $i <= 70; $i++)
-                                        <option value="{{ $i }}">{{ $i }}</option>
-                                    @endfor
+                                    <option value="{{ ucwords('fase 1') }}">Fase 1</option>
+                                    <option value="{{ ucwords ('fase 2') }}">Fase 2</option>
+                                    <option value="{{ ucwords ('fase 3') }}">Fase 3</option>
+                                    <option value="{{ ucwords ('fase 4') }}">Fase 4</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -114,7 +115,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $dt1->nama }}</td>
-                        <td>{{ $dt1->usia }}</td>
+                        <td>{{ ucwords($dt1->usia) }}</td>
                         <td>{{ ucwords($dt1->berat_badan_per_usia)  }}</td>
                         <td>{{ ucwords($dt1->tinggi_badan_per_usia ) }}</td>
                         <td>{{ ucwords( $dt1->berat_badan_per_tinggi_badan) }}</td>
@@ -149,7 +150,7 @@
                                             <summary>Rincian</summary>
                                             <ul>
                                                 <li>nama: <i>{{ $dt1->nama }}</i></li>
-                                                <li>usia: <i>{{ $dt1->usia }}</i></li>
+                                                <li>usia: <i>{{ ucwords($dt1->usia) }}</i></li>
                                                 <li>BB/U: <i>{{ ucwords($dt1->berat_badan_per_usia) }}</i></li>
                                                 <li>TB/U: <i>{{ ucwords($dt1->tinggi_badan_per_usia) }}</i></li>
                                                 <li>BB/TB: <i>{{ ucwords($dt1->berat_badan_per_tinggi_badan) }}</i></li>

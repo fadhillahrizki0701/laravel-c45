@@ -4,352 +4,298 @@ namespace App\Http\Controllers\C45;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dataset1;
+use App\Models\Dataset2;
 
 class C45Controller extends Controller
 {
-    // Function to fetch and process the dataset for tree construction
+    private function gain(array $data, string $label, string $attribute): float
+    {
+        $parentEntropy = $this->entropy($data, $label);
+        $values = array_unique(array_column($data, $attribute));
+        $subsetEntropy = 0.0;
+
+        foreach ($values as $value) {
+            $subset = array_filter($data, function ($row) use ($attribute, $value) {
+                return $row[$attribute] == $value;
+            });
+
+            $subsetProbability = count($subset) / count($data);
+            $subsetEntropy += $subsetProbability * $this->entropy($subset, $label);
+        }
+
+        return round($parentEntropy - round($subsetEntropy, 10), 10);
+    }
+
+    private function entropy(array $data, string $label): float
+    {
+        $total = count($data);
+        $labelCount = array_count_values(array_column($data, $label));
+        $entropy = 0.0;
+
+        foreach ($labelCount as $count) {
+            $probability = $count / $total;
+            $entropy -= $probability * log($probability, 2);
+        }
+
+        return round($entropy, 10);
+    }
+
+    private function calculateGain(array $data, string $label, array $attributes): array
+    {
+        $gains = [];
+        $highestGain = 0;
+        $bestAttribute = null;
+
+        foreach ($attributes as $attribute) {
+            $gains[$attribute] = $this->gain($data, $label, $attribute);
+
+            if ($gains[$attribute] > $highestGain) {
+                $highestGain = $gains[$attribute];
+                $bestAttribute = $attribute;
+            }
+        }
+
+        return [
+            'highest_gain' => $highestGain,
+            'best_attribute' => $bestAttribute,
+            'gains' => $gains,
+        ];
+    }
+
+    private function countOnLabel(array $data, string $label, string $labelValue)
+    {
+        $filter = array_filter($data, function ($_data) use ($label, $labelValue) {
+            return $_data[$label] == $labelValue;
+        });
+
+        return count($filter);
+    }
+
+    private function tableProcess(array $data, string $label, int $depth = 0, array $attributes): array
+{
+    $table = [];
+    $_data = $data;
+
+    // Check if data is empty
+    if (empty($_data)) {
+        return $table; // Return an empty table if no data is provided
+    }
+
+    // Calculate the overall entropy for the current node
+    $entropy = $this->entropy($_data, $label);
+    $total = count($_data);
+
+    // Get unique values of the label
+    $labelValues = array_unique(array_column($_data, $label));
+
+    // Initialize label value data for the current depth
+    $labelValueData = [];
+
+    // Count occurrences of each label value
+    foreach ($labelValues as $labelValue) {
+        $labelValueData[$labelValue] = $this->countOnLabel($_data, $label, $labelValue);
+    }
+
+    // Add the current depth entry to the table
+    $table[] = [
+        'depth' => $depth,
+        'total' => $total,
+        'entropy' => $entropy,
+        'labelValues' => $labelValueData,
+    ];
+
+    // If all instances have the same label, this is a leaf node
+    if (count($labelValues) === 1) {
+        return $table; // No need to process further, it's a pure node
+    }
+
+    $bestGain = 0;
+    $bestAttribute = null;
+
+    foreach ($attributes as $attribute) {
+        $gain = $this->gain($_data, $label, $attribute);
+        if ($gain > $bestGain) {
+            $bestGain = $gain;
+            $bestAttribute = $attribute;
+        }
+
+        // Add gain calculations to the table
+        $attributeValues = array_unique(array_column($_data, $attribute));
+        foreach ($attributeValues as $attributeValue) {
+            // Create a detailed entry for this attribute's processing
+            $subset = array_filter($_data, function ($row) use ($attribute, $attributeValue) {
+                return $row[$attribute] == $attributeValue;
+            });
+            $subsetEntropy = $this->entropy($subset, $label);
+            $subsetCount = count($subset);
+            $subsetProbability = $subsetCount / $total;
+
+            $table[] = [
+                'depth' => $depth,
+                'attribute' => $attribute,
+                'attribute_value' => $attributeValue,
+                'subset_count' => $subsetCount,
+                'subset_entropy' => $subsetEntropy,
+                'subset_probability' => round($subsetProbability, 4),
+                'gain' => round($gain, 10),
+            ];
+        }
+    }
+
+    // Recursively process deeper nodes using the best attribute for splitting
+    if ($bestAttribute) {
+        $attributeValues = array_unique(array_column($_data, $bestAttribute));
+        foreach ($attributeValues as $attributeValue) {
+            $subset = array_filter($_data, function ($row) use ($bestAttribute, $attributeValue) {
+                return $row[$bestAttribute] == $attributeValue;
+            });
+
+            if (!empty($subset)) {
+                // Recursively process this subset at a deeper level
+                $table = array_merge($table, $this->tableProcess($subset, $label, $depth + 1, $attributes));
+            }
+        }
+    }
+
+    return $table;
+}
+
+
+
+
+    private function buildTree(array $data, string $label, array $attributes): array
+    {
+        // Base case: if all data have the same label or no more attributes to split
+        if (count(array_unique(array_column($data, $label))) === 1 || empty($attributes)) {
+            // Return the value of 'berat_badan_per_tinggi_badan' in the leaf node
+            return [
+                'name' => array_values(array_unique(array_column($data, $label)))[0],
+                'isLeaf' => true,
+            ];
+        }
+
+        // Calculate gain for each attribute and get the best attribute
+        $gainInfo = $this->calculateGain($data, $label, $attributes);
+        $bestAttribute = $gainInfo['best_attribute'];
+
+        if (!$bestAttribute) {
+            // If no best attribute, treat this as a leaf node and display the label value
+            return [
+                'name' => array_values(array_unique(array_column($data, $label)))[0],
+                'isLeaf' => true,
+            ];
+        }
+
+        // Split data by the best attribute
+        $values = array_unique(array_column($data, $bestAttribute));
+        $tree = [
+            'name' => $bestAttribute,
+            'isLeaf' => false,
+            'children' => [],
+        ];
+
+        foreach ($values as $value) {
+            // Filter the data based on the attribute's value
+            $subset = array_filter($data, function ($row) use ($bestAttribute, $value) {
+                return $row[$bestAttribute] == $value;
+            });
+
+            // Remove the used attribute and recursively build the subtree
+            $remainingAttributes = array_diff($attributes, [$bestAttribute]);
+            $child = $this->buildTree($subset, $label, $remainingAttributes);
+
+            $tree['children'][] = [
+                'attribute_value' => $value,
+                'node' => $child,
+            ];
+        }
+
+        return $tree;
+    }
+
+    private function extractRules(array $tree, string $parentRule = ''): array
+    {
+        $rules = [];
+
+        // Check if the current node is not a leaf
+        if (!$tree['isLeaf']) {
+            $root = $tree['name'];
+
+            // Loop through the children of the current node
+            foreach ($tree['children'] as $child) {
+                // Build the current rule
+                $currentRule = $parentRule . "IF '{$root}' IS '{$child['attribute_value']}'\n";
+
+                if (!$child['node']['isLeaf']) {
+                    // If the child node is not a leaf, recursively append rules from the subtree
+                    $subRules = $this->extractRules($child['node'], $currentRule);
+                    $rules = array_merge($rules, $subRules); // Merge the recursive results
+                } else {
+                    // For leaf nodes, append the final classification rule
+                    $rules[] = $currentRule . "  THEN '{$child['node']['name']}'";
+                }
+            }
+        }
+
+        return $rules;
+    }
+
     public function fetchTreeDataset1()
     {
-        $c45 = new C45();
-
         $data = Dataset1::select([
-            'id',
             'usia',
             'berat_badan_per_usia',
             'tinggi_badan_per_usia',
             'berat_badan_per_tinggi_badan',
         ])->get()->toArray();
 
-        // Berat Badan
-        $weightNormal = $c45->filterDataOnAttribute($data, 'berat_badan_per_usia', 'normal');
-        $weightLess = $c45->filterDataOnAttribute($data, 'berat_badan_per_usia', 'kurang');
-        $weightLesser = $c45->filterDataOnAttribute($data, 'berat_badan_per_usia', 'sangat kurang');
-        
-        // Tinggi Badan
-        $heightNormal = $c45->filterDataOnAttribute($data, 'tinggi_badan_per_usia', 'normal');
-        $heightLess = $c45->filterDataOnAttribute($data, 'tinggi_badan_per_usia', 'pendek');
-        $heightLesser = $c45->filterDataOnAttribute($data, 'tinggi_badan_per_usia', 'sangat pendek');
-
-        // Usia
-        $mean = $c45->defineMeanOnAttribute($data, 'usia');
-        $median = $c45->defineMedianOnAttribute($data, 'usia');
-
-        // Mean
-        $belowOrEqualMean = $c45->filterDataOnAttribute($data, 'usia', $mean, 'less than or equal');
-        $aboveMean = $c45->filterDataOnAttribute($data, 'usia', $mean, 'greater than');
-
-        // Median
-        $belowOrEqualMedian = $c45->filterDataOnAttribute($data, 'usia', $median, 'less than or equal');
-        $aboveMedian = $c45->filterDataOnAttribute($data, 'usia', $median, 'greater than');
-        
-        $attributeKeys = [
-            'berat badan',
-            'tinggi badan',
-            'usia',
-        ];
-
-        $weights = [
-            $attributeKeys[0] => [
-                'normal' => $c45->resetArrayKeys($weightNormal),
-                'kurang' => $c45->resetArrayKeys($weightLess),
-                'sangat kurang' => $c45->resetArrayKeys($weightLesser),
-            ]
-        ];
-        $heights = [
-            $attributeKeys[1] => [
-                'normal' => $c45->resetArrayKeys($heightNormal),
-                'pendek' => $c45->resetArrayKeys($heightLess),
-                'sangat pendek' => $c45->resetArrayKeys($heightLesser),
-            ]
-        ];
-        $ages = [
-            $attributeKeys[2] => [
-                '<= mean' => $c45->resetArrayKeys($belowOrEqualMean),
-                '> mean' => $c45->resetArrayKeys($aboveMean),
-                '<= median' => $c45->resetArrayKeys($belowOrEqualMedian),
-                '> median' => $c45->resetArrayKeys($aboveMedian),
-            ]
-        ];
-
-        $filteredData = [
-            $attributeKeys[0] => $weights[$attributeKeys[0]],
-            $attributeKeys[1] => $heights[$attributeKeys[1]],
-            $attributeKeys[2] => $ages[$attributeKeys[2]],
-        ];
-
-        $weightsGain = $c45->gain(
-            $c45->mergeDataOnAttribute(
-                'id',
-                $filteredData['berat badan']['normal'],
-                $filteredData['berat badan']['kurang'],
-                $filteredData['berat badan']['sangat kurang'],
-            ),
-            'berat_badan_per_tinggi_badan',
-            'berat_badan_per_usia'
-        );
-        $heightsGain = $c45->gain(
-            $c45->mergeDataOnAttribute(
-                'id',
-                $filteredData['tinggi badan']['normal'],
-                $filteredData['tinggi badan']['pendek'],
-                $filteredData['tinggi badan']['sangat pendek'],
-            ),
-            'berat_badan_per_tinggi_badan',
-            'tinggi_badan_per_usia'
-        );
-        $ageMeanGain = $c45->gainOnNumericalWithComparison($data, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
-            '<= mean',
-            '> mean',
-        ]);
-        $ageMedianGain = $c45->gainOnNumericalWithComparison($data, $filteredData, 'berat_badan_per_tinggi_badan', 'usia', [
-            '<= median',
-            '> median',
-        ]);
-        $highestGain = max($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
-
-        $tree = [];
-        if ($highestGain == $weightsGain) {
-            $tree[0] = [
-                'parentNode' => null,
-                'node' => 'Berat Badan',
-                'attribute' => null,
-                'isLeaf' => false,
-            ];
-
-            if ($c45->entropy($filteredData['berat badan']['normal']) == 0) {
-                $_leaf_1 = array_unique(array_column($filteredData['berat badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
-
-                $tree[0]['children'][] = [
-                    'parentNode' => $tree[0]['node'],
-                    'node' => $_leaf_1,
-                    'attribute' => 'Normal',
-                    'isLeaf' => true,
-                ];
-            }
-
-            if ($c45->entropy($filteredData['berat badan']['kurang']) == 0) {
-                $_leaf_2 = array_unique(array_column($filteredData['berat badan']['kurang'], 'berat_badan_per_tinggi_badan'));
-
-                $tree[0]['children'][] = [
-                    'name' => $_leaf_2,
-                    'attribute' => 'Kurang',
-                ];
-            } else {
-                $v = $filteredData['berat badan']['kurang'];
-                $mean = $c45->defineMeanOnAttribute($v, 'usia');
-                $median = $c45->defineMedianOnAttribute($v, 'usia');
-
-                $heightsGain = $c45->gain(
-                    $c45->mergeDataOnAttribute(
-                        'id',
-                        $filteredData['tinggi badan']['normal'],
-                        $filteredData['tinggi badan']['pendek'],
-                        $filteredData['tinggi badan']['sangat pendek'],
-                    ),
-                    'berat_badan_per_tinggi_badan',
-                    'tinggi_badan_per_usia'
-                );
-
-                // Berat Badan
-                $weightNormal = $c45->filterDataOnAttribute($v, 'berat_badan_per_usia', 'normal');
-                $weightLess = $c45->filterDataOnAttribute($v, 'berat_badan_per_usia', 'kurang');
-                $weightLesser = $c45->filterDataOnAttribute($v, 'berat_badan_per_usia', 'sangat kurang');
-
-                // Tinggi Badan
-                $heightNormal = $c45->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'normal');
-                $heightLess = $c45->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'pendek');
-                $heightLesser = $c45->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'sangat pendek');
-
-                // Usia
-                $belowOrEqualMean = $c45->filterDataOnAttribute($v, 'usia', $mean, 'less than or equal');
-                $aboveMean = $c45->filterDataOnAttribute($v, 'usia', $mean, 'greater than');
-                $belowOrEqualMedian = $c45->filterDataOnAttribute($v, 'usia', $median, 'less than or equal');
-                $aboveMedian = $c45->filterDataOnAttribute($v, 'usia', $median, 'greater than');
-
-                $weights = [
-                    $attributeKeys[0] => [
-                        'normal' => $c45->resetArrayKeys($weightNormal),
-                        'kurang' => $c45->resetArrayKeys($weightLess),
-                        'sangat kurang' => $c45->resetArrayKeys($weightLesser),
-                    ]
-                ];
-                $heights = [
-                    $attributeKeys[1] => [
-                        'normal' => $c45->resetArrayKeys($heightNormal),
-                        'pendek' => $c45->resetArrayKeys($heightLess),
-                        'sangat pendek' => $c45->resetArrayKeys($heightLesser),
-                    ]
-                ];
-                $ages = [
-                    $attributeKeys[2] => [
-                        '<= mean' => $c45->resetArrayKeys($belowOrEqualMean),
-                        '> mean' => $c45->resetArrayKeys($aboveMean),
-                        '<= median' => $c45->resetArrayKeys($belowOrEqualMedian),
-                        '> median' => $c45->resetArrayKeys($aboveMedian),
-                    ]
-                ];
-                $filteredDataProcess2 = [
-                    $attributeKeys[0] => $weights[$attributeKeys[0]],
-                    $attributeKeys[1] => $heights[$attributeKeys[1]],
-                    $attributeKeys[2] => $ages[$attributeKeys[2]],
-                ];
-
-                $weightsGain = $c45->gain($v, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
-                $heightsGain = $c45->gain($v, 'berat_badan_per_tinggi_badan', 'tinggi_badan_per_usia');
-                $ageMeanGain = $c45->gainOnNumericalWithComparison($v, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
-                    '<= mean',
-                    '> mean',
-                ]);
-                $ageMedianGain = $c45->gainOnNumericalWithComparison($v, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
-                    '<= median',
-                    '> median',
-                ]);
-                $highestGain = max($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
-
-                if ($highestGain == $heightsGain) {
-                    $tree[0]['children'][] = [
-                        'parentNode' => $tree[0]['node'],
-                        'node' => 'Tinggi Badan',
-                        'attribute' => 'Kurang',
-                        'isLeaf' => false,
-                    ];
-                    
-                    if ($c45->entropy($filteredDataProcess2['tinggi badan']['normal']) == 0) {
-                        $_v = array_unique(array_column($filteredDataProcess2['tinggi badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
-
-                        $tree[0]['children'][1]['children'][] = [
-                            'parentNode' => $tree[0]['children'][1]['node'],
-                            'node' => $_v,
-                            'attribute' => 'Normal',
-                            'isLeaf' => true,
-                        ];
-                        // dd($tree);
-                    }
-
-                    if ($c45->entropy($filteredDataProcess2['tinggi badan']['pendek']) == 0) {
-                        $__v = array_unique(array_column($filteredDataProcess2['tinggi badan']['normal'], 'berat_badan_per_tinggi_badan'))[0];
-
-                        $tree[0]['children'][1]['children'][] = [
-                            'parentNode' => $tree[0]['children'][1]['node'],
-                            'node' => $__v,
-                            'attribute' => 'Pendek',
-                            'isLeaf' => true,
-                        ];
-                    }
-
-                    if ($c45->entropy($filteredDataProcess2['tinggi badan']['sangat pendek']) == 0) {
-                    } else {
-                        $w = $c45->filterDataOnAttribute($v, 'tinggi_badan_per_usia', 'sangat pendek');
-                        $mean = $c45->defineMeanOnAttribute($w, 'usia');
-                        $median = $c45->defineMedianOnAttribute($w, 'usia');
-
-                        $heightsGain = $c45->gain(
-                            $c45->mergeDataOnAttribute(
-                                'id',
-                                $filteredDataProcess2['tinggi badan']['normal'],
-                                $filteredDataProcess2['tinggi badan']['pendek'],
-                                $filteredDataProcess2['tinggi badan']['sangat pendek'],
-                            ),
-                            'berat_badan_per_tinggi_badan',
-                            'tinggi_badan_per_usia'
-                        );
-
-                        // Berat Badan
-                        $weightNormal = $c45->filterDataOnAttribute($w, 'berat_badan_per_usia', 'normal');
-                        $weightLess = $c45->filterDataOnAttribute($w, 'berat_badan_per_usia', 'kurang');
-                        $weightLesser = $c45->filterDataOnAttribute($w, 'berat_badan_per_usia', 'sangat kurang');
-
-                        // Tinggi Badan
-                        $heightNormal = $c45->filterDataOnAttribute($w, 'tinggi_badan_per_usia', 'normal');
-                        $heightLess = $c45->filterDataOnAttribute($w, 'tinggi_badan_per_usia', 'pendek');
-                        $heightLesser = $c45->filterDataOnAttribute($w, 'tinggi_badan_per_usia', 'sangat pendek');
-
-                        // Usia
-                        $belowOrEqualMean = $c45->filterDataOnAttribute($w, 'usia', $mean, 'less than or equal');
-                        $aboveMean = $c45->filterDataOnAttribute($w, 'usia', $mean, 'greater than');
-                        $belowOrEqualMedian = $c45->filterDataOnAttribute($w, 'usia', $median, 'less than or equal');
-                        $aboveMedian = $c45->filterDataOnAttribute($w, 'usia', $median, 'greater than');
-
-                        $weights = [
-                            $attributeKeys[0] => [
-                                'normal' => $c45->resetArrayKeys($weightNormal),
-                                'kurang' => $c45->resetArrayKeys($weightLess),
-                                'sangat kurang' => $c45->resetArrayKeys($weightLesser),
-                            ]
-                        ];
-                        $heights = [
-                            $attributeKeys[1] => [
-                                'normal' => $c45->resetArrayKeys($heightNormal),
-                                'pendek' => $c45->resetArrayKeys($heightLess),
-                                'sangat pendek' => $c45->resetArrayKeys($heightLesser),
-                            ]
-                        ];
-                        $ages = [
-                            $attributeKeys[2] => [
-                                '<= mean' => $c45->resetArrayKeys($belowOrEqualMean),
-                                '> mean' => $c45->resetArrayKeys($aboveMean),
-                                '<= median' => $c45->resetArrayKeys($belowOrEqualMedian),
-                                '> median' => $c45->resetArrayKeys($aboveMedian),
-                            ]
-                        ];
-                        $filteredDataProcess2 = [
-                            $attributeKeys[0] => $weights[$attributeKeys[0]],
-                            $attributeKeys[1] => $heights[$attributeKeys[1]],
-                            $attributeKeys[2] => $ages[$attributeKeys[2]],
-                        ];
-
-                        $weightsGain = $c45->gain($w, 'berat_badan_per_tinggi_badan', 'berat_badan_per_usia');
-                        $heightsGain = $c45->gain($w, 'berat_badan_per_tinggi_badan', 'tinggi_badan_per_usia');
-                        $ageMeanGain = $c45->gainOnNumericalWithComparison($w, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
-                            '<= mean',
-                            '> mean',
-                        ]);
-                        $ageMedianGain = $c45->gainOnNumericalWithComparison($w, $filteredDataProcess2, 'berat_badan_per_tinggi_badan', 'usia', [
-                            '<= median',
-                            '> median',
-                        ]);
-
-                        $highestGain = max($weightsGain, $heightsGain, $ageMeanGain, $ageMedianGain);
-
-                        if ($highestGain == 1.0) {
-                            $tree[0]['children'][1]['children'][] = [
-                                'parentNode' => $tree[0]['children'][1]['node'],
-                                'node' => 'Usia',
-                                'attribute' => 'Sangat Pendek',
-                                'isLeaf' => false,
-                            ];
-
-                            $tree[0]['children'][1]['children'][2]['children'] = [
-                                [
-                                    'parentNode' => $tree[0]['children'][1]['children'][2]['node'],
-                                    'node' => 'Usia',
-                                    'attribute' => "<= {$mean}",
-                                    'isLeaf' => true,
-                                ],
-                                [
-                                    'parentNode' => $tree[0]['children'][1]['children'][2]['node'],
-                                    'node' => 'Usia',
-                                    'attribute' => "> {$median}",
-                                    'isLeaf' => true,
-                                ],
-                            ];
-                        }
-                    }
-                }
-            }
-
-            if ($c45->entropy($filteredData['berat badan']['sangat kurang']) == 0) {
-                $_leaf_3 = array_unique(array_column($filteredData['berat badan']['sangat kurang'], 'berat_badan_per_tinggi_badan'))[0];
-
-                $tree[0]['children'][] = [
-                    'parentNode' => $tree[0]['node'],
-                    'node' => $_leaf_3,
-                    'attribute' => 'Sangat Kurang',
-                    'isLeaf' => true,
-                ];
-            }
+        if ($data == []) {
+            return response()->json([]);
         }
 
-        dd($tree);
+        $attributes = [
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+            'usia',
+        ];
+        $label = 'berat_badan_per_tinggi_badan';
+
+        $table = $this->tableProcess($data, $label, 0, $attributes);
+
+        dd($table);
+        $tree = $this->buildTree($data, $label, $attributes);
+        $rules = $this->extractRules($tree);
+
+        $data = array_merge($tree, ['rules' => $rules]);
+
+        return response()->json($data);
+    }
+
+    public function fetchTreeDataset2()
+    {
+        $data = Dataset2::select([
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+            'keterangan'
+        ])->get()->toArray();
+
+        if ($data == []) {
+            return response()->json([]);
+        }
+
+        $attributes = [
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+        ];
+        $label = 'keterangan';
+
+        $tree = $this->buildTree($data, $label, $attributes);
+        $rules = $this->extractRules($tree);
+
+        $data = array_merge($tree, ['rules' => $rules]);
+
+        return response()->json($data);
     }
 }

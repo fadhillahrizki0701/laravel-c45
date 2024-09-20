@@ -61,8 +61,8 @@ class Datatrain1Controller extends Controller
 					$rowData[] = $cell->getValue();
 				}
 
-				// Ensure the row has at least 5 columns
-				if (count($rowData) < 5) {
+				// Ensure the row has at least 5 columns and 'nama' is not null
+				if (count($rowData) < 5 || empty($rowData[1])) {
 					continue; // Skip invalid rows
 				}
 
@@ -79,8 +79,9 @@ class Datatrain1Controller extends Controller
 
 		return redirect()
 			->back()
-			->with(["success", "Data imported and file saved successfully."]);
+			->with(["success" => "Data imported and file saved successfully."]);
 	}
+
 
 	/**
 	 * Display the specified resource.
@@ -166,5 +167,10 @@ class Datatrain1Controller extends Controller
 				"success",
 				"All files and associated data deleted successfully.",
 			]);
+	}
+
+	public function mining()
+	{
+		return view('pages.datatrain1-mining');
 	}
 }

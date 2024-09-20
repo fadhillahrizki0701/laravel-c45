@@ -22,6 +22,8 @@
         {{-- AlpineJS --}}
         <script defer src="{{ asset('alpinejs/alpine.min.js') }}"></script>
 
+        <script defer src="{{ asset('d3js/d3.min.js') }}"></script>
+
         <style>
             body {
                 margin: 0;

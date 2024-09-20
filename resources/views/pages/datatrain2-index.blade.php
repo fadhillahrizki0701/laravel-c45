@@ -6,12 +6,6 @@
 <section class="container p-4">
     <h2 class="pb-4" style="color:#435EBE">Data Training 2</h2>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
     @include('pages.partials.session-notification')
 
     <form action="{{ route('datatrain2.store') }}" method="POST" enctype="multipart/form-data" class="">
@@ -44,7 +38,7 @@
 18;Gizi Baik;M9;Baik
 ...</pre>
     
-    <button type="submit" name="proses" class="btn btn-success">Proses Mining</button>
+    <a href="{{ route('datatrain2-mining') }}" class="btn btn-success">Proses Mining</a>
 
     <section class="table-responsive">
         <table id="example" class="display" style="width:100%">
