@@ -40,13 +40,13 @@ Route::middleware("auth")->group(function () {
     Route::delete('/datatrain1/clear/all', [Datatrain1Controller::class, 'clear'])->name('datatrain1.clear');
     Route::delete('/datatrain2/clear/all', [Datatrain2Controller::class, 'clear'])->name('datatrain2.clear');
     Route::resource('/datatrain2', Datatrain2Controller::class);
-    Route::get('/mining',[Dataset1Controller::class, 'mining']);
+
+    Route::get('/datatrain1/tree/mining', [Datatrain1Controller::class, 'mining'])->name('datatrain1-mining');
+    Route::get('/datatrain2/tree/mining', [Datatrain2Controller::class, 'mining'])->name('datatrain2-mining');
 
     Route::get('/profile/{id:id}', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile/{id:id}', [ProfileController::class, 'update'])->name('profile.update');
-    Route::get('/mining-dataset-1', [C45Controller::class, 'fetchTreeDataset1']);
-    Route::get('/mining-dataset-2', [C45Controller::class, 'fetchTreeDataset2']);
-
-    // test
-    Route::get('test', [TestController::class, 'index']);
 });
+
+Route::get('/mining-dataset-1', [C45Controller::class, 'fetchTreeDataset1'])->name('proses-mining-dataset-1');
+Route::get('/mining-dataset-2', [C45Controller::class, 'fetchTreeDataset2'])->name('proses-mining-dataset-2');

@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('dataset2s', function (Blueprint $table) {
             $table->id();
-            $table->integer('usia');
+            $table->enum('usia', [
+                'Fase 1',
+                'Fase 2',
+                'Fase 3',
+                'Fase 4',
+            ]);
             $table->enum('berat_badan_per_tinggi_badan', [
                 'Gizi Baik',
                 'Gizi Kurang'

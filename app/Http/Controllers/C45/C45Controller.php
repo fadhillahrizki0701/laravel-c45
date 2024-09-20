@@ -3,45 +3,14 @@
 namespace App\Http\Controllers\C45;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Dataset1;
 use App\Models\Dataset2;
 
 class C45Controller extends Controller
 {
-    public function calculateEntropy($data, $labelAttribute)
+    private function gain(array $data, string $label, string $attribute): float
     {
-        $total = count($data);
-        $labels = array_column($data, $labelAttribute);
-        $labelCounts = array_count_values($labels);
-        $entropy = 0.0;
-
-        foreach ($labelCounts as $count) {
-            $probability = $count / $total;
-            $entropy -= $probability * log($probability, 2);
-        }
-
-        return $entropy;
-    }
-
-    public function calculateSplitInfo($data, $attribute)
-    {
-        $total = count($data);
-        $values = array_column($data, $attribute);
-        $valueCounts = array_count_values($values);
-        $splitInfo = 0.0;
-
-        foreach ($valueCounts as $count) {
-            $probability = $count / $total;
-            $splitInfo -= $probability * log($probability, 2);
-        }
-
-        return $splitInfo;
-    }
-
-    public function calculateGain($data, $attribute, $labelAttribute)
-    {
-        $totalEntropy = $this->calculateEntropy($data, $labelAttribute);
+        $parentEntropy = $this->entropy($data, $label);
         $values = array_unique(array_column($data, $attribute));
         $subsetEntropy = 0.0;
 
@@ -49,89 +18,284 @@ class C45Controller extends Controller
             $subset = array_filter($data, function ($row) use ($attribute, $value) {
                 return $row[$attribute] == $value;
             });
+
             $subsetProbability = count($subset) / count($data);
-            $subsetEntropy += $subsetProbability * $this->calculateEntropy($subset, $labelAttribute);
+            $subsetEntropy += $subsetProbability * $this->entropy($subset, $label);
         }
 
-        return $totalEntropy - $subsetEntropy;
+        return round($parentEntropy - round($subsetEntropy, 10), 10);
     }
 
-    public function calculateGainRatio($data, $attribute, $labelAttribute)
+    private function entropy(array $data, string $label): float
     {
-        $gain = $this->calculateGain($data, $attribute, $labelAttribute);
-        $splitInfo = $this->calculateSplitInfo($data, $attribute);
+        $total = count($data);
+        $labelCount = array_count_values(array_column($data, $label));
+        $entropy = 0.0;
 
-        if ($splitInfo == 0) {
-            return 0; // Avoid division by zero
+        foreach ($labelCount as $count) {
+            $probability = $count / $total;
+            $entropy -= $probability * log($probability, 2);
         }
 
-        return $gain / $splitInfo;
+        return round($entropy, 10);
     }
 
-    public function processNode($data, $attributes, $labelAttribute)
+    private function calculateGain(array $data, string $label, array $attributes): array
     {
-        $output = [];
+        $gains = [];
+        $highestGain = 0;
         $bestAttribute = null;
-        $bestGainRatio = -INF;
 
         foreach ($attributes as $attribute) {
-            $gain = $this->calculateGain($data, $attribute, $labelAttribute);
-            $splitInfo = $this->calculateSplitInfo($data, $attribute);
-            $gainRatio = $this->calculateGainRatio($data, $attribute, $labelAttribute);
+            $gains[$attribute] = $this->gain($data, $label, $attribute);
 
-            // Prepare the structure of the output based on the Excel calculation format
-            $attributeData = [
-                'GAIN' => $gain,
-                'SPLIT_INFO' => $splitInfo,
-                'GAIN_RATIO' => $gainRatio,
-            ];
-
-            $values = array_unique(array_column($data, $attribute));
-            foreach ($values as $value) {
-                $subset = array_filter($data, function ($row) use ($attribute, $value) {
-                    return $row[$attribute] == $value;
-                });
-                $labelCounts = array_count_values(array_column($subset, $labelAttribute));
-                $entropy = $this->calculateEntropy($subset, $labelAttribute);
-
-                // Add details to attribute data
-                $attributeData[$value] = [
-                    'label_counts' => $labelCounts,
-                    'entropy' => $entropy,
-                    'probability' => count($subset) / count($data),
-                ];
-            }
-
-            $output[$attribute] = $attributeData;
-
-            // Select the best attribute based on Gain Ratio
-            if ($gainRatio > $bestGainRatio) {
-                $bestGainRatio = $gainRatio;
+            if ($gains[$attribute] > $highestGain) {
+                $highestGain = $gains[$attribute];
                 $bestAttribute = $attribute;
             }
         }
 
-        // Add the best attribute to the output
-        $output['best_attribute'] = $bestAttribute;
+        return [
+            'highest_gain' => $highestGain,
+            'best_attribute' => $bestAttribute,
+            'gains' => $gains,
+        ];
+    }
 
-        return $output;
+    private function countOnLabel(array $data, string $label, string $labelValue)
+    {
+        $filter = array_filter($data, function ($_data) use ($label, $labelValue) {
+            return $_data[$label] == $labelValue;
+        });
+
+        return count($filter);
+    }
+
+    private function tableProcess(array $data, string $label, int $depth = 0, array $attributes): array
+{
+    $table = [];
+    $_data = $data;
+
+    // Check if data is empty
+    if (empty($_data)) {
+        return $table; // Return an empty table if no data is provided
+    }
+
+    // Calculate the overall entropy for the current node
+    $entropy = $this->entropy($_data, $label);
+    $total = count($_data);
+
+    // Get unique values of the label
+    $labelValues = array_unique(array_column($_data, $label));
+
+    // Initialize label value data for the current depth
+    $labelValueData = [];
+
+    // Count occurrences of each label value
+    foreach ($labelValues as $labelValue) {
+        $labelValueData[$labelValue] = $this->countOnLabel($_data, $label, $labelValue);
+    }
+
+    // Add the current depth entry to the table
+    $table[] = [
+        'depth' => $depth,
+        'total' => $total,
+        'entropy' => $entropy,
+        'labelValues' => $labelValueData,
+    ];
+
+    // If all instances have the same label, this is a leaf node
+    if (count($labelValues) === 1) {
+        return $table; // No need to process further, it's a pure node
+    }
+
+    $bestGain = 0;
+    $bestAttribute = null;
+
+    foreach ($attributes as $attribute) {
+        $gain = $this->gain($_data, $label, $attribute);
+        if ($gain > $bestGain) {
+            $bestGain = $gain;
+            $bestAttribute = $attribute;
+        }
+
+        // Add gain calculations to the table
+        $attributeValues = array_unique(array_column($_data, $attribute));
+        foreach ($attributeValues as $attributeValue) {
+            // Create a detailed entry for this attribute's processing
+            $subset = array_filter($_data, function ($row) use ($attribute, $attributeValue) {
+                return $row[$attribute] == $attributeValue;
+            });
+            $subsetEntropy = $this->entropy($subset, $label);
+            $subsetCount = count($subset);
+            $subsetProbability = $subsetCount / $total;
+
+            $table[] = [
+                'depth' => $depth,
+                'attribute' => $attribute,
+                'attribute_value' => $attributeValue,
+                'subset_count' => $subsetCount,
+                'subset_entropy' => $subsetEntropy,
+                'subset_probability' => round($subsetProbability, 4),
+                'gain' => round($gain, 10),
+            ];
+        }
+    }
+
+    // Recursively process deeper nodes using the best attribute for splitting
+    if ($bestAttribute) {
+        $attributeValues = array_unique(array_column($_data, $bestAttribute));
+        foreach ($attributeValues as $attributeValue) {
+            $subset = array_filter($_data, function ($row) use ($bestAttribute, $attributeValue) {
+                return $row[$bestAttribute] == $attributeValue;
+            });
+
+            if (!empty($subset)) {
+                // Recursively process this subset at a deeper level
+                $table = array_merge($table, $this->tableProcess($subset, $label, $depth + 1, $attributes));
+            }
+        }
+    }
+
+    return $table;
+}
+
+
+
+
+    private function buildTree(array $data, string $label, array $attributes): array
+    {
+        // Base case: if all data have the same label or no more attributes to split
+        if (count(array_unique(array_column($data, $label))) === 1 || empty($attributes)) {
+            // Return the value of 'berat_badan_per_tinggi_badan' in the leaf node
+            return [
+                'name' => array_values(array_unique(array_column($data, $label)))[0],
+                'isLeaf' => true,
+            ];
+        }
+
+        // Calculate gain for each attribute and get the best attribute
+        $gainInfo = $this->calculateGain($data, $label, $attributes);
+        $bestAttribute = $gainInfo['best_attribute'];
+
+        if (!$bestAttribute) {
+            // If no best attribute, treat this as a leaf node and display the label value
+            return [
+                'name' => array_values(array_unique(array_column($data, $label)))[0],
+                'isLeaf' => true,
+            ];
+        }
+
+        // Split data by the best attribute
+        $values = array_unique(array_column($data, $bestAttribute));
+        $tree = [
+            'name' => $bestAttribute,
+            'isLeaf' => false,
+            'children' => [],
+        ];
+
+        foreach ($values as $value) {
+            // Filter the data based on the attribute's value
+            $subset = array_filter($data, function ($row) use ($bestAttribute, $value) {
+                return $row[$bestAttribute] == $value;
+            });
+
+            // Remove the used attribute and recursively build the subtree
+            $remainingAttributes = array_diff($attributes, [$bestAttribute]);
+            $child = $this->buildTree($subset, $label, $remainingAttributes);
+
+            $tree['children'][] = [
+                'attribute_value' => $value,
+                'node' => $child,
+            ];
+        }
+
+        return $tree;
+    }
+
+    private function extractRules(array $tree, string $parentRule = ''): array
+    {
+        $rules = [];
+
+        // Check if the current node is not a leaf
+        if (!$tree['isLeaf']) {
+            $root = $tree['name'];
+
+            // Loop through the children of the current node
+            foreach ($tree['children'] as $child) {
+                // Build the current rule
+                $currentRule = $parentRule . "IF '{$root}' IS '{$child['attribute_value']}'\n";
+
+                if (!$child['node']['isLeaf']) {
+                    // If the child node is not a leaf, recursively append rules from the subtree
+                    $subRules = $this->extractRules($child['node'], $currentRule);
+                    $rules = array_merge($rules, $subRules); // Merge the recursive results
+                } else {
+                    // For leaf nodes, append the final classification rule
+                    $rules[] = $currentRule . "  THEN '{$child['node']['name']}'";
+                }
+            }
+        }
+
+        return $rules;
     }
 
     public function fetchTreeDataset1()
     {
-        $data = Dataset1::all()->toArray();
-        $attributes = ["usia", "berat_badan_per_usia", "tinggi_badan_per_usia"];
-        $labelAttribute = "berat_badan_per_tinggi_badan"; // Specify the label attribute
-        $rootNodeData = $this->processNode($data, $attributes, $labelAttribute);
-        return response()->json($rootNodeData);
+        $data = Dataset1::select([
+            'usia',
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+            'berat_badan_per_tinggi_badan',
+        ])->get()->toArray();
+
+        if ($data == []) {
+            return response()->json([]);
+        }
+
+        $attributes = [
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+            'usia',
+        ];
+        $label = 'berat_badan_per_tinggi_badan';
+
+        $table = $this->tableProcess($data, $label, 0, $attributes);
+
+        dd($table);
+        $tree = $this->buildTree($data, $label, $attributes);
+        $rules = $this->extractRules($tree);
+
+        $data = array_merge($tree, ['rules' => $rules]);
+
+        return response()->json($data);
     }
 
     public function fetchTreeDataset2()
     {
-        $data = Dataset2::all()->toArray();
-        $attributes = ["usia", "menu"];
-        $labelAttribute = "keterangan"; // Specify the label attribute
-        $rootNodeData = $this->processNode($data, $attributes, $labelAttribute);
-        return response()->json($rootNodeData);
+        $data = Dataset2::select([
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+            'keterangan'
+        ])->get()->toArray();
+
+        if ($data == []) {
+            return response()->json([]);
+        }
+
+        $attributes = [
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+        ];
+        $label = 'keterangan';
+
+        $tree = $this->buildTree($data, $label, $attributes);
+        $rules = $this->extractRules($tree);
+
+        $data = array_merge($tree, ['rules' => $rules]);
+
+        return response()->json($data);
     }
 }

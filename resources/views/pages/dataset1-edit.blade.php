@@ -17,11 +17,12 @@
                 <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama" value="{{ $dataset1->nama }}">
             </div>
             <div class="mb-3">
-                <label for="usia" class="form-label">Usia (bulan)</label>
+                <label for="usia" class="form-label">Usia</label>
                 <select class="form-select" id="usia" name="usia">
-                    @for ($i = 1; $i <= 70; $i++)
-                        <option value="{{ $i }}" {{ $dataset1->usia == $i ? 'selected' : '' }}>{{ $i }}</option>
-                    @endfor
+                    <option value="{{ ucwords('fase 1') }}"  @selected(strtolower($dataset1->usia) == strtolower('fase 1'))>fase 1</option>
+                    <option value="{{ ucwords('fase 2') }}"  @selected(strtolower($dataset1->usia) == strtolower('fase 2'))>fase 2</option>
+                    <option value="{{ ucwords('fase 3') }}"  @selected(strtolower($dataset1->usia) == strtolower('fase 3'))>fase 3</option>
+                    <option value="{{ ucwords('fase 4') }}"  @selected(strtolower($dataset1->usia) == strtolower('fase 4'))>fase 4</option>
                 </select>
             </div>
             <div class="mb-3">
