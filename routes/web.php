@@ -46,9 +46,6 @@ Route::middleware("auth")->group(function () {
 
     Route::get('/profile/{id:id}', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile/{id:id}', [ProfileController::class, 'update'])->name('profile.update');
-
-    Route::get('/mining/calculation-table-1', [C45Controller::class, 'fetchCalculationTableDataset1']);
-    Route::get('/mining/calculation-table-2', [C45Controller::class, 'fetchCalculationTableDataset2']);
 });
 
 Route::get('/mining-dataset-1', [C45Controller::class, 'fetchTreeDataset1'])->name('proses-mining-dataset-1');
