@@ -42,6 +42,18 @@
         Data Training 2
       </a>
     </li>
+    <li>
+      <a href="{{ route('testModel') }}" class="nav-link link-dark" style="color:#25396F;">
+        <i class="bi bi-database-up"></i>
+        Data Testing 1
+      </a>
+    </li>
+    <li>
+      <a href="{{ route('datatrain2.index') }}" class="nav-link link-dark" style="color:#25396F;">
+        <i class="bi bi-database-up"></i>
+        Data Testing 2
+      </a>
+    </li>
     <li class="nav-item py-3 fw-bolder">Profil</li>
     <li>
       <button class="nav-link link-dark mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#profileDetail" aria-expanded="false" aria-controls="profileDetail" style="color:#25396F;">

@@ -50,3 +50,7 @@ Route::middleware("auth")->group(function () {
 
 Route::get('/mining-dataset-1', [C45Controller::class, 'fetchTreeDataset1'])->name('proses-mining-dataset-1');
 Route::get('/mining-dataset-2', [C45Controller::class, 'fetchTreeDataset2'])->name('proses-mining-dataset-2');
+
+Route::get('/datatesting1', [C45Controller::class, 'showTestForm'])->name('showTestForm');
+Route::post('/datatesting1', [C45Controller::class, 'testModel'])->name('testModel');
+Route::post('/classification_results', [C45Controller::class, 'testModels'])->name('testModels');
