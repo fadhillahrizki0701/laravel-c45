@@ -8,7 +8,6 @@ use App\Models\Dataset2;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
-
 class C45Controller extends Controller
 {
     private function gain(array $data, string $label, string $attribute): float
@@ -162,6 +161,7 @@ class C45Controller extends Controller
 
         return $table;
     }
+
     private function buildTree(array $data, string $label, array $attributes): array
     {
         // Base case: if all data have the same label or no more attributes to split
@@ -285,7 +285,6 @@ class C45Controller extends Controller
 
         $table = $this->tableProcess($data, $label, 0, $attributes);
 
-
         $tree = $this->buildTree($data, $label, $attributes);
         $rules = $this->extractRules($tree);
 
@@ -348,7 +347,7 @@ class C45Controller extends Controller
     }
 
     // Fungsi untuk melakukan prediksi berdasarkan pohon keputusan
-    private function predict(array $tree, array $data)
+    public function predict(array $tree, array $data)
     {
         if ($tree['isLeaf']) {
             return $tree['name']; // Jika sudah mencapai leaf, return label
@@ -370,7 +369,7 @@ class C45Controller extends Controller
             $path = $request->file("file")->storeAs("temp", "uploaded_file.xlsx");
 
             // Read the Excel file that has been uploaded
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(storage_path("app/" . $path));
+            $spreadsheet = PhpSpreadsheet::load(storage_path("app/" . $path));
             $worksheet = $spreadsheet->getActiveSheet();
 
             $classificationResults = [];
@@ -420,6 +419,4 @@ class C45Controller extends Controller
             return view('classification_results', ['results' => $classificationResults]);
         }
     }
-
-
 }
