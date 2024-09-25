@@ -5,6 +5,7 @@ use App\Http\Controllers\Dataset1Controller;
 use App\Http\Controllers\Dataset2Controller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Datatest1Controller;
+use App\Http\Controllers\Datatest2Controller;
 use App\Http\Controllers\Datatrain1Controller;
 use App\Http\Controllers\Datatrain2Controller;
 use App\Http\Controllers\LoginController;
@@ -50,6 +51,7 @@ Route::middleware("auth")->group(function () {
     Route::put('/profile/{id:id}', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::resource('/datatest1', Datatest1Controller::class);
+    Route::resource('/datatest2', Datatest2Controller::class);
 
     // Route::get('/datatesting1', [C45Controller::class, 'showTestForm'])->name('showTestForm');
     // Route::post('/datatesting1', [C45Controller::class, 'testModel'])->name('testModel');

@@ -263,6 +263,30 @@ class C45Controller extends Controller
         return $tree;
     }
 
+    public function fetchTreeDataset2Internal()
+    {
+        $data = Dataset2::select([
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+            'keterangan'
+        ])->get()->toArray();
+
+        if ($data == []) {
+            return [];
+        }
+
+        $attributes = [
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+        ];
+        $label = 'keterangan';
+
+        $tree = $this->buildTree($data, $label, $attributes);
+        return $tree;
+    }
+
     public function fetchTreeDataset1()
     {
         $data = Dataset1::select([

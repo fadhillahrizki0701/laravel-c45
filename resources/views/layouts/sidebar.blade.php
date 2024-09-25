@@ -49,7 +49,7 @@
       </a>
     </li>
     <li>
-      <a href="{{ route('datatrain2.index') }}" class="nav-link link-dark" style="color:#25396F;">
+      <a href="{{ route('datatest2.index') }}" class="nav-link link-dark" style="color:#25396F;">
         <i class="bi bi-database-up"></i>
         Data Testing 2
       </a>

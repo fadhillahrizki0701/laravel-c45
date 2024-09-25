@@ -6,14 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\C45\C45Controller;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
-class Datatest1Controller extends Controller
+class Datatest2Controller extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('pages.datatest1-index');
+        return view('pages.datatest2-index');
     }
 
     /**
@@ -100,7 +100,7 @@ class Datatest1Controller extends Controller
         }
 
         // Pass the classification results to the view
-        return view('pages.datatest1-index', ['predictedLabels' => $classificationResults]);
+        return view('pages.datatest2-index', ['predictedLabels' => $classificationResults]);
     }
 
     /**
