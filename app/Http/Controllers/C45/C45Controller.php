@@ -321,32 +321,6 @@ class C45Controller extends Controller
         return response()->json($data);
     }
 
-    public function showTestForm()
-    {
-        return view('data-test1');
-    }
-
-    // app/Http/Controllers/C45/C45Controller.php
-    public function testModel(Request $request)
-    {
-        // Data uji baru dari form input
-        $newData = [
-            'usia' => $request->input('usia'),
-            'berat_badan_per_usia' => $request->input('berat_badan_per_usia'),
-            'tinggi_badan_per_usia' => $request->input('tinggi_badan_per_usia'),
-        ];
-
-        // Ambil model pohon keputusan dari Dataset1
-        $tree = $this->fetchTreeDataset1Internal(); // Mengambil pohon sebagai array
-
-        // Prediksi label berdasarkan pohon keputusan
-        $predictedLabel = $this->predict($tree, $newData);
-
-        // Tampilkan hasil prediksi di view
-        return view('data-test1', compact('predictedLabel', 'newData'));
-    }
-
-    // Fungsi untuk melakukan prediksi berdasarkan pohon keputusan
     public function predict(array $tree, array $data)
     {
         if ($tree['isLeaf']) {
@@ -360,63 +334,5 @@ class C45Controller extends Controller
         }
 
         return null;
-    }
-
-    public function testModels(Request $request)
-    {
-        if ($request->hasFile("file")) {
-            // Save the uploaded file temporarily without saving its path in the model
-            $path = $request->file("file")->storeAs("temp", "uploaded_file.xlsx");
-
-            // Read the Excel file that has been uploaded
-            $spreadsheet = PhpSpreadsheet::load(storage_path("app/" . $path));
-            $worksheet = $spreadsheet->getActiveSheet();
-
-            $classificationResults = [];
-
-            // Iterate over each row in the worksheet
-            foreach ($worksheet->getRowIterator() as $rowIndex => $row) {
-                // Skip header (assuming first row is the header)
-                if ($rowIndex == 1) {
-                    continue;
-                }
-
-                $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(false);
-
-                $rowData = [];
-                foreach ($cellIterator as $cell) {
-                    $rowData[] = $cell->getValue();
-                }
-
-                // Ensure the row has at least 5 columns and 'nama' is not null
-                if (count($rowData) < 5 || empty($rowData[1])) {
-                    continue; // Skip invalid rows
-                }
-
-                // Classify the data using your existing classification logic
-                $data = [
-                    "usia" => $rowData[2],
-                    "berat_badan_per_usia" => ucwords($rowData[3]),
-                    "tinggi_badan_per_usia" => ucwords($rowData[4]),
-                ];
-
-                // Assuming you have a method to classify the data, e.g., `predict()`
-                $tree = $this->fetchTreeDataset1Internal(); // Load the decision tree
-                $predictedLabel = $this->predict($tree, $data);
-
-                // Store the results to display in a table
-                $classificationResults[] = [
-                    "nama" => $rowData[1],
-                    "usia" => $rowData[2],
-                    "berat_badan_per_usia" => ucwords($rowData[3]),
-                    "tinggi_badan_per_usia" => ucwords($rowData[4]),
-                    "predicted_label" => $predictedLabel,
-                ];
-            }
-
-            // Pass the classification results to the view
-            return view('classification_results', ['results' => $classificationResults]);
-        }
     }
 }
