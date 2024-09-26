@@ -145,6 +145,7 @@
                         <th scope="col">No</th>
                         <th scope="col">Usia</th>
                         <th scope="col">BB/TB</th>
+                        <th scope="col">Menu</th>
                         <th scope="col">Keterangan</th>
                     </tr>
                 </thead>
@@ -153,6 +154,7 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $predictedLabel['usia'] }}</td>
+                            <td>{{ $predictedLabel['menu'] }}</td>
                             <td>{{ $predictedLabel['berat_badan_per_tinggi_badan'] }}</td>
                             <td><strong>{{ $predictedLabel['predicted_label'] }}</strong></td>
                         </tr>
