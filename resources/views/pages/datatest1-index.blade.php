@@ -18,16 +18,14 @@
 
     @include('pages.partials.session-notification')
 
-    @hasanyrole('admin|admin puskesmas')
-        <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-            Cek Klasifikasi
+    <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Cek Klasifikasi
+    </button>
+    @if (isset($predictedLabel) && isset($data))
+        <button type="button" class="btn btn-info my-4" data-bs-toggle="modal" data-bs-target="#classificationResult">
+            Lihat Hasil Klasifikasi
         </button>
-        @if (isset($predictedLabel) && isset($data))
-            <button type="button" class="btn btn-info my-4" data-bs-toggle="modal" data-bs-target="#classificationResult">
-                Lihat Hasil Klasifikasi
-            </button>
-        @endif
-    @endhasanyrole
+    @endif
 
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -137,6 +135,8 @@
             </div>
         </div>
     @endif
+    
+    <hr class="my-4" />
 
     <section class="my-3 mb-5">
         <form action="{{ route('datatest1.store') }}" method="POST" enctype="multipart/form-data">
