@@ -77,8 +77,6 @@ class Datatest2Controller extends Controller
                 continue; // Skip invalid rows
             }
 
-            // dd($rowData[1], $rowData[2], $rowData[3]);
-
             // Classify the data using your existing classification logic
             $data = [
                 "usia" => ucwords($rowData[1]),

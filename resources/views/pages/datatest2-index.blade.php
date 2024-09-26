@@ -21,7 +21,7 @@
     <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
         Cek Klasifikasi
     </button>
-    @if (isset($predictedLabel) && isset($data))
+    @if ((isset($predictedLabel) || is_null($predictedLabel)) && isset($data))
         <button type="button" class="btn btn-info my-4" data-bs-toggle="modal" data-bs-target="#classificationResult">
             Lihat Hasil Klasifikasi
         </button>
@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    @if (isset($predictedLabel) && isset($data))
+    @if ((isset($predictedLabel) || is_null($predictedLabel)) && isset($data))
         <div class="modal fade" id="classificationResult" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="classificationResult" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -112,7 +112,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="keterangan" class="form-label" title="Berat Badan per Tinggi Badan">Hasil Klasifikasi (Keterangan)</label>
-                                <input type="text" class="form-control" name="keterangan" id="keterangan" value="{{ $predictedLabel }}" readonly>
+                                <input type="text" class="form-control" name="keterangan" id="keterangan" value="{{ $predictedLabel ?? "Tidak Diketahui" }}" readonly>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -156,7 +156,7 @@
                             <td>{{ $predictedLabel['usia'] }}</td>
                             <td>{{ $predictedLabel['menu'] }}</td>
                             <td>{{ $predictedLabel['berat_badan_per_tinggi_badan'] }}</td>
-                            <td><strong>{{ $predictedLabel['predicted_label'] }}</strong></td>
+                            <td><strong>{{ $predictedLabel['predicted_label'] ?? 'Tidak Diketahui' }}</strong></td>
                         </tr>
                     @endforeach
                 </tbody>
