@@ -80,7 +80,7 @@ class Datatest1Controller extends Controller
 
             // Classify the data using your existing classification logic
             $data = [
-                "usia" => $rowData[2],
+                "usia" => ucwords($rowData[2]),
                 "berat_badan_per_usia" => ucwords($rowData[3]),
                 "tinggi_badan_per_usia" => ucwords($rowData[4]),
             ];
@@ -92,7 +92,7 @@ class Datatest1Controller extends Controller
             // Store the results to display in a table
             $classificationResults[] = [
                 "nama" => $rowData[1],
-                "usia" => $rowData[2],
+                "usia" => ucwords($rowData[2]),
                 "berat_badan_per_usia" => ucwords($rowData[3]),
                 "tinggi_badan_per_usia" => ucwords($rowData[4]),
                 "predicted_label" => $predictedLabel,

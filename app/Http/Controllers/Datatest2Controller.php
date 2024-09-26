@@ -33,20 +33,19 @@ class Datatest2Controller extends Controller
 
         if (!$request->hasFile("file")) {
             $data = $this->validate($request, [
-                "nama" => "nullable",
                 "usia" => "required",
-                "berat_badan_per_usia" => "required",
-                "tinggi_badan_per_usia" => "required",
+                "berat_badan_per_tinggi_badan" => "required",
+                "menu" => "required",
             ]);
     
-            // Ambil model pohon keputusan dari Dataset1
-            $tree = $c45->fetchTreeDataset1Internal(); // Mengambil pohon sebagai array
+            // Ambil model pohon keputusan dari Dataset2
+            $tree = $c45->fetchTreeDataset2Internal(); // Mengambil pohon sebagai array
     
             // Prediksi label berdasarkan pohon keputusan
             $predictedLabel = $c45->predict($tree, $data);
-    
+
             // Tampilkan hasil prediksi di view
-            return view('pages.datatest1-index', compact('predictedLabel', 'data'));
+            return view('pages.datatest2-index', compact('predictedLabel', 'data'));
         }
 
         // Save the uploaded file temporarily without saving its path in the model
@@ -73,28 +72,29 @@ class Datatest2Controller extends Controller
                 $rowData[] = $cell->getValue();
             }
 
-            // Ensure the row has at least 5 columns and 'nama' is not null
-            if (count($rowData) < 5 || empty($rowData[1])) {
+            // Ensure the row has at least 4 columns
+            if (count($rowData) < 4) {
                 continue; // Skip invalid rows
             }
 
+            // dd($rowData[1], $rowData[2], $rowData[3]);
+
             // Classify the data using your existing classification logic
             $data = [
-                "usia" => $rowData[2],
-                "berat_badan_per_usia" => ucwords($rowData[3]),
-                "tinggi_badan_per_usia" => ucwords($rowData[4]),
+                "usia" => ucwords($rowData[1]),
+                "berat_badan_per_tinggi_badan" => ucwords($rowData[2]),
+                "menu" => ucwords($rowData[3]),
             ];
 
             // Assuming you have a method to classify the data, e.g., `predict()`
-            $tree = $c45->fetchTreeDataset1Internal(); // Load the decision tree
+            $tree = $c45->fetchTreeDataset2Internal(); // Load the decision tree
             $predictedLabel = $c45->predict($tree, $data);
 
             // Store the results to display in a table
             $classificationResults[] = [
-                "nama" => $rowData[1],
-                "usia" => $rowData[2],
-                "berat_badan_per_usia" => ucwords($rowData[3]),
-                "tinggi_badan_per_usia" => ucwords($rowData[4]),
+                "usia" => ucwords($rowData[1]),
+                "berat_badan_per_tinggi_badan" => ucwords($rowData[2]),
+                "menu" => ucwords($rowData[3]),
                 "predicted_label" => $predictedLabel,
             ];
         }

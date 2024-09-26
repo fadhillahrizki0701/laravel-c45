@@ -10,7 +10,6 @@ use App\Http\Controllers\Datatrain1Controller;
 use App\Http\Controllers\Datatrain2Controller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
