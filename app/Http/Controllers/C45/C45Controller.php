@@ -359,4 +359,61 @@ class C45Controller extends Controller
 
         return null;
     }
+
+    public function calculateAccuracy()
+    {
+        // Ambil semua data dari Dataset1
+        $data = Dataset1::select([
+            'usia',
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+            'berat_badan_per_tinggi_badan',
+        ])->get()->toArray();
+
+        if (empty($data)) {
+            return response()->json([
+                'accuracy' => 0,
+                'message' => 'No data available for testing.',
+            ]);
+        }
+
+        // Tentukan atribut dan label
+        $attributes = [
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+            'usia',
+        ];
+        $label = 'berat_badan_per_tinggi_badan';
+
+        // Split data menjadi 80% untuk training dan 20% untuk testing
+        $splitRatio = 0.8;
+        $trainSize = (int) (count($data) * $splitRatio);
+        $trainData = array_slice($data, 0, $trainSize);
+        $testData = array_slice($data, $trainSize);
+
+        // Bangun pohon keputusan menggunakan data training
+        $tree = $this->buildTree($trainData, $label, $attributes);
+
+        // Lakukan prediksi pada data testing
+        $correctPredictions = 0;
+        foreach ($testData as $testRow) {
+            $predictedLabel = $this->predict($tree, $testRow);
+            $actualLabel = $testRow[$label];
+
+            if ($predictedLabel == $actualLabel) {
+                $correctPredictions++;
+            }
+        }
+
+        // Hitung akurasi
+        $totalTestData = count($testData);
+        $accuracy = ($correctPredictions / $totalTestData) * 100;
+
+        return response()->json([
+            'accuracy' => round($accuracy, 2),
+            'correct_predictions' => $correctPredictions,
+            'total_test_data' => $totalTestData,
+        ]);
+    }
+
 }
