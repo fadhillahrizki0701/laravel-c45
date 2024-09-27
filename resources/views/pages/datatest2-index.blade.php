@@ -21,7 +21,7 @@
     <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
         Cek Klasifikasi
     </button>
-    @if ((isset($predictedLabel) && is_null($predictedLabel)) && isset($data))
+    @if (isset($predictedLabel) && isset($data))
         <button type="button" class="btn btn-info my-4" data-bs-toggle="modal" data-bs-target="#classificationResult">
             Lihat Hasil Klasifikasi
         </button>
@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    @if ((isset($predictedLabel) && is_null($predictedLabel)) && isset($data))
+    @if (isset($predictedLabel) && isset($data))
         <div class="modal fade" id="classificationResult" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="classificationResult" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
