@@ -360,36 +360,19 @@ class C45Controller extends Controller
         return null;
     }
 
-    public function calculateAccuracy()
+    public function calculateAccuracy(array $dataTrain, array $dataTest, array $attributes, string $label)
     {
-        // Ambil semua data dari Dataset1
-        $data = Dataset1::select([
-            'usia',
-            'berat_badan_per_usia',
-            'tinggi_badan_per_usia',
-            'berat_badan_per_tinggi_badan',
-        ])->get()->toArray();
-
-        if (empty($data)) {
+        if (empty($dataTrain) || empty($dataTest)) {
             return response()->json([
                 'accuracy' => 0,
                 'message' => 'No data available for testing.',
             ]);
         }
 
-        // Tentukan atribut dan label
-        $attributes = [
-            'berat_badan_per_usia',
-            'tinggi_badan_per_usia',
-            'usia',
-        ];
-        $label = 'berat_badan_per_tinggi_badan';
-
-        // Split data menjadi 80% untuk training dan 20% untuk testing
-        $splitRatio = 0.8;
-        $trainSize = (int) (count($data) * $splitRatio);
-        $trainData = array_slice($data, 0, $trainSize);
-        $testData = array_slice($data, $trainSize);
+        // $splitRatio = 0.1;
+        // $trainSize = (int) (count($data) * $splitRatio);
+        $trainData = $dataTrain;
+        $testData = $dataTest;
 
         // Bangun pohon keputusan menggunakan data training
         $tree = $this->buildTree($trainData, $label, $attributes);
@@ -398,7 +381,7 @@ class C45Controller extends Controller
         $correctPredictions = 0;
         foreach ($testData as $testRow) {
             $predictedLabel = $this->predict($tree, $testRow);
-            $actualLabel = $testRow[$label];
+            $actualLabel = $testRow['predicted_label'];
 
             if ($predictedLabel == $actualLabel) {
                 $correctPredictions++;
@@ -409,11 +392,10 @@ class C45Controller extends Controller
         $totalTestData = count($testData);
         $accuracy = ($correctPredictions / $totalTestData) * 100;
 
-        return response()->json([
+        return [
             'accuracy' => round($accuracy, 2),
             'correct_predictions' => $correctPredictions,
             'total_test_data' => $totalTestData,
-        ]);
+        ];
     }
-
 }

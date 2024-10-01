@@ -176,6 +176,14 @@
                 </tbody>
             </table>
         </section>
+
+        @if(count($accuracy) > 0)
+        <section class="bg-light my-4 d-flex flex-column gap-1 border border-2 rounded p-4 fs-5">
+            <div class="m-0">
+                <p class="m-0 p-0">Akurasi : {{ $accuracy['accuracy'] }}% (<span class="text-success">{{ $accuracy['correct_predictions'] }}/</span>{{ $accuracy['total_test_data'] }})</p>
+            </div>
+        </section>
+        @endif
     @endif
 </section>
 @endsection

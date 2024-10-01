@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\C45\C45Controller;
+use App\Models\Dataset1;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class Datatest1Controller extends Controller
@@ -30,6 +31,8 @@ class Datatest1Controller extends Controller
     public function store(Request $request)
     {
         $c45 = new C45Controller();
+        
+        $tree = $c45->fetchTreeDataset1Internal();
 
         if (!$request->hasFile("file")) {
             $data = $this->validate($request, [
@@ -40,7 +43,6 @@ class Datatest1Controller extends Controller
             ]);
     
             // Ambil model pohon keputusan dari Dataset1
-            $tree = $c45->fetchTreeDataset1Internal(); // Mengambil pohon sebagai array
     
             // Prediksi label berdasarkan pohon keputusan
             $predictedLabel = $c45->predict($tree, $data);
@@ -86,7 +88,6 @@ class Datatest1Controller extends Controller
             ];
 
             // Assuming you have a method to classify the data, e.g., `predict()`
-            $tree = $c45->fetchTreeDataset1Internal(); // Load the decision tree
             $predictedLabel = $c45->predict($tree, $data);
 
             // Store the results to display in a table
@@ -99,8 +100,25 @@ class Datatest1Controller extends Controller
             ];
         }
 
+        $data = Dataset1::select([
+            'nama',
+            'usia',
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+            'berat_badan_per_tinggi_badan',
+        ])->get()->toArray();
+
+        $accuracy = $c45->calculateAccuracy($data, $classificationResults, [
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+            'usia',
+        ], 'berat_badan_per_tinggi_badan');
+
         // Pass the classification results to the view
-        return view('pages.datatest1-index', ['predictedLabels' => $classificationResults]);
+        return view('pages.datatest1-index', [
+            'predictedLabels' => $classificationResults,
+            'accuracy' => $accuracy,
+        ]);
     }
 
     /**
