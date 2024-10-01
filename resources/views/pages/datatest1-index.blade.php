@@ -179,9 +179,56 @@
 
         @if(count($accuracy) > 0)
         <section class="bg-light my-4 d-flex flex-column gap-1 border border-2 rounded p-4 fs-5">
-            <div class="m-0">
-                <p class="m-0 p-0">Akurasi : {{ $accuracy['accuracy'] }}% (<span class="text-success">{{ $accuracy['correct_predictions'] }}/</span>{{ $accuracy['total_test_data'] }})</p>
-            </div>
+            <details>
+                <summary><h5 class="d-inline">Hasil</h5></summary>
+                <br/>
+                <div class="m-0">
+                    <p class="m-0 p-0">Akurasi : {{ $accuracy['accuracy'] }}% <span class="text-secondary">(<span class="text-success">{{ $accuracy['correct_predictions'] }}</span>/{{ $accuracy['total_test_data'] }})</span></p>
+                </div>
+                <div class="m-0">
+                    <p class="m-0 p-0">Prediksi Benar : {{ $accuracy['correct_predictions'] }} data</p>
+                </div>
+                <div class="m-0">
+                    <p class="m-0 p-0">Total Data Uji : {{ $accuracy['total_test_data'] }} data</p>
+                </div>
+                <hr>
+            </details>
+            @if(count($rules) > 0)
+                <details>
+                    <summary><h5 class="d-inline">Rules</h5></summary>
+                    <br/>
+                    <ul style="list-style: none; margin-left: 0; padding-left: 0;">
+                        @foreach ($rules as $rule)
+                            @php
+                                // Split the rule into lines
+                                $lines = explode("\n", trim($rule));
+                                $indentLevel = 0;  // Track indentation for nested IF statements
+                            @endphp
+                            <li>
+                                @foreach ($lines as $line)
+                                    @if (strpos($line, 'IF') !== false)
+                                        @php
+                                            // Increase the indentation for nested IFs
+                                            $indentLevel++;
+                                            // Add indentation spaces based on the nesting level
+                                            $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel - 1);
+                                        @endphp
+                                        {!! $indentation . str_replace('IF', '├', $line) !!}<br>
+                                    @elseif (strpos($line, 'THEN') !== false)
+                                        @php
+                                            // Reset the indentation level for THEN
+                                            $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel);
+                                        @endphp
+                                        {!! $indentation . str_replace('THEN', '┗╸', $line) !!}<br>
+                                        @php $indentLevel = 0; @endphp  {{-- Reset for next rule set --}}
+                                    @endif
+                                @endforeach
+                            </li>
+                        @endforeach
+                    </ul>
+                    <hr>
+                </details>
+            @endif
         </section>
         @endif
     @endif

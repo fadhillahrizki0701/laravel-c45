@@ -212,7 +212,7 @@ class C45Controller extends Controller
         return $tree;
     }
 
-    private function extractRules(array $tree, string $parentRule = ''): array
+    public function extractRules(array $tree, string $parentRule = ''): array
     {
         $rules = [];
 
@@ -284,6 +284,7 @@ class C45Controller extends Controller
         $label = 'keterangan';
 
         $tree = $this->buildTree($data, $label, $attributes);
+
         return $tree;
     }
 
@@ -308,7 +309,6 @@ class C45Controller extends Controller
         $label = 'berat_badan_per_tinggi_badan';
 
         $table = $this->tableProcess($data, $label, 0, $attributes);
-
         $tree = $this->buildTree($data, $label, $attributes);
         $rules = $this->extractRules($tree);
 

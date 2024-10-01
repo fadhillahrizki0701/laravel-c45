@@ -114,10 +114,13 @@ class Datatest1Controller extends Controller
             'usia',
         ], 'berat_badan_per_tinggi_badan');
 
+        $rules = $c45->extractRules($tree);
+
         // Pass the classification results to the view
         return view('pages.datatest1-index', [
             'predictedLabels' => $classificationResults,
             'accuracy' => $accuracy,
+            'rules' => $rules,
         ]);
     }
 
