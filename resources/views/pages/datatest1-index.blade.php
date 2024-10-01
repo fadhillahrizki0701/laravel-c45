@@ -177,8 +177,8 @@
             </table>
         </section>
 
-        @if(count($accuracy) > 0)
         <section class="bg-light my-4 d-flex flex-column gap-1 border border-2 rounded p-4 fs-5">
+            @if(count($accuracy) > 0)
             <details>
                 <summary><h5 class="d-inline">Hasil</h5></summary>
                 <br/>
@@ -193,11 +193,13 @@
                 </div>
                 <hr>
             </details>
+            @endif
+
             @if(count($rules) > 0)
                 <details>
                     <summary><h5 class="d-inline">Rules</h5></summary>
                     <br/>
-                    <ul style="list-style: none; margin-left: 0; padding-left: 0;">
+                    <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary">
                         @foreach ($rules as $rule)
                             @php
                                 // Split the rule into lines
@@ -230,7 +232,6 @@
                 </details>
             @endif
         </section>
-        @endif
     @endif
 </section>
 @endsection
