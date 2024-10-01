@@ -312,7 +312,7 @@ class C45Controller extends Controller
         $tree = $this->buildTree($data, $label, $attributes);
         $rules = $this->extractRules($tree);
 
-        $data = array_merge($tree, ['rules' => $rules]);
+        $data = array_merge($tree, ['rules' => $rules], $table);
 
         return response()->json($data);
     }
@@ -392,10 +392,13 @@ class C45Controller extends Controller
         $totalTestData = count($testData);
         $accuracy = ($correctPredictions / $totalTestData) * 100;
 
+        $table = $this->tableProcess($dataTrain, $label, 0, $attributes);
+
         return [
             'accuracy' => round($accuracy, 2),
             'correct_predictions' => $correctPredictions,
             'total_test_data' => $totalTestData,
+            'table' => $table,
         ];
     }
 }
