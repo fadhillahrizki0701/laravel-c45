@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\C45\C45Controller;
+use App\Models\Dataset2;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class Datatest2Controller extends Controller
@@ -30,6 +31,8 @@ class Datatest2Controller extends Controller
     public function store(Request $request)
     {
         $c45 = new C45Controller();
+        
+        $tree = $c45->fetchTreeDataset2Internal();
 
         if (!$request->hasFile("file")) {
             $data = $this->validate($request, [
@@ -38,14 +41,13 @@ class Datatest2Controller extends Controller
                 "menu" => "required",
             ]);
     
-            // Ambil model pohon keputusan dari Dataset2
-            $tree = $c45->fetchTreeDataset2Internal(); // Mengambil pohon sebagai array
+            // Ambil model pohon keputusan dari Dataset1
     
             // Prediksi label berdasarkan pohon keputusan
             $predictedLabel = $c45->predict($tree, $data);
-
+    
             // Tampilkan hasil prediksi di view
-            return view('pages.datatest2-index', compact('predictedLabel', 'data'));
+            return view('pages.datatest1-index', compact('predictedLabel', 'data'));
         }
 
         // Save the uploaded file temporarily without saving its path in the model
@@ -85,7 +87,6 @@ class Datatest2Controller extends Controller
             ];
 
             // Assuming you have a method to classify the data, e.g., `predict()`
-            $tree = $c45->fetchTreeDataset2Internal(); // Load the decision tree
             $predictedLabel = $c45->predict($tree, $data);
 
             // Store the results to display in a table
@@ -97,8 +98,27 @@ class Datatest2Controller extends Controller
             ];
         }
 
+        $data = Dataset2::select([
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+            'keterangan',
+        ])->get()->toArray();
+
+        $accuracy = $c45->calculateAccuracy($data, $classificationResults, [
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+        ], 'keterangan');
+
+        $rules = $c45->extractRules($tree);
+
         // Pass the classification results to the view
-        return view('pages.datatest2-index', ['predictedLabels' => $classificationResults]);
+        return view('pages.datatest2-index', [
+            'predictedLabels' => $classificationResults,
+            'accuracy' => $accuracy,
+            'rules' => $rules,
+        ]);
     }
 
     /**
