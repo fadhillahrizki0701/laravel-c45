@@ -31,7 +31,7 @@
             <div class="mb-3">
                 <label for="menu" class="form-label">Menu Makanan</label>
                 <select class="form-select" id="menu" name="menu" placeholder="Silahkan Pilih">
-                    @for ($i = 1; $i <= 18; $i++)
+                    @for ($i = 1; $i <= 4; $i++)
                         <option value="M{{ $i }}" @selected($dataset2->menu == "M$i")>{{ "M{$i}" }}</option>
                     @endfor
                 </select>

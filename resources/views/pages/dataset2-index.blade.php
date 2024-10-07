@@ -57,7 +57,7 @@
                                 <label for="menu" class="form-label">Menu Makanan</label>
                                 <select class="form-select" id="menu" name="menu">
                                     <option selected disabled>-- Silahkan Pilih --</option>
-                                    @for ($i = 1; $i <= 18; $i++)
+                                    @for ($i = 1; $i <= 4; $i++)
                                         <option value="{{ "M$i" }}">{{ "M$i" }}</option>
                                     @endfor
                                 </select>

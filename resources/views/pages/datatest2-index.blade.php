@@ -59,7 +59,7 @@
                             <label for="menu" class="form-label">Menu Makanan</label>
                             <select class="form-select" id="menu" name="menu" placeholder="Silahkan Pilih">
                                 <option selected disabled>-- Silahkan Pilih --</option>
-                                @for ($i = 1; $i <= 18; $i++)
+                                @for ($i = 1; $i <= 4; $i++)
                                     <option value="M{{ $i }}">{{ "M{$i}" }}</option>
                                 @endfor
                             </select>
@@ -226,8 +226,8 @@
                             <th>Total Per Categories</th>
                             <th>Keterangan</th>
                             <th>Jumlah</th>
-                            <th>Gizi Baik</th>
-                            <th>Gizi Kurang</th>
+                            <th>Baik</th>
+                            <th>Tidak Baik</th>
                             <th>Entropy</th>
                             <th>Gain</th>
                         </tr>
