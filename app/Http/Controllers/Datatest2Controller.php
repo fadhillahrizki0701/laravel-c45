@@ -47,7 +47,7 @@ class Datatest2Controller extends Controller
             $predictedLabel = $c45->predict($tree, $data);
     
             // Tampilkan hasil prediksi di view
-            return view('pages.datatest1-index', compact('predictedLabel', 'data'));
+            return view('pages.datatest2-index', compact('predictedLabel', 'data'));
         }
 
         // Save the uploaded file temporarily without saving its path in the model
@@ -112,6 +112,8 @@ class Datatest2Controller extends Controller
         ], 'keterangan');
 
         $rules = $c45->extractRules($tree);
+
+        dd($accuracy);
 
         // Pass the classification results to the view
         return view('pages.datatest2-index', [
