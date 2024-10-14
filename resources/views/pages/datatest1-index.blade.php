@@ -232,35 +232,37 @@
                 </details>
             @endif
 
-            @if((count($accuracy) > 0) && (count($accuracy['table']) > 0))
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Node</th>
-                            <th>Total Per Categories</th>
-                            <th>Keterangan</th>
-                            <th>Jumlah</th>
-                            <th>Gizi Baik</th>
-                            <th>Gizi Kurang</th>
-                            <th>Entropy</th>
-                            <th>Gain</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($accuracy['table'] as $node)
+            @if (isset($accuracy['table']))
+                @if((count($accuracy) > 0) && (count($accuracy['table']) > 0))
+                    <table>
+                        <thead>
                             <tr>
-                                <td>{{ $node['depth'] }}</td>
-                                <td>{{ $node['total'] ?? '-' }}</td>
-                                <td>{{ $node['attribute'] ?? '-' }} : {{ $node['attribute_value'] ?? '-' }}</td>
-                                <td>{{ $node['subset_count'] ?? '-' }}</td>
-                                <td>{{ $node['labelValues']['Gizi Baik'] ?? '-' }}</td>
-                                <td>{{ $node['labelValues']['Gizi Kurang'] ?? '-' }}</td>
-                                <td>{{ $node['entropy'] ?? '-' }}</td>
-                                <td>{{ $node['gain'] ?? '-' }}</td>
+                                <th>Node</th>
+                                <th>Total Per Categories</th>
+                                <th>Keterangan</th>
+                                <th>Jumlah</th>
+                                <th>Gizi Baik</th>
+                                <th>Gizi Kurang</th>
+                                <th>Entropy</th>
+                                <th>Gain</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach($accuracy['table'] as $node)
+                                <tr>
+                                    <td>{{ $node['depth'] }}</td>
+                                    <td>{{ $node['total'] ?? '-' }}</td>
+                                    <td>{{ $node['attribute'] ?? '-' }} : {{ $node['attribute_value'] ?? '-' }}</td>
+                                    <td>{{ $node['subset_count'] ?? '-' }}</td>
+                                    <td>{{ $node['labelValues']['Gizi Baik'] ?? '-' }}</td>
+                                    <td>{{ $node['labelValues']['Gizi Kurang'] ?? '-' }}</td>
+                                    <td>{{ $node['entropy'] ?? '-' }}</td>
+                                    <td>{{ $node['gain'] ?? '-' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
             @endif
         </section>
     @endif

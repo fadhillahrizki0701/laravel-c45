@@ -31,7 +31,7 @@ class Datatest2Controller extends Controller
     public function store(Request $request)
     {
         $c45 = new C45Controller();
-        
+
         $tree = $c45->fetchTreeDataset2Internal();
 
         if (!$request->hasFile("file")) {
@@ -40,12 +40,12 @@ class Datatest2Controller extends Controller
                 "berat_badan_per_tinggi_badan" => "required",
                 "menu" => "required",
             ]);
-    
+
             // Ambil model pohon keputusan dari Dataset1
-    
+
             // Prediksi label berdasarkan pohon keputusan
             $predictedLabel = $c45->predict($tree, $data);
-    
+
             // Tampilkan hasil prediksi di view
             return view('pages.datatest2-index', compact('predictedLabel', 'data'));
         }
@@ -102,18 +102,16 @@ class Datatest2Controller extends Controller
             'usia',
             'berat_badan_per_tinggi_badan',
             'menu',
-            'keterangan',
+            'keterangan'
         ])->get()->toArray();
 
-        $accuracy = $c45->calculateAccuracy($data, $classificationResults, [
+        $accuracy = $c45->calculate($data, [
             'usia',
             'berat_badan_per_tinggi_badan',
             'menu',
-        ], 'keterangan');
+        ], 'keterangan', 0.73);
 
         $rules = $c45->extractRules($tree);
-
-        dd($accuracy);
 
         // Pass the classification results to the view
         return view('pages.datatest2-index', [
