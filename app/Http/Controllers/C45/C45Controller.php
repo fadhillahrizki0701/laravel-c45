@@ -382,6 +382,10 @@ class C45Controller extends Controller
         if (empty($dataset)) {
             return [
                 'accuracy' => 0,
+                'precision' => 0,
+                'recall' => 0,
+                'f1_score' => 0,
+                'specificity' => 0,
                 'message' => 'No data available for testing.',
             ];
         }
@@ -422,6 +426,12 @@ class C45Controller extends Controller
         $totalTestData = count($dataTest);
         $accuracy = ($correctPredictions / $totalTestData) * 100;
 
+        // Precision, Recall, F1-Score, and Specificity calculations
+        $precision = $TP + $FP ? $TP / ($TP + $FP) : 0;
+        $recall = $TP + $FN ? $TP / ($TP + $FN) : 0;
+        $f1_score = ($precision + $recall) ? 2 * ($precision * $recall) / ($precision + $recall) : 0;
+        $specificity = $TN + $FP ? $TN / ($TN + $FP) : 0;
+
         // Build the confusion matrix
         $confusionMatrix = [
             'TP' => $TP,
@@ -432,9 +442,17 @@ class C45Controller extends Controller
 
         return [
             'accuracy' => round($accuracy, 5),
+            'precision' => round($precision, 5),
+            'recall' => round($recall, 5),
+            'f1_score' => round($f1_score, 5),
+            'specificity' => round($specificity, 5),
             'correct_predictions' => $correctPredictions,
             'total_test_data' => $totalTestData,
             'confusion_matrix' => $confusionMatrix,
+            'data' => [
+                'train' => $dataTrain,
+                'test' => $dataTest,
+            ]
         ];
     }
 
