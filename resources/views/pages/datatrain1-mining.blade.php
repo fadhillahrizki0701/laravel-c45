@@ -41,15 +41,14 @@ document.getElementById('getMiningResultButton').addEventListener('click', (e) =
     fetch('{{ route('proses-mining-dataset-1') }}')
         .then(response => response.json())
         .then(data => {
-            // Create a tree layout and assign the data
             const svg = d3.select("svg"),
                 width = +svg.attr("width"),
                 height = +svg.attr("height");
 
             const g = svg.append("g")
-                .attr("transform", "translate(40, 0)");
+                .attr("transform", "translate(0, 40)");
 
-            const tree = d3.tree().size([height, width - 160]);
+            const tree = d3.tree().size([width, height - 160]);
 
             // Function to process JSON structure into D3 hierarchy and attach "attribute_value" to links
             function processNode(node, attributeValue = null) {
@@ -74,19 +73,23 @@ document.getElementById('getMiningResultButton').addEventListener('click', (e) =
                 .data(treeDataLayout.links())
                 .enter().append("g");
 
-            // Draw the paths (lines between nodes)
+            // Draw the paths (lines between nodes) in vertical orientation
             link.append("path")
                 .attr("class", "link")
-                .attr("d", d3.linkHorizontal()
-                    .x(d => d.y)
-                    .y(d => d.x));
+                .attr("d", d3.linkVertical()
+                    .x(d => d.x)
+                    .y(d => d.y)
+                )
+                .attr("fill", "none")
+                .attr("stroke", "#ccc")
+                .attr("stroke-width", 1.5);
 
             // Add the attribute_value text above the paths
             link.append("text")
                 .attr("class", "link-text")
                 .attr("dy", -5)  // Position the text slightly above the link
-                .attr("x", d => (d.source.y + d.target.y) / 2)  // Mid-point of the path (X)
-                .attr("y", d => (d.source.x + d.target.x) / 2)  // Mid-point of the path (Y)
+                .attr("x", d => (d.source.x + d.target.x) / 2)  // Mid-point of the path (X)
+                .attr("y", d => (d.source.y + d.target.y) / 2)  // Mid-point of the path (Y)
                 .text(d => d.target.data.attribute_value);  // Display the attribute_value
 
             // Add the nodes (circles and labels)
@@ -94,16 +97,16 @@ document.getElementById('getMiningResultButton').addEventListener('click', (e) =
                 .data(treeDataLayout.descendants())
                 .enter().append("g")
                 .attr("class", "node")
-                .attr("transform", d => `translate(${d.y},${d.x})`);
+                .attr("transform", d => `translate(${d.x},${d.y})`);
 
             node.append("circle")
                 .attr("r", 5)
                 .style("fill", d => d.children ? "#fff" : "lightsteelblue");
 
             node.append("text")
-                .attr("dy", 3)
+                .attr("dy", -10)
                 .attr("x", d => d.children ? -10 : 10)
-                .style("text-anchor", d => d.children ? "end" : "start")
+                .style("text-anchor", "middle")
                 .text(d => d.data.name);
         })
         .catch(error => console.error('Error fetching mining result:', error));
