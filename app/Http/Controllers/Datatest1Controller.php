@@ -15,7 +15,40 @@ class Datatest1Controller extends Controller
      */
     public function index()
     {
-        return view('pages.datatest1-index');
+        if (Dataset1::all()->isEmpty()) {
+			return view("pages.datatrain2-index", [
+				'accuracy' => [
+					'data' => [
+						'train' => [],
+						'test' => [],
+					]
+				]
+			]);
+		}
+
+		$c45 = new C45Controller();
+		$tree = $c45->fetchTreeDataset1Internal();
+
+		$data = Dataset1::select([
+			'nama',
+			'usia',
+			'berat_badan_per_usia',
+			'tinggi_badan_per_usia',
+			'berat_badan_per_tinggi_badan',
+		])->get()->toArray();
+
+		$accuracy = $c45->calculate($data, [
+			'berat_badan_per_usia',
+			'tinggi_badan_per_usia',
+			'usia',
+		], 'berat_badan_per_tinggi_badan', 0.26);
+
+		$rules = $c45->extractRules($tree);
+
+		return view("pages.datatest1-index", compact(
+			'accuracy',
+			'rules',
+		));
     }
 
     /**
