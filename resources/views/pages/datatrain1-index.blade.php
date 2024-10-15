@@ -8,38 +8,6 @@
 
     @include('pages.partials.session-notification')
 
-    <form action="{{ route('datatrain1.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <label for="file">Impor data dari Excel</label>
-        <div class="input-group my-3">
-            <input type="file" name="file" id="file" class="form-control" accept=".csv,.xlsx">
-            <button type="submit" class="btn btn-success">Unggah Data</button>
-        </div>
-    </form>
-
-    @role('admin')
-        <form action="{{ route('datatrain1.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus seluruh file beserta isinya?');">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger">Bersihkan Data</button>
-        </form>
-    @endrole
-
-    <details class="my-3 p-2">
-        <summary class="fs-5">Keterangan</summary>
-        <ul>
-            <li><strong>BB/U</strong>, berat badan per usia</li>
-            <li><strong>TB/U</strong>, tinggi badan per usia</li>
-            <li><strong>BB/TB</strong>, berat badan per tinggi badan</li>
-        </ul>
-    </details>
-
-    <p class="mt-3"> Harap pastikan file CSV mengikuti format di bawah ini:</p>
-<pre class="mt-2">nama;usia (bulan);BB_U;TB_U;BB_TB
-Fitri;25;Kurang;Normal;Gizi Baik
-Yusuf;30;Normal;Pendek;Gizi Baik
-...</pre>
-
     <a href="{{ route('datatrain1-mining') }}" class="btn btn-success">Proses Mining</a>
 
     <section class="table-responsive">

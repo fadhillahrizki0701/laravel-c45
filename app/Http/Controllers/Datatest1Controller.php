@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\C45\C45Controller;
 use App\Models\Dataset1;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class Datatest1Controller extends Controller
@@ -100,10 +101,6 @@ class Datatest1Controller extends Controller
             ];
         }
 
-        // Dataset dibagi berdasarkan split ratio, umumnya 0.7
-        // DataTrain -> Dataset(1)
-        // DataTest -> Dataset(2)
-
         $data = Dataset1::select([
             'nama',
             'usia',
@@ -116,7 +113,7 @@ class Datatest1Controller extends Controller
             'berat_badan_per_usia',
             'tinggi_badan_per_usia',
             'usia',
-        ], 'berat_badan_per_tinggi_badan', 0.73);
+        ], 'berat_badan_per_tinggi_badan', 0.26);
 
         // dd($accuracy, $classificationResults);
 

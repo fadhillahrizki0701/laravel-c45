@@ -13,7 +13,8 @@
 
         {{-- Bootstrap --}}
         <link rel="stylesheet" href="{{ asset('bootstrap/bootstrap.min.css') }}">
-        <script defer src="{{ asset('bootstrap/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('bootstrap/bootstrap.bundle.min.js') }}"></script>
+        {{-- <script src="{{ asset('bootstrap/popper.min.js') }}"></script> --}}
 
         {{-- Addition --}}
         <link rel="stylesheet" href="{{ asset('datatables/datatables.datatables.css') }}">
@@ -22,6 +23,7 @@
         {{-- AlpineJS --}}
         <script defer src="{{ asset('alpinejs/alpine.min.js') }}"></script>
 
+        {{-- D3js --}}
         <script defer src="{{ asset('d3js/d3.min.js') }}"></script>
 
         <style>
@@ -147,6 +149,10 @@
                     url: '{{ asset('datatables/i18n/id.json') }}'
                 }
             });
+
+            // Enable Bootstrap Tooltip
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         </script>
     </body>
 </html>

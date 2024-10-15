@@ -79,7 +79,7 @@ class Datatrain1Controller extends Controller
 
 		return redirect()
 			->back()
-			->with(["success" => "Data imported and file saved successfully."]);
+			->with(["success" => "Data berhasil diimpor dan disimpan ke database."]);
 	}
 
 
