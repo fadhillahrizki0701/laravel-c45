@@ -38,7 +38,7 @@
 document.getElementById('getMiningResultButton').addEventListener('click', (e) => {
     e.preventDefault();
 
-    fetch('{{ route('proses-mining-dataset-1') }}')
+    fetch('{{ route('proses-mining-dataset-2') }}')
         .then(response => response.json())
         .then(data => {
             const svg = d3.select("svg"),
