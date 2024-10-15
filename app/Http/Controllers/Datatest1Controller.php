@@ -115,8 +115,6 @@ class Datatest1Controller extends Controller
             'usia',
         ], 'berat_badan_per_tinggi_badan', 0.26);
 
-        // dd($accuracy, $classificationResults);
-
         $rules = $c45->extractRules($tree);
 
         // Pass the classification results to the view

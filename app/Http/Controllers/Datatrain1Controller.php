@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\C45\C45Controller;
 use App\Models\Dataset1;
 use App\Models\Datatrain1;
 use Illuminate\Http\Request;
@@ -15,9 +16,40 @@ class Datatrain1Controller extends Controller
 	 */
 	public function index()
 	{
-		$dataset1 = Dataset1::all();
+		if (Dataset1::all()->isEmpty()) {
+			return view("pages.datatrain2-index", [
+				'accuracy' => [
+					'data' => [
+						'train' => [],
+						'test' => [],
+					]
+				]
+			]);
+		}
 
-		return view("pages.datatrain1-index", compact("dataset1"));
+		$c45 = new C45Controller();
+		$tree = $c45->fetchTreeDataset1Internal();
+
+		$data = Dataset1::select([
+			'nama',
+			'usia',
+			'berat_badan_per_usia',
+			'tinggi_badan_per_usia',
+			'berat_badan_per_tinggi_badan',
+		])->get()->toArray();
+
+		$accuracy = $c45->calculate($data, [
+			'berat_badan_per_usia',
+			'tinggi_badan_per_usia',
+			'usia',
+		], 'berat_badan_per_tinggi_badan', 0.26);
+
+		$rules = $c45->extractRules($tree);
+
+		return view("pages.datatrain1-index", compact(
+			'accuracy',
+			'rules',
+		));
 	}
 
 	/**

@@ -23,14 +23,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($dataset1 as $dt1)
+                @foreach ($accuracy['data']['train'] as $dt1)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $dt1->nama }}</td>
-                        <td>{{ $dt1->usia }}</td>
-                        <td>{{ $dt1->berat_badan_per_usia }}</td>
-                        <td>{{ $dt1->tinggi_badan_per_usia }}</td>
-                        <td>{{ $dt1->berat_badan_per_tinggi_badan }}</td>           
+                        <td>{{ $dt1['nama'] }}</td>
+                        <td>{{ $dt1['usia'] }}</td>
+                        <td>{{ $dt1['berat_badan_per_usia'] }}</td>
+                        <td>{{ $dt1['tinggi_badan_per_usia'] }}</td>
+                        <td>{{ $dt1['berat_badan_per_tinggi_badan'] }}</td>
                         </td>
                     </tr>
                 @endforeach

@@ -20,13 +20,15 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($dataset2 as $db2)
+                @foreach ($accuracy['data']['train'] as $dt2)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $db2->usia }}</td>
-                        <td>{{ $db2->berat_badan_per_tinggi_badan }}</td>
-                        <td>{{ $db2->menu }}</td>
-                        <td>{{ $db2->keterangan }}</td>
+                        <td>{{ $dt2['nama'] }}</td>
+                        <td>{{ $dt2['usia'] }}</td>
+                        <td>{{ $dt2['berat_badan_per_usia'] }}</td>
+                        <td>{{ $dt2['tinggi_badan_per_usia'] }}</td>
+                        <td>{{ $dt2['berat_badan_per_tinggi_badan'] }}</td>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
