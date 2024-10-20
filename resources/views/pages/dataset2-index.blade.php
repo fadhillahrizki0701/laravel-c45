@@ -90,8 +90,8 @@
         </ul>
     </details>
 
-    <section class="bg-light rounded-3 p-1">
-        <section class="d-flex justify-content-between align-items-start pb-3">
+    <section class="bg-light rounded border border-1 rounded-3 p-1">
+        <section class="d-flex flex-column flex-lg-row justify-content-between align-items-start pb-3">
             <form action="{{ route('datatrain2.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <label for="file">Impor data dari <code>.xlsx, .csv</code></label>
@@ -102,7 +102,7 @@
                     </button>
                 </div>
             </form>
-            <section class="d-flex flex-column align-items-start">
+            <section class="d-flex flex-column my-3 my-lg-0 align-items-start">
                 <div>
                     <p class="m-0 p-0">Opsi</p>
                 </div>
