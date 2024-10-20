@@ -18,14 +18,68 @@
 
     @include('pages.partials.session-notification')
 
-    <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        Cek Klasifikasi
-    </button>
-    @if (isset($predictedLabel) && isset($data))
-        <button type="button" class="btn btn-info my-4" data-bs-toggle="modal" data-bs-target="#classificationResult">
-            Lihat Hasil Klasifikasi
-        </button>
-    @endif
+    <section class="bg-light rounded border border-1 p-3">
+        <section class="d-flex flex-column justify-content-between mb-4">
+            <section class="d-flex gap-4 mb-2">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Cek Klasifikasi
+                </button>
+                @if (isset($predictedLabel) && isset($data))
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#classificationResult">
+                        Lihat Hasil Klasifikasi
+                    </button>
+                @endif
+            </section>
+            <div class="py-2 mt-2">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="table-secondary">
+                                <th>Accuracy</th>
+                                <th>Precision</th>
+                                <th>Recall</th>
+                                <th>F1 Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ $metrices['accuracy'] }} (<span class="text-success">{{ $metrices['correct_predictions'] }}</span>/{{ $metrices['total_test_data'] }})</td>
+                                <td>{{ $metrices['precision'] }}</td>
+                                <td>{{ $metrices['recall'] }}</td>
+                                <td>{{ $metrices['f1_score'] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="table-responsive">
+            <table id="example" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Usia</th>
+                    <th scope="col">BB/TB</th>
+                    <th scope="col">Menu</th>
+                    <th scope="col">Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($metrices['data']['test'] as $dt2)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $dt2['usia'] }}</td>
+                            <td>{{ $dt2['berat_badan_per_tinggi_badan'] }}</td>
+                            <td>{{ $dt2['menu'] }}</td>
+                            <td>{{ $dt2['keterangan'] }}</td>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </section>
+    </section>
 
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -123,149 +177,44 @@
             </div>
         </div>
     @endif
-    
-    <hr class="my-2" />
 
-    <section class="table-responsive">
-        <table id="example" class="display" style="width:100%">
-            <thead>
-                <tr>
-                <th scope="col">No</th>
-                <th scope="col">Usia</th>
-                <th scope="col">BB/TB</th>
-                <th scope="col">Menu</th>
-                <th scope="col">Keterangan</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($accuracy['data']['test'] as $dt2)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $dt2['usia'] }}</td>
-                        <td>{{ $dt2['berat_badan_per_tinggi_badan'] }}</td>
-                        <td>{{ $dt2['menu'] }}</td>
-                        <td>{{ $dt2['keterangan'] }}</td>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </section>
-
-    @if (isset($predictedLabels))
-        <section class="table-responsive">
-            <table id="example" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Usia</th>
-                        <th scope="col">BB/TB</th>
-                        <th scope="col">Menu</th>
-                        <th scope="col">Keterangan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($predictedLabels as $predictedLabel)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $predictedLabel['usia'] }}</td>
-                            <td>{{ $predictedLabel['berat_badan_per_tinggi_badan'] }}</td>
-                            <td>{{ $predictedLabel['menu'] }}</td>
-                            <td><strong>{{ $predictedLabel['predicted_label'] }}</strong></td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </section>
-
-        <section class="bg-light my-4 d-flex flex-column gap-1 border border-2 rounded p-4 fs-5">
-            @if(count($accuracy) > 0)
+    <section class="bg-light my-3 p-3">
+        @if(count($rules) > 0)
             <details>
-                <summary><h5 class="d-inline">Hasil</h5></summary>
+                <summary><h5 class="d-inline">Rules</h5></summary>
                 <br/>
-                <div class="m-0">
-                    <p class="m-0 p-0">Akurasi : {{ $accuracy['accuracy'] }}% <span class="text-secondary">(<span class="text-success">{{ $accuracy['correct_predictions'] }}</span>/{{ $accuracy['total_test_data'] }})</span></p>
-                </div>
-                <div class="m-0">
-                    <p class="m-0 p-0">Prediksi Benar : {{ $accuracy['correct_predictions'] }} data</p>
-                </div>
-                <div class="m-0">
-                    <p class="m-0 p-0">Total Data Uji : {{ $accuracy['total_test_data'] }} data</p>
-                </div>
+                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary">
+                    @foreach ($rules as $rule)
+                        @php
+                            // Split the rule into lines
+                            $lines = explode("\n", trim($rule));
+                            $indentLevel = 0;  // Track indentation for nested IF statements
+                        @endphp
+                        <li>
+                            @foreach ($lines as $line)
+                                @if (strpos($line, 'IF') !== false)
+                                    @php
+                                        // Increase the indentation for nested IFs
+                                        $indentLevel++;
+                                        // Add indentation spaces based on the nesting level
+                                        $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel - 1);
+                                    @endphp
+                                    {!! $indentation . str_replace('IF', '├', $line) !!}<br>
+                                @elseif (strpos($line, 'THEN') !== false)
+                                    @php
+                                        // Reset the indentation level for THEN
+                                        $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel);
+                                    @endphp
+                                    {!! $indentation . str_replace('THEN', '┗╸', $line) !!}<br>
+                                    @php $indentLevel = 0; @endphp  {{-- Reset for next rule set --}}
+                                @endif
+                            @endforeach
+                        </li>
+                    @endforeach
+                </ul>
                 <hr>
             </details>
-            @endif
-
-            @if(count($rules) > 0)
-                <details>
-                    <summary><h5 class="d-inline">Rules</h5></summary>
-                    <br/>
-                    <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary">
-                        @foreach ($rules as $rule)
-                            @php
-                                // Split the rule into lines
-                                $lines = explode("\n", trim($rule));
-                                $indentLevel = 0;  // Track indentation for nested IF statements
-                            @endphp
-                            <li>
-                                @foreach ($lines as $line)
-                                    @if (strpos($line, 'IF') !== false)
-                                        @php
-                                            // Increase the indentation for nested IFs
-                                            $indentLevel++;
-                                            // Add indentation spaces based on the nesting level
-                                            $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel - 1);
-                                        @endphp
-                                        {!! $indentation . str_replace('IF', '├', $line) !!}<br>
-                                    @elseif (strpos($line, 'THEN') !== false)
-                                        @php
-                                            // Reset the indentation level for THEN
-                                            $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel);
-                                        @endphp
-                                        {!! $indentation . str_replace('THEN', '┗╸', $line) !!}<br>
-                                        @php $indentLevel = 0; @endphp  {{-- Reset for next rule set --}}
-                                    @endif
-                                @endforeach
-                            </li>
-                        @endforeach
-                    </ul>
-                    <hr>
-                </details>
-            @endif
-
-            @if(isset($accuracy['table']))
-                @if((count($accuracy) > 0) && (count($accuracy['table']) > 0))
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Node</th>
-                                <th>Total Per Categories</th>
-                                <th>Keterangan</th>
-                                <th>Jumlah</th>
-                                <th>Gizi Baik</th>
-                                <th>Gizi Kurang</th>
-                                <th>Entropy</th>
-                                <th>Gain</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($accuracy['table'] as $node)
-                                <tr>
-                                    <td>{{ $node['depth'] }}</td>
-                                    <td>{{ $node['total'] ?? '-' }}</td>
-                                    <td>{{ $node['attribute'] ?? '-' }} : {{ $node['attribute_value'] ?? '-' }}</td>
-                                    <td>{{ $node['subset_count'] ?? '-' }}</td>
-                                    <td>{{ $node['labelValues']['Gizi Baik'] ?? '-' }}</td>
-                                    <td>{{ $node['labelValues']['Gizi Kurang'] ?? '-' }}</td>
-                                    <td>{{ $node['entropy'] ?? '-' }}</td>
-                                    <td>{{ $node['gain'] ?? '-' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
-            @endif
-        </section>
-    @endif
+        @endif
+    </section>
 </section>
 @endsection
