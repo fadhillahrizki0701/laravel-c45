@@ -5,8 +5,6 @@ namespace App\Http\Controllers\C45;
 use App\Http\Controllers\Controller;
 use App\Models\Dataset1;
 use App\Models\Dataset2;
-use Illuminate\Http\Request;
-use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class C45Controller extends Controller
 {
@@ -360,23 +358,6 @@ class C45Controller extends Controller
         return null;
     }
 
-    private function getAccuracy(array $data, string $label, callable $predict): float
-    {
-        $correctPredictions = 0;
-        $total = count($data);
-
-        foreach ($data as $row) {
-            $actualLabel = $row[$label];
-            $predictedLabel = $predict($row);
-
-            if ($predictedLabel === $actualLabel) {
-                $correctPredictions++;
-            }
-        }
-
-        return $total > 0 ? round(($correctPredictions / $total) * 100, 7) : 0;
-    }
-
     public function calculate(array $dataset, array $attributes, string $label, float $splitRatio = 0.7): array
     {
         if (empty($dataset)) {
@@ -455,110 +436,4 @@ class C45Controller extends Controller
             ]
         ];
     }
-
-    public function calculateAccuracy(array $dataTrain, array $dataTest, array $attributes, string $label)
-    {
-        if (empty($dataTrain) || empty($dataTest)) {
-            return response()->json([
-                'accuracy' => 0,
-                'message' => 'No data available for testing.',
-            ]);
-        }
-
-        $trainData = $dataTrain;
-        $testData = $dataTest;
-
-        // Build the decision tree using training data
-        $tree = $this->buildTree($trainData, $label, $attributes);
-
-        // Variables to calculate confusion matrix components
-        $TP = $TN = $FP = $FN = 0;
-
-        // Variables to calculate accuracy
-        $correctPredictions = 0;
-
-        $uniqueLabels = array_values(array_unique(array_column($dataTest, $label)));
-        $positiveLabel = $uniqueLabels[0];
-        $negativeLabel = $uniqueLabels[1];
-
-        foreach ($testData as $testRow) {
-            $predictedLabel = $this->predict($tree, $testRow);
-            $actualLabel = $testRow[$label];
-
-            // dd($predictedLabel, $actualLabel);
-
-            if ($predictedLabel == $actualLabel) {
-                $correctPredictions++;
-            }
-
-            // Update confusion matrix values
-            if ($predictedLabel === $positiveLabel && $actualLabel === $positiveLabel) {
-                $TP++;
-            } elseif ($predictedLabel === $negativeLabel && $actualLabel === $negativeLabel) {
-                $TN++;
-            } elseif ($predictedLabel === $positiveLabel && $actualLabel === $negativeLabel) {
-                $FP++;
-            } elseif ($predictedLabel === $negativeLabel && $actualLabel === $positiveLabel) {
-                $FN++;
-            }
-        }
-
-        // Calculate accuracy
-        $totalTestData = count($testData);
-        $accuracy = ($correctPredictions / $totalTestData) * 100;
-
-        // Build the confusion matrix
-        $confusionMatrix = [
-            'TP' => $TP,
-            'TN' => $TN,
-            'FP' => $FP,
-            'FN' => $FN,
-        ];
-
-        $table = $this->tableProcess($dataTrain, $label, 0, $attributes);
-
-        return [
-            'accuracy' => round($accuracy, 2),
-            'correct_predictions' => $correctPredictions,
-            'total_test_data' => $totalTestData,
-            'confusion_matrix' => $confusionMatrix,
-            'table' => $table,
-        ];
-    }
-
-    // public function Accuracy(Request $request)
-    // {
-    //     // Fetch data and calculate classification results
-    //     // Assume you have $predictions and $actualLabels arrays for confusion matrix
-    //     $confusionMatrix = [
-    //         'TP' => 0,
-    //         'FP' => 0,
-    //         'TN' => 0,
-    //         'FN' => 0
-    //     ];
-
-    //     foreach ($predictions as $i => $prediction) {
-    //         $actual = $actualLabels[$i];
-
-    //         if ($prediction == 'positive' && $actual == 'positive') {
-    //             $confusionMatrix['TP']++;
-    //         } elseif ($prediction == 'positive' && $actual == 'negative') {
-    //             $confusionMatrix['FP']++;
-    //         } elseif ($prediction == 'negative' && $actual == 'negative') {
-    //             $confusionMatrix['TN']++;
-    //         } elseif ($prediction == 'negative' && $actual == 'positive') {
-    //             $confusionMatrix['FN']++;
-    //         }
-    //     }
-
-    //     // Calculate accuracy, precision, recall
-    //     $accuracy = ($confusionMatrix['TP'] + $confusionMatrix['TN']) /
-    //         ($confusionMatrix['TP'] + $confusionMatrix['FP'] + $confusionMatrix['TN'] + $confusionMatrix['FN']) * 100;
-
-    //     $precision = ($confusionMatrix['TP']) / ($confusionMatrix['TP'] + $confusionMatrix['FP']) * 100;
-    //     $recall = ($confusionMatrix['TP']) / ($confusionMatrix['TP'] + $confusionMatrix['FN']) * 100;
-
-    //     return view('datatest1.index', compact('predictedLabels', 'confusionMatrix', 'accuracy', 'precision', 'recall'));
-    // }
-
 }
