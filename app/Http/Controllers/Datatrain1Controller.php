@@ -38,7 +38,7 @@ class Datatrain1Controller extends Controller
 			'berat_badan_per_tinggi_badan',
 		])->get()->toArray();
 
-		$accuracy = $c45->calculate($data, [
+		$metrices = $c45->calculate($data, [
 			'berat_badan_per_usia',
 			'tinggi_badan_per_usia',
 			'usia',
@@ -47,7 +47,7 @@ class Datatrain1Controller extends Controller
 		$rules = $c45->extractRules($tree);
 
 		return view("pages.datatrain1-index", compact(
-			'accuracy',
+			'metrices',
 			'rules',
 		));
 	}
