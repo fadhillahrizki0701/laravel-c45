@@ -136,7 +136,7 @@
         </div>
     @endif
     
-    <hr class="my-4" />
+    <hr class="my-2" />
 
     <section class="table-responsive">
         <table id="example" class="display" style="width:100%">
