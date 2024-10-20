@@ -29,7 +29,7 @@
         Dataset 2
       </a>
     </li>
-    <li class="nav-item py-3 fw-bolder">Algoritma C4.5</li>
+    <li class="nav-item py-3 fw-bolder">Split Data</li>
     <li>
       <a href="{{ route('datatrain1.index') }}" class="nav-link link-dark" style="color:#25396F;">
         <i class="bi bi-database-up"></i>
@@ -54,8 +54,21 @@
         Data Testing 2
       </a>
     </li>
-    <li class="nav-item py-3 fw-bolder">Profil</li>
     <li>
+      <li class="nav-item py-3 fw-bolder">Hasil Klasifikasi</li>
+    <li>
+      <a href="{{ route('klasifikasi1.index') }}" class="nav-link link-dark" style="color:#25396F;">
+        <i class="bi bi-database-up"></i>
+        Dataset 1
+      </a>
+    </li>
+    <li>
+      <a href="{{ route('datatrain2.index') }}" class="nav-link link-dark" style="color:#25396F;">
+        <i class="bi bi-database-up"></i>
+        Dataset 2
+      </a>
+    </li>
+    <li class="nav-item py-3 fw-bolder">Profil</li>
       <button class="nav-link link-dark mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#profileDetail" aria-expanded="false" aria-controls="profileDetail" style="color:#25396F;">
         <i class="bi bi-person-circle"></i>
         Profil

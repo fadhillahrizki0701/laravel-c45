@@ -8,6 +8,7 @@ use App\Http\Controllers\Datatest1Controller;
 use App\Http\Controllers\Datatest2Controller;
 use App\Http\Controllers\Datatrain1Controller;
 use App\Http\Controllers\Datatrain2Controller;
+use App\Http\Controllers\Klasifikasi1Controller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -51,6 +52,9 @@ Route::middleware("auth")->group(function () {
 
     Route::resource('/datatest1', Datatest1Controller::class);
     Route::resource('/datatest2', Datatest2Controller::class);
+
+    Route::resource('/klasifikasi1', Klasifikasi1Controller::class);
+    Route::resource('/klasifikasi2', Datatest2Controller::class);
 
     // Route::get('/datatesting1', [C45Controller::class, 'showTestForm'])->name('showTestForm');
     // Route::post('/datatesting1', [C45Controller::class, 'testModel'])->name('testModel');
