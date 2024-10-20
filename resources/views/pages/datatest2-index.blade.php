@@ -124,29 +124,27 @@
         </div>
     @endif
     
-    <hr class="my-4" />
+    <hr class="my-2" />
 
     <section class="table-responsive">
         <table id="example" class="display" style="width:100%">
             <thead>
                 <tr>
                 <th scope="col">No</th>
-                <th scope="col">Nama</th>
                 <th scope="col">Usia</th>
-                <th scope="col">BB/U</th>
-                <th scope="col">TB/U</th>
                 <th scope="col">BB/TB</th>
+                <th scope="col">Menu</th>
+                <th scope="col">Keterangan</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($accuracy['data']['test'] as $dt1)
+                @foreach ($accuracy['data']['test'] as $dt2)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $dt1['nama'] }}</td>
-                        <td>{{ $dt1['usia'] }}</td>
-                        <td>{{ $dt1['berat_badan_per_usia'] }}</td>
-                        <td>{{ $dt1['tinggi_badan_per_usia'] }}</td>
-                        <td>{{ $dt1['berat_badan_per_tinggi_badan'] }}</td>
+                        <td>{{ $dt2['usia'] }}</td>
+                        <td>{{ $dt2['berat_badan_per_tinggi_badan'] }}</td>
+                        <td>{{ $dt2['menu'] }}</td>
+                        <td>{{ $dt2['keterangan'] }}</td>
                         </td>
                     </tr>
                 @endforeach
