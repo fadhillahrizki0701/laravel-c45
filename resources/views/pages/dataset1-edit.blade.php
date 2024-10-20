@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dataset 1 Edit')
+@section('title', 'Datasetset 1 Edit')
 
 @section('content')
 <section class="container p-4">

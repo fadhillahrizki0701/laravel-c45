@@ -20,13 +20,13 @@
     <li>
       <a href="{{ route('dataset1.index') }}" class="nav-link link-dark" style="color:#25396F;">
         <i class="bi bi-bar-chart-line-fill"></i>
-        Data 1
+        Dataset 1
       </a>
     </li>
     <li>
       <a href="{{ route('dataset2.index') }}"class="nav-link link-dark" style="color:#25396F;">
         <i class="bi bi-bar-chart-line-fill"></i>
-        Data 2
+        Dataset 2
       </a>
     </li>
     <li class="nav-item py-3 fw-bolder">Algoritma C4.5</li>

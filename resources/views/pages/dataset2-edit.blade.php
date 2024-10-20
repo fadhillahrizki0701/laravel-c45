@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Dataset 2 Edit')
+@section('title', 'Datasetset 2 Edit')
 
 @section('content')
 <section class="container p-4">
-    <h2 class="pb-4" style="color:#435EBE">Dataset 2 Edit</h2>
+    <h2 class="pb-4" style="color:#435EBE">Datasetset 2 Edit</h2>
 
     @include('pages.partials.session-notification')
 
