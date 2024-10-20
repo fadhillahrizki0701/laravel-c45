@@ -65,8 +65,22 @@ class Datatest1Controller extends Controller
     public function store(Request $request)
     {
         $c45 = new C45Controller();
-
         $tree = $c45->fetchTreeDataset1Internal();
+        $data = Dataset1::select([
+            'nama',
+            'usia',
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+            'berat_badan_per_tinggi_badan',
+        ])->get()->toArray();
+
+        $accuracy = $c45->calculate($data, [
+            'berat_badan_per_usia',
+            'tinggi_badan_per_usia',
+            'usia',
+        ], 'berat_badan_per_tinggi_badan', 0.26);
+
+        $rules = $c45->extractRules($tree);
 
         if (!$request->hasFile("file")) {
             $data = $this->validate($request, [
@@ -76,13 +90,15 @@ class Datatest1Controller extends Controller
                 "tinggi_badan_per_usia" => "required",
             ]);
 
-            // Ambil model pohon keputusan dari Dataset1
-
             // Prediksi label berdasarkan pohon keputusan
             $predictedLabel = $c45->predict($tree, $data);
 
             // Tampilkan hasil prediksi di view
-            return view('pages.datatest1-index', compact('predictedLabel', 'data'));
+            return view('pages.datatest1-index', compact(
+                'predictedLabel',
+                'data',
+                'accuracy',
+            ));
         }
 
         // Save the uploaded file temporarily without saving its path in the model
@@ -133,22 +149,6 @@ class Datatest1Controller extends Controller
                 "predicted_label" => $predictedLabel,
             ];
         }
-
-        $data = Dataset1::select([
-            'nama',
-            'usia',
-            'berat_badan_per_usia',
-            'tinggi_badan_per_usia',
-            'berat_badan_per_tinggi_badan',
-        ])->get()->toArray();
-
-        $accuracy = $c45->calculate($data, [
-            'berat_badan_per_usia',
-            'tinggi_badan_per_usia',
-            'usia',
-        ], 'berat_badan_per_tinggi_badan', 0.26);
-
-        $rules = $c45->extractRules($tree);
 
         // Pass the classification results to the view
         return view('pages.datatest1-index', [
