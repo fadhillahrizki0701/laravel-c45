@@ -35,7 +35,7 @@ class Datatest2Controller extends Controller
             'keterangan'
         ])->get()->toArray();
 
-        $accuracy = $c45->calculate($data, [
+        $metrices = $c45->calculate($data, [
             'usia',
             'berat_badan_per_tinggi_badan',
             'menu',
@@ -44,7 +44,7 @@ class Datatest2Controller extends Controller
         $rules = $c45->extractRules($tree);
 
         return view("pages.datatest2-index", compact(
-            'accuracy',
+            'metrices',
             'rules',
         ));
     }
@@ -71,11 +71,11 @@ class Datatest2Controller extends Controller
             'keterangan'
         ])->get()->toArray();
 
-        $accuracy = $c45->calculate($data, [
+        $metrices = $c45->calculate($data, [
             'usia',
             'berat_badan_per_tinggi_badan',
             'menu',
-        ], 'keterangan', 0.73);
+        ], 'keterangan', 0.72);
 
         $rules = $c45->extractRules($tree);
 
@@ -93,7 +93,8 @@ class Datatest2Controller extends Controller
             return view('pages.datatest2-index', compact(
                 'predictedLabel',
                 'data',
-                'accuracy',
+                'rules',
+                'metrices',
             ));
         }
 
@@ -148,7 +149,7 @@ class Datatest2Controller extends Controller
         // Pass the classification results to the view
         return view('pages.datatest2-index', [
             'predictedLabels' => $classificationResults,
-            'accuracy' => $accuracy,
+            'metrices' => $metrices,
             'rules' => $rules,
         ]);
     }
