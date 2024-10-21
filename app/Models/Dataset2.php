@@ -13,6 +13,5 @@ class Dataset2 extends Model
 		"menu",
 		"keterangan",
 	];
-
 	public $timestamps = false;
 }

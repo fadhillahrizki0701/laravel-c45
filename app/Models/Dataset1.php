@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dataset1 extends Model
 {
-	// The attributes that are mass assignable.
 	protected $fillable = [
 		"nama",
 		"usia",
@@ -14,7 +13,5 @@ class Dataset1 extends Model
 		"tinggi_badan_per_usia",
 		"berat_badan_per_tinggi_badan",
 	];
-
 	public $timestamps = false;
-	// Other model properties and methods
 }
