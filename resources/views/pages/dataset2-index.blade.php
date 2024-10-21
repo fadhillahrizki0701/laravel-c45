@@ -55,7 +55,7 @@ Fase 2;Gizi Baik;M2;Baik
                         @csrf
                         <div class="input-group mb-3">
                             <span class="input-group-text rounded-0 rounded-start" id="split-ratio">Split Ratio</span>
-                            <input type="number" step="0.01" min="0.1" max="0.9" class="form-control rounded-0" placeholder="Split Ratio" aria-label="Split Ratio" aria-describedby="split-ratio" name="split_ratio">
+                            <input type="number" step="0.01" min="0.1" max="0.9" value="0.7" class="form-control rounded-0" placeholder="Split Ratio" aria-label="Split Ratio" aria-describedby="split-ratio" name="split_ratio">
                             <button type="submit" class="btn btn-primary rounded-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Split Dataset menjadi Data Train dan Data Test!">
                                 <i class="bi bi-database-fill-gear"></i> Split
                             </button>

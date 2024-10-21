@@ -50,7 +50,7 @@ class DatasetFileUpload1Controller extends Controller
 
 				// Save data to the database
 				Dataset1::create([
-					"nama" => $rowData[1],
+					"nama" => str_replace("\x00", '', $rowData[1]),
 					"usia" => $rowData[2],
 					"berat_badan_per_usia" => ucwords($rowData[3]),
 					"tinggi_badan_per_usia" => ucwords($rowData[4]),
