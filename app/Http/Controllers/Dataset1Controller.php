@@ -117,4 +117,14 @@ class Dataset1Controller extends Controller
 				"success" => "Data berhasil dihapus!",
 			]);
 	}
+
+	/**
+	 * Process data split
+	 */
+	public function split(Request $request)
+	{
+		return redirect()->route('dataset1.index')->with([
+			'success' => 'Split Dataset berhasil dilakukan',
+		]);
+	}
 }

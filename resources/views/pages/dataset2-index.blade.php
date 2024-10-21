@@ -53,15 +53,19 @@ Fase 2;Gizi Baik;M2;Baik
                     @role('admin')
                     <form action="{{ route('dataset2.split') }}" method="POST" onsubmit="return confirm('Split Dataset?');" class="d-inline">
                         @csrf
-                        <button type="submit" class="btn btn-primary rounded-0 rounded-start" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Split Dataset menjadi Data Train dan Data Test!">
-                            <i class="bi bi-database-fill-gear"></i> Split
-                        </button>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text rounded-0 rounded-start" id="split-ratio">Split Ratio</span>
+                            <input type="number" step="0.01" min="0.1" max="0.9" class="form-control rounded-0" placeholder="Split Ratio" aria-label="Split Ratio" aria-describedby="split-ratio" name="split_ratio">
+                            <button type="submit" class="btn btn-primary rounded-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Split Dataset menjadi Data Train dan Data Test!">
+                                <i class="bi bi-database-fill-gear"></i> Split
+                            </button>
+                        </div>
                     </form>
                     <form action="{{ route('dataset-file-upload-2.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus seluruh file beserta isinya?');" class="d-inline">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger rounded-0 rounded-end" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Hapus seluruh file yang telah diinput beserta data yang telah dimasukkan ke dalam database">
-                            <i class="bi bi-x-circle"></i> Bersihkan Data
+                            <i class="bi bi-x-circle"></i> Clear
                         </button>
                     </form>
                     @endrole
