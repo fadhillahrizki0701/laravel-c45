@@ -25,7 +25,7 @@
                             <h6 class="fs-5 text-muted">{{ $totaldataset1 }}</h6>
                         </div>
                         <div class="col-sm-12 col-md-8 d-none d-md-block">
-                            <h5 class="card-title font-semibold" style="color: #995bfd;">Data 1</h5>
+                            <h5 class="card-title font-semibold" style="color: #995bfd;">Dataset 1</h5>
                             <hr class="my-2">
                             <h6 class="fs-5 text-muted">{{ $totaldataset1 }}</h6>
                         </div>
