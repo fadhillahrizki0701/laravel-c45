@@ -10,11 +10,10 @@ class DataTest2 extends Model
     use HasFactory;
 
     protected $fillable = [
-		"nama",
 		"usia",
-		"berat_badan_per_usia",
-		"tinggi_badan_per_usia",
 		"berat_badan_per_tinggi_badan",
+		"menu",
+		"keterangan",
 	];
 	public $timestamps = false;
 }
