@@ -49,6 +49,9 @@ Route::middleware("auth")->group(function () {
     Route::resource('/datatrain1', Datatrain1Controller::class);
     Route::resource('/datatrain2', Datatrain2Controller::class);
 
+    Route::get('/datatrain1/tree/mining', [Datatrain1Controller::class, 'mining'])->name('datatrain1-mining');
+    Route::get('/datatrain2/tree/mining', [Datatrain2Controller::class, 'mining'])->name('datatrain2-mining');
+
     Route::post('/dataset-file-upload-1', [DatasetFileUpload1Controller::class, 'store'])->name('dataset-file-upload-1.store');
     Route::delete('/dataset-file-upload-1/clear', [DatasetFileUpload1Controller::class, 'clear'])->name('dataset-file-upload-1.clear');
 

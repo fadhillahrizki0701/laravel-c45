@@ -5,6 +5,8 @@ namespace App\Http\Controllers\C45;
 use App\Http\Controllers\Controller;
 use App\Models\Dataset1;
 use App\Models\Dataset2;
+use App\Models\Datatrain1;
+use App\Models\Datatrain2;
 
 class C45Controller extends Controller
 {
@@ -237,16 +239,26 @@ class C45Controller extends Controller
         return $rules;
     }
 
+    public function fetchTree(array $dataset, array $attributes, string $label): array
+    {
+        if (count($dataset) == 0) {
+            return [];
+        }
+
+        $tree = $this->buildTree($dataset, $label, $attributes);
+        return $tree;
+    }
+
     public function fetchTreeDataset1Internal()
     {
-        $data = Dataset1::select([
+        $data = Datatrain1::select([
             'usia',
             'berat_badan_per_usia',
             'tinggi_badan_per_usia',
             'berat_badan_per_tinggi_badan',
         ])->get()->toArray();
 
-        if ($data == []) {
+        if (count($data) == 0) {
             return [];
         }
 
@@ -263,14 +275,14 @@ class C45Controller extends Controller
 
     public function fetchTreeDataset2Internal()
     {
-        $data = Dataset2::select([
+        $data = Datatrain2::select([
             'usia',
             'berat_badan_per_tinggi_badan',
             'menu',
             'keterangan'
         ])->get()->toArray();
 
-        if ($data == []) {
+        if (count($data) == 0) {
             return [];
         }
 
@@ -434,6 +446,78 @@ class C45Controller extends Controller
                 'train' => $dataTrain,
                 'test' => $dataTest,
             ]
+        ];
+    }
+
+    public function calculateMetrices(array $dataset, array $attributes, string $label): array
+    {
+        if (empty($dataset)) {
+            return [
+                'accuracy' => 0,
+                'precision' => 0,
+                'recall' => 0,
+                'f1_score' => 0,
+                'specificity' => 0,
+                'message' => 'No data available for testing.',
+            ];
+        }
+
+        // Build decision tree using dataset
+        $tree = $this->buildTree($dataset, $label, $attributes);
+
+        $TP = $TN = $FP = $FN = 0;
+        $correctPredictions = 0;
+
+        $uniqueLabels = array_values(array_unique(array_column($dataset, $label)));
+        $positiveLabel = $uniqueLabels[0];
+        $negativeLabel = $uniqueLabels[1];
+
+        foreach ($dataset as $testing) {
+            $predictedLabel = $this->predict($tree, $testing);
+            $actualLabel = $testing[$label];
+
+            if ($predictedLabel == $actualLabel) {
+                $correctPredictions++;
+            }
+
+            // Update confusion matrix values
+            if ($predictedLabel === $positiveLabel && $actualLabel === $positiveLabel) {
+                $TP++;
+            } elseif ($predictedLabel === $negativeLabel && $actualLabel === $negativeLabel) {
+                $TN++;
+            } elseif ($predictedLabel === $positiveLabel && $actualLabel === $negativeLabel) {
+                $FP++;
+            } elseif ($predictedLabel === $negativeLabel && $actualLabel === $positiveLabel) {
+                $FN++;
+            }
+        }
+
+        $totalTestData = count($dataset);
+        $accuracy = ($correctPredictions / $totalTestData) * 100;
+
+        // Precision, Recall, F1-Score, and Specificity calculations
+        $precision = $TP + $FP ? $TP / ($TP + $FP) : 0;
+        $recall = $TP + $FN ? $TP / ($TP + $FN) : 0;
+        $f1_score = ($precision + $recall) ? 2 * ($precision * $recall) / ($precision + $recall) : 0;
+        $specificity = $TN + $FP ? $TN / ($TN + $FP) : 0;
+
+        // Build the confusion matrix
+        $confusionMatrix = [
+            'TP' => $TP,
+            'TN' => $TN,
+            'FP' => $FP,
+            'FN' => $FN,
+        ];
+
+        return [
+            'accuracy' => round($accuracy, 5),
+            'precision' => round($precision, 5),
+            'recall' => round($recall, 5),
+            'f1_score' => round($f1_score, 5),
+            'specificity' => round($specificity, 5),
+            'correct_predictions' => $correctPredictions,
+            'total_test_data' => $totalTestData,
+            'confusion_matrix' => $confusionMatrix,
         ];
     }
 }

@@ -30,7 +30,7 @@ class Datatrain1Controller extends Controller
 		$c45 = new C45Controller();
 		$tree = $c45->fetchTreeDataset1Internal();
 
-		$data = Dataset1::select([
+		$data = Datatrain1::select([
 			'nama',
 			'usia',
 			'berat_badan_per_usia',
@@ -38,16 +38,17 @@ class Datatrain1Controller extends Controller
 			'berat_badan_per_tinggi_badan',
 		])->get()->toArray();
 
-		$metrices = $c45->calculate($data, [
+		$metrices = $c45->calculateMetrices($data, [
 			'berat_badan_per_usia',
 			'tinggi_badan_per_usia',
 			'usia',
-		], 'berat_badan_per_tinggi_badan', 0.26);
+		], 'berat_badan_per_tinggi_badan');
 
 		$rules = $c45->extractRules($tree);
 
 		return view("pages.datatrain1-index", compact(
 			'metrices',
+			'data',
 			'rules',
 		));
 	}
