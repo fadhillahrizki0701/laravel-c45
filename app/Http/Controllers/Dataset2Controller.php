@@ -120,30 +120,28 @@ class Dataset2Controller extends Controller
 	 */
 	public function split(Request $request)
 	{
+		Datatrain2::truncate();
+		DataTest2::truncate();
+
 		$dataset = Dataset2::select([
-			'nama',
-			'usia',
-			'berat_badan_per_usia',
-			'tinggi_badan_per_usia',
-			'berat_badan_per_tinggi_badan',
-		])->get()->toArray();
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+            'keterangan'
+        ])->get()->toArray();
 
 		$dataTrain = array_slice($dataset, 0, floor(count($dataset) * $request->split_ratio));
         $dataTest = array_slice($dataset, floor(count($dataset) * $request->split_ratio));
 
-		foreach ($dataTrain as &$dt) {
-			$dt['nama'] = str_replace("\x00", '', $dt['nama']);
-
+		foreach ($dataTrain as $dt) {
 			Datatrain2::create($dt);
 		}
 
-		foreach ($dataTest as &$dt) {
-			$dt['nama'] = str_replace("\x00", '', $dt['nama']);
-
+		foreach ($dataTest as $dt) {
 			DataTest2::create($dt);
 		}
 
-		return redirect()->route('dataset1.index')->with([
+		return redirect()->route('dataset2.index')->with([
 			'success' => 'Split Dataset berhasil dilakukan',
 		]);
 	}

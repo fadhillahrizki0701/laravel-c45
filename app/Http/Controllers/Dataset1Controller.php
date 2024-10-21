@@ -125,6 +125,9 @@ class Dataset1Controller extends Controller
 	 */
 	public function split(Request $request)
 	{
+		Datatrain1::truncate();
+		DataTest1::truncate();
+
 		$dataset = Dataset1::select([
 			'nama',
 			'usia',
