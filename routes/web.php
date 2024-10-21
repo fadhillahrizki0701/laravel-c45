@@ -39,6 +39,9 @@ Route::middleware("auth")->group(function () {
     Route::resource('/dataset1', Dataset1Controller::class);
     Route::resource('/dataset2', Dataset2Controller::class);
 
+    Route::post('/dataset1/data/split', [Dataset1Controller::class, 'split'])->name('dataset1.split');
+    Route::post('/dataset2/data/split', [Dataset1Controller::class, 'split'])->name('dataset2.split');
+
     Route::resource('/dashboard', DashboardController::class);
 
     Route::resource('/user', UserController::class);

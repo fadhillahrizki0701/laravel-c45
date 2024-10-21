@@ -51,13 +51,19 @@ Fase 2;Gizi Baik;M2;Baik
                 </div>
                 <div class="btn-group">
                     @role('admin')
-                        <form action="{{ route('dataset-file-upload-2.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus seluruh file beserta isinya?');" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger"  data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Hapus seluruh file yang telah diinput beserta data yang telah dimasukkan ke dalam database">
-                                <i class="bi bi-x-circle"></i> Bersihkan Data
-                            </button>
-                        </form>
+                    <form action="{{ route('dataset2.split') }}" method="POST" onsubmit="return confirm('Split Dataset?');" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-primary rounded-0 rounded-start" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Split Dataset menjadi Data Train dan Data Test!">
+                            <i class="bi bi-database-fill-gear"></i> Split
+                        </button>
+                    </form>
+                    <form action="{{ route('dataset-file-upload-2.clear') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus seluruh file beserta isinya?');" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger rounded-0 rounded-end" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Hapus seluruh file yang telah diinput beserta data yang telah dimasukkan ke dalam database">
+                            <i class="bi bi-x-circle"></i> Bersihkan Data
+                        </button>
+                    </form>
                     @endrole
                 </div>
             </section>        
