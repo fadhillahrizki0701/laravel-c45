@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Dataset1;
 use App\Models\DatasetFileUpload1;
+use App\Models\DataTest1;
+use App\Models\Datatrain1;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
@@ -113,6 +115,9 @@ class DatasetFileUpload1Controller extends Controller
 			// Delete the record from Datatrain1
 			$dfus->delete();
 		}
+
+		Datatrain1::truncate();
+		DataTest1::truncate();
 
 		return redirect()
 			->back()

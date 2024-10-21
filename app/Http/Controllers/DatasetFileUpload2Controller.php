@@ -6,6 +6,8 @@ use App\Models\Dataset1;
 use App\Models\Dataset2;
 use App\Models\DatasetFileUpload1;
 use App\Models\DatasetFileUpload2;
+use App\Models\DataTest2;
+use App\Models\Datatrain2;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
@@ -113,6 +115,9 @@ class DatasetFileUpload2Controller extends Controller
             // Delete the record from Datatrain2
             $dfus->delete();
         }
+
+        Datatrain2::truncate();
+        DataTest2::truncate();
 
         return redirect()
             ->back()
