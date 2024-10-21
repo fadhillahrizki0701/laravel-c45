@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\C45\C45Controller;
-use App\Models\Dataset1;
 use App\Models\Datatrain1;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class Datatrain1Controller extends Controller
 {
@@ -16,14 +13,15 @@ class Datatrain1Controller extends Controller
 	 */
 	public function index()
 	{
-		if (Dataset1::all()->isEmpty()) {
+		if (Datatrain1::all()->isEmpty()) {
 			return view("pages.datatrain2-index", [
-				'accuracy' => [
-					'data' => [
-						'train' => [],
-						'test' => [],
-					]
-				]
+				'data' => [],
+				'metrices' => [
+					'accuracy' => 0,
+					'precision' => 0,
+					'recall' => 0,
+					'f1_score' => 0,
+				],
 			]);
 		}
 
@@ -48,8 +46,8 @@ class Datatrain1Controller extends Controller
 
 		return view("pages.datatrain1-index", compact(
 			'metrices',
-			'data',
 			'rules',
+			'data',
 		));
 	}
 

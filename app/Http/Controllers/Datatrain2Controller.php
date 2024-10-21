@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\C45\C45Controller;
-use App\Models\Dataset2;
 use App\Models\Datatrain2;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class Datatrain2Controller extends Controller
 {
@@ -16,38 +13,40 @@ class Datatrain2Controller extends Controller
 	 */
 	public function index()
 	{
-		if (Dataset2::all()->isEmpty()) {
+		if (Datatrain2::all()->isEmpty()) {
 			return view("pages.datatrain2-index", [
-				'accuracy' => [
-					'data' => [
-						'train' => [],
-						'test' => [],
-					]
-				]
+				'data' => [],
+				'metrices' => [
+					'accuracy' => 0,
+					'precision' => 0,
+					'recall' => 0,
+					'f1_score' => 0,
+				],
 			]);
 		}
 
 		$c45 = new C45Controller();
 		$tree = $c45->fetchTreeDataset2Internal();
 
-		$data = Dataset2::select([
+		$data = Datatrain2::select([
 			'usia',
 			'berat_badan_per_tinggi_badan',
 			'menu',
 			'keterangan'
 		])->get()->toArray();
 
-		$metrices = $c45->calculate($data, [
+		$metrices = $c45->calculateMetrices($data, [
 			'usia',
 			'berat_badan_per_tinggi_badan',
 			'menu',
-		], 'keterangan', 0.73);
+		], 'keterangan');
 
 		$rules = $c45->extractRules($tree);
 
 		return view("pages.datatrain2-index", compact(
 			'metrices',
 			'rules',
+			'data',
 		));
 	}
 

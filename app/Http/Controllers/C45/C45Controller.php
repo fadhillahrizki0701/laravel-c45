@@ -300,7 +300,7 @@ class C45Controller extends Controller
 
     public function fetchTreeDataset1()
     {
-        $data = Dataset1::select([
+        $data = Datatrain1::select([
             'usia',
             'berat_badan_per_usia',
             'tinggi_badan_per_usia',
@@ -329,7 +329,7 @@ class C45Controller extends Controller
 
     public function fetchTreeDataset2()
     {
-        $data = Dataset2::select([
+        $data = Datatrain2::select([
             'usia',
             'berat_badan_per_tinggi_badan',
             'menu',
