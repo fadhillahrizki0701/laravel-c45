@@ -64,9 +64,8 @@ Route::middleware("auth")->group(function () {
     Route::resource('/datatest1', Datatest1Controller::class);
     Route::resource('/datatest2', Datatest2Controller::class);
 
-    Route::resource('/klasifikasi1', Klasifikasi1Controller::class);
+    Route::get('/klasifikasi1', [Klasifikasi1Controller::class, 'index'])->name('klasifikasi1.index');
     Route::resource('/klasifikasi2', Datatest2Controller::class);
-
 });
 
 Route::get('/mining-dataset-1', [C45Controller::class, 'fetchTreeDataset1'])->name('proses-mining-dataset-1');

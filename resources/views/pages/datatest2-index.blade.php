@@ -63,17 +63,18 @@
                     <th scope="col">BB/TB</th>
                     <th scope="col">Menu</th>
                     <th scope="col">Keterangan</th>
+                    <th scope="col">Prediksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data as $dt2)
+                    @foreach ($metrices['predictions'] as $dt2)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $dt2['usia'] }}</td>
                             <td>{{ $dt2['berat_badan_per_tinggi_badan'] }}</td>
                             <td>{{ $dt2['menu'] }}</td>
                             <td>{{ $dt2['keterangan'] }}</td>
-                            </td>
+                            <td><strong>{{ $dt2['predicted_label'] }}</strong></td>
                         </tr>
                     @endforeach
                 </tbody>

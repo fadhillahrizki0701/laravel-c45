@@ -544,6 +544,7 @@ class C45Controller extends Controller
         $positiveLabel = $uniqueLabels[0];
         $negativeLabel = $uniqueLabels[1];
 
+        $predictions = [];
         foreach ($dataset as $testing) {
             $predictedLabel = $this->predict($tree, $testing);
             $actualLabel = $testing[$label];
@@ -562,6 +563,9 @@ class C45Controller extends Controller
             } elseif ($predictedLabel === $negativeLabel && $actualLabel === $positiveLabel) {
                 $FN++;
             }
+
+            $testing['predicted_label'] = $predictedLabel;
+            $predictions[] = $testing;
         }
 
         $totalTestData = count($dataset);
@@ -590,6 +594,7 @@ class C45Controller extends Controller
             'correct_predictions' => $correctPredictions,
             'total_test_data' => $totalTestData,
             'confusion_matrix' => $confusionMatrix,
+            'predictions' => $predictions,
         ];
     }
 }

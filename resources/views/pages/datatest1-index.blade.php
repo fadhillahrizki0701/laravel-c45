@@ -58,24 +58,25 @@
             <table id="example" class="display" style="width:100%">
                 <thead>
                     <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Usia</th>
-                    <th scope="col">BB/U</th>
-                    <th scope="col">TB/U</th>
-                    <th scope="col">BB/TB</th>
+                        <th scope="col">No</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Usia</th>
+                        <th scope="col">BB/U</th>
+                        <th scope="col">TB/U</th>
+                        <th scope="col">BB/TB</th>
+                        <th scope="col">Prediksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data as $dt1)
+                    @foreach ($metrices['predictions'] as $dt1)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $dt1['nama'] }}</td>
                             <td>{{ $dt1['usia'] }}</td>
                             <td>{{ $dt1['berat_badan_per_usia'] }}</td>
                             <td>{{ $dt1['tinggi_badan_per_usia'] }}</td>
-                            <td>{{ $dt1['berat_badan_per_tinggi_badan'] }}</td>
-                            </td>
+                            <td>{{ $dt1['berat_badan_per_tinggi_badan'] }}</td> 
+                            <td><strong>{{ $dt1['predicted_label'] }}</strong></td>
                         </tr>
                     @endforeach
                 </tbody>

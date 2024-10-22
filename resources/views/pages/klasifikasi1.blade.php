@@ -4,7 +4,7 @@
 
 @section('content')
 <section class="container p-4">
-    <h2 class="pb-4" style="color:#435EBE">Dataset 1</h2>
+    <h2 class="pb-4" style="color:#435EBE">Klasifikasi Dataset 1</h2>
     
     @if(count($errors)>0)
         <div class="alert alert-danger">
@@ -17,7 +17,6 @@
     @endif
 
     @include('pages.partials.session-notification')
-
 
         <section class="table-responsive">
             <table id="example" class="display" style="width:100%">
@@ -42,9 +41,7 @@
                             <td>{{ ucwords($dt1->tinggi_badan_per_usia ) }}</td>
                             <td>{{ ucwords( $dt1->berat_badan_per_tinggi_badan) }}</td>
                             <td><strong>{{ $predictedLabel['predicted_label'] }}</strong></td>
-                
                         </tr>
-
                     @endforeach
                 </tbody>
             </table>
