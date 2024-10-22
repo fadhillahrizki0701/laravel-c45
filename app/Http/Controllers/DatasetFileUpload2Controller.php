@@ -76,7 +76,7 @@ class DatasetFileUpload2Controller extends Controller
 	public function clear()
 	{
 		// Retrieve all records from the Datatrain2 table
-		$datasetFileUpload = datasetFileUpload2::all();
+		$datasetFileUpload = DatasetFileUpload2::all();
 
 		foreach ($datasetFileUpload as $dfus) {
 			// Load the spreadsheet file using PhpSpreadsheet

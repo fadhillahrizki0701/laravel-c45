@@ -59,7 +59,7 @@ Route::middleware("auth")->group(function () {
     Route::delete('/dataset-file-upload-1/clear', [DatasetFileUpload1Controller::class, 'clear'])->name('dataset-file-upload-1.clear');
 
     Route::post('/dataset-file-upload-2', [DatasetFileUpload2Controller::class, 'store'])->name('dataset-file-upload-2.store');
-    Route::delete('/dataset-file-upload-2/clear', [DatasetFileUpload1Controller::class, 'clear'])->name('dataset-file-upload-2.clear');
+    Route::delete('/dataset-file-upload-2/clear', [DatasetFileUpload2Controller::class, 'clear'])->name('dataset-file-upload-2.clear');
 
     Route::get('/profile/{id:id}', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile/{id:id}', [ProfileController::class, 'update'])->name('profile.update');
