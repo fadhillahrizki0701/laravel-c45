@@ -520,4 +520,76 @@ class C45Controller extends Controller
             'confusion_matrix' => $confusionMatrix,
         ];
     }
+
+    public function calculateMetricesWithTreeInput(array $dataset, array $attributes, string $label, array $tree): array
+    {
+        if (empty($dataset)) {
+            return [
+                'accuracy' => 0,
+                'precision' => 0,
+                'recall' => 0,
+                'f1_score' => 0,
+                'specificity' => 0,
+                'message' => 'No data available for testing.',
+            ];
+        }
+
+        // Build decision tree using dataset
+        $tree = $this->buildTree($dataset, $label, $attributes);
+
+        $TP = $TN = $FP = $FN = 0;
+        $correctPredictions = 0;
+
+        $uniqueLabels = array_values(array_unique(array_column($dataset, $label)));
+        $positiveLabel = $uniqueLabels[0];
+        $negativeLabel = $uniqueLabels[1];
+
+        foreach ($dataset as $testing) {
+            $predictedLabel = $this->predict($tree, $testing);
+            $actualLabel = $testing[$label];
+
+            if ($predictedLabel == $actualLabel) {
+                $correctPredictions++;
+            }
+
+            // Update confusion matrix values
+            if ($predictedLabel === $positiveLabel && $actualLabel === $positiveLabel) {
+                $TP++;
+            } elseif ($predictedLabel === $negativeLabel && $actualLabel === $negativeLabel) {
+                $TN++;
+            } elseif ($predictedLabel === $positiveLabel && $actualLabel === $negativeLabel) {
+                $FP++;
+            } elseif ($predictedLabel === $negativeLabel && $actualLabel === $positiveLabel) {
+                $FN++;
+            }
+        }
+
+        $totalTestData = count($dataset);
+        $accuracy = ($correctPredictions / $totalTestData) * 100;
+
+        // Precision, Recall, F1-Score, and Specificity calculations
+        $precision = $TP + $FP ? $TP / ($TP + $FP) : 0;
+        $recall = $TP + $FN ? $TP / ($TP + $FN) : 0;
+        $f1_score = ($precision + $recall) ? 2 * ($precision * $recall) / ($precision + $recall) : 0;
+        $specificity = $TN + $FP ? $TN / ($TN + $FP) : 0;
+
+        // Build the confusion matrix
+        $confusionMatrix = [
+            'TP' => $TP,
+            'TN' => $TN,
+            'FP' => $FP,
+            'FN' => $FN,
+        ];
+
+        return [
+            'accuracy' => round($accuracy, 5),
+            'precision' => round($precision, 5),
+            'recall' => round($recall, 5),
+            'f1_score' => round($f1_score, 5),
+            'specificity' => round($specificity, 5),
+            'correct_predictions' => $correctPredictions,
+            'total_test_data' => $totalTestData,
+            'confusion_matrix' => $confusionMatrix,
+        ];
+    }
 }

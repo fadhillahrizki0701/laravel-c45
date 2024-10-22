@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\C45\C45Controller;
 use App\Models\Dataset2;
+use App\Models\DataTest2;
+use App\Models\Datatrain2;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class Datatest2Controller extends Controller
@@ -14,38 +16,52 @@ class Datatest2Controller extends Controller
      */
     public function index()
     {
-        if (Dataset2::all()->isEmpty()) {
+        if (DataTest2::all()->isEmpty()) {
             return view("pages.datatrain2-index", [
-                'accuracy' => [
-                    'data' => [
-                        'train' => [],
-                        'test' => [],
-                    ]
-                ]
+                'data' => [],
+				'metrices' => [
+					'accuracy' => 0,
+					'precision' => 0,
+					'recall' => 0,
+					'f1_score' => 0,
+				],
             ]);
         }
 
         $c45 = new C45Controller();
-        $tree = $c45->fetchTreeDataset2Internal();
 
-        $data = Dataset2::select([
+        $dataTrain = Datatrain2::select([
             'usia',
             'berat_badan_per_tinggi_badan',
             'menu',
             'keterangan'
         ])->get()->toArray();
 
-        $metrices = $c45->calculate($data, [
+        $tree = $c45->fetchTree($dataTrain, [
             'usia',
             'berat_badan_per_tinggi_badan',
             'menu',
-        ], 'keterangan', 0.73);
+        ], 'keterangan');
+
+        $data = DataTest2::select([
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+            'keterangan'
+        ])->get()->toArray();
+
+        $metrices = $c45->calculateMetricesWithTreeInput($data, [
+            'usia',
+            'berat_badan_per_tinggi_badan',
+            'menu',
+        ], 'keterangan', $tree);
 
         $rules = $c45->extractRules($tree);
 
         return view("pages.datatest2-index", compact(
             'metrices',
             'rules',
+            'data',
         ));
     }
 

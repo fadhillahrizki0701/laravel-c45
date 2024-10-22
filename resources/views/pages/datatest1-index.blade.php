@@ -67,7 +67,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($metrices['data']['test'] as $dt1)
+                    @foreach ($data as $dt1)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $dt1['nama'] }}</td>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\C45\C45Controller;
 use App\Models\Dataset1;
+use App\Models\DataTest1;
+use App\Models\Datatrain1;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
@@ -15,21 +17,35 @@ class Datatest1Controller extends Controller
      */
     public function index()
     {
-        if (Dataset1::all()->isEmpty()) {
+        if (DataTest1::all()->isEmpty()) {
 			return view("pages.datatrain2-index", [
-				'accuracy' => [
-					'data' => [
-						'train' => [],
-						'test' => [],
-					]
-				]
+				'data' => [],
+				'metrices' => [
+					'accuracy' => 0,
+					'precision' => 0,
+					'recall' => 0,
+					'f1_score' => 0,
+				],
 			]);
 		}
 
 		$c45 = new C45Controller();
-		$tree = $c45->fetchTreeDataset1Internal();
 
-		$data = Dataset1::select([
+        $dataTrain = Datatrain1::select([
+			'usia',
+			'berat_badan_per_usia',
+			'tinggi_badan_per_usia',
+			'berat_badan_per_tinggi_badan',
+		])->get()->toArray();
+
+		$tree = $c45->fetchTree($dataTrain, [
+			'usia',
+			'berat_badan_per_usia',
+			'tinggi_badan_per_usia',
+			'berat_badan_per_tinggi_badan',
+		], 'berat_badan_per_tinggi_badan');
+
+		$data = DataTest1::select([
 			'nama',
 			'usia',
 			'berat_badan_per_usia',
@@ -37,17 +53,18 @@ class Datatest1Controller extends Controller
 			'berat_badan_per_tinggi_badan',
 		])->get()->toArray();
 
-		$metrices = $c45->calculate($data, [
+		$metrices = $c45->calculateMetricesWithTreeInput($data, [
 			'berat_badan_per_usia',
 			'tinggi_badan_per_usia',
 			'usia',
-		], 'berat_badan_per_tinggi_badan', 0.26);
+		], 'berat_badan_per_tinggi_badan', $tree);
 
 		$rules = $c45->extractRules($tree);
 
 		return view("pages.datatest1-index", compact(
 			'metrices',
 			'rules',
+            'data',
 		));
     }
 
