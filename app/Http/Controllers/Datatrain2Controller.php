@@ -21,7 +21,10 @@ class Datatrain2Controller extends Controller
 					'precision' => 0,
 					'recall' => 0,
 					'f1_score' => 0,
+					'correct_predictions' => 0,
+                    'total_test_data' => 0,
 				],
+				'rules' => [],
 			]);
 		}
 

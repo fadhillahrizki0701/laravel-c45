@@ -14,14 +14,17 @@ class Datatrain1Controller extends Controller
 	public function index()
 	{
 		if (Datatrain1::all()->isEmpty()) {
-			return view("pages.datatrain2-index", [
+			return view("pages.datatrain1-index", [
 				'data' => [],
 				'metrices' => [
 					'accuracy' => 0,
 					'precision' => 0,
 					'recall' => 0,
 					'f1_score' => 0,
+					'correct_predictions' => 0,
+                    'total_test_data' => 0,
 				],
+				'rules' => [],
 			]);
 		}
 
