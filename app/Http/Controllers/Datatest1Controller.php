@@ -93,8 +93,28 @@ class Datatest1Controller extends Controller
 	public function store(Request $request)
 	{
 		$c45 = new C45Controller();
-		$tree = $c45->fetchTreeDataset1Internal();
-		$data = Dataset1::select([
+
+		$dataTrain = Datatrain1::select([
+			"usia",
+			"berat_badan_per_usia",
+			"tinggi_badan_per_usia",
+			"berat_badan_per_tinggi_badan",
+		])
+			->get()
+			->toArray();
+
+		$tree = $c45->fetchTree(
+			$dataTrain,
+			[
+				"usia",
+				"berat_badan_per_usia",
+				"tinggi_badan_per_usia",
+				"berat_badan_per_tinggi_badan",
+			],
+			"berat_badan_per_tinggi_badan"
+		);
+
+		$data = DataTest1::select([
 			"nama",
 			"usia",
 			"berat_badan_per_usia",
@@ -104,11 +124,11 @@ class Datatest1Controller extends Controller
 			->get()
 			->toArray();
 
-		$metrices = $c45->calculate(
+		$metrices = $c45->calculateMetricesWithTreeInput(
 			$data,
 			["berat_badan_per_usia", "tinggi_badan_per_usia", "usia"],
 			"berat_badan_per_tinggi_badan",
-			0.72
+			$tree
 		);
 
 		$rules = $c45->extractRules($tree);
