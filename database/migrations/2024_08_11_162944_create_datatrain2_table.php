@@ -28,7 +28,6 @@ return new class extends Migration
                 'M2',
                 'M3',
                 'M4',
-
             ]);
             $table->enum('keterangan', [
                 'Baik',
