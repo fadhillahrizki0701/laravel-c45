@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DatasetFileUpload2 extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    protected $fillable = ["path"];
+	protected $fillable = ["path"];
 }

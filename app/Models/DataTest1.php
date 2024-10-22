@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class DataTest1 extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    protected $fillable = [
+	protected $fillable = [
 		"nama",
 		"usia",
 		"berat_badan_per_usia",

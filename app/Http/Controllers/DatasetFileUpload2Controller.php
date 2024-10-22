@@ -14,12 +14,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class DatasetFileUpload2Controller extends Controller
 {
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        if ($request->hasFile("file")) {
+	/**
+	 * Store a newly created resource in storage.
+	 */
+	public function store(Request $request)
+	{
+		if ($request->hasFile("file")) {
 			// Save the uploaded file into the 'uploads' directory
 			$path = $request->file("file")->store("uploads");
 
@@ -64,66 +64,69 @@ class DatasetFileUpload2Controller extends Controller
 
 		return redirect()
 			->back()
-			->with(["success", "Data berhasil diimpor dan disimpan ke database."]);
-    }
+			->with([
+				"success",
+				"Data berhasil diimpor dan disimpan ke database.",
+			]);
+	}
 
-    /**
-     * Remove the resources from storage.
-     */
-    public function clear()
-    {
-        // Retrieve all records from the Datatrain2 table
-        $datasetFileUpload = datasetFileUpload2::all();
+	/**
+	 * Remove the resources from storage.
+	 */
+	public function clear()
+	{
+		// Retrieve all records from the Datatrain2 table
+		$datasetFileUpload = datasetFileUpload2::all();
 
-        foreach ($datasetFileUpload as $dfus) {
-            // Load the spreadsheet file using PhpSpreadsheet
-            $spreadsheet = PhpSpreadsheet::load(
-                storage_path("app/" . $dfus->path)
-            );
+		foreach ($datasetFileUpload as $dfus) {
+			// Load the spreadsheet file using PhpSpreadsheet
+			$spreadsheet = PhpSpreadsheet::load(
+				storage_path("app/" . $dfus->path)
+			);
 
-            // Select the first worksheet
-            $sheet = $spreadsheet->getActiveSheet();
+			// Select the first worksheet
+			$sheet = $spreadsheet->getActiveSheet();
 
-            // Iterate through each row, starting from the second row to skip the header
-            foreach ($sheet->getRowIterator(2) as $row) {
-                $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(false);
+			// Iterate through each row, starting from the second row to skip the header
+			foreach ($sheet->getRowIterator(2) as $row) {
+				$cellIterator = $row->getCellIterator();
+				$cellIterator->setIterateOnlyExistingCells(false);
 
-                $rowData = [];
-                foreach ($cellIterator as $cell) {
-                    $rowData[] = $cell->getValue();
-                }
+				$rowData = [];
+				foreach ($cellIterator as $cell) {
+					$rowData[] = $cell->getValue();
+				}
 
-                // Ensure the row has at least 4 columns (adjust based on your requirements)
-                if (count($rowData) < 4) {
-                    continue; // Skip invalid rows
-                }
+				// Ensure the row has at least 4 columns (adjust based on your requirements)
+				if (count($rowData) < 4) {
+					continue; // Skip invalid rows
+				}
 
-                // Delete matching data in Dataset2
-                Dataset2::where("usia", $rowData[1])
-                    ->where("berat_badan_per_tinggi_badan", $rowData[2])
-                    ->where("menu", $rowData[3])
-                    ->where("keterangan", $rowData[4])
-                    ->delete();
-            }
+				// Delete matching data in Dataset2
+				Dataset2::where("usia", $rowData[1])
+					->where("berat_badan_per_tinggi_badan", $rowData[2])
+					->where("menu", $rowData[3])
+					->where("keterangan", $rowData[4])
+					->delete();
+			}
 
-            // Delete the file from storage after processing
-            if (Storage::exists($dfus->path)) {
-                Storage::delete($dfus->path);
-            }
+			// Delete the file from storage after processing
+			if (Storage::exists($dfus->path)) {
+				Storage::delete($dfus->path);
+			}
 
-            // Delete the record from Datatrain2
-            $dfus->delete();
-        }
+			// Delete the record from Datatrain2
+			$dfus->delete();
+		}
 
-        Datatrain2::truncate();
-        DataTest2::truncate();
+		Datatrain2::truncate();
+		DataTest2::truncate();
 
-        return redirect()
-            ->back()
-            ->with([
-                "success",
-                "All files and associated data deleted successfully.",
-            ]);
-    }
+		return redirect()
+			->back()
+			->with([
+				"success",
+				"All files and associated data deleted successfully.",
+			]);
+	}
 }

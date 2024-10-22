@@ -17,7 +17,10 @@ class UserController extends Controller
 	{
 		$roles = DB::table("roles")->get();
 
-		if (Auth::user()->hasRole('admin puskesmas') || Auth::user()->hasRole('wali')) {
+		if (
+			Auth::user()->hasRole("admin puskesmas") ||
+			Auth::user()->hasRole("wali")
+		) {
 			$users = User::where("name", "!=", "admin")
 				->where("name", "!=", "admin puskesmas")
 				->get();
@@ -108,18 +111,11 @@ class UserController extends Controller
 
 		$rules = [
 			"name" => ["required", "string", "min:1"],
-			"email" => [
-				"required",
-				"email",
-				"string",
-				"min:1",
-			],
+			"email" => ["required", "email", "string", "min:1"],
 		];
 
 		if ($user->email != $request->email) {
-			$rules["email"] = [
-				"unique:users,email",
-			];
+			$rules["email"] = ["unique:users,email"];
 		}
 
 		$validation = $request->validate($rules);
