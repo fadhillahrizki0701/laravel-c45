@@ -12,12 +12,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class DatasetFileUpload1Controller extends Controller
 {
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        if ($request->hasFile("file")) {
+	/**
+	 * Store a newly created resource in storage.
+	 */
+	public function store(Request $request)
+	{
+		if ($request->hasFile("file")) {
 			// Save the uploaded file into the 'uploads' directory
 			$path = $request->file("file")->store("uploads");
 
@@ -52,7 +52,7 @@ class DatasetFileUpload1Controller extends Controller
 
 				// Save data to the database
 				Dataset1::create([
-					"nama" => str_replace("\x00", '', $rowData[1]),
+					"nama" => str_replace("\x00", "", $rowData[1]),
 					"usia" => $rowData[2],
 					"berat_badan_per_usia" => ucwords($rowData[3]),
 					"tinggi_badan_per_usia" => ucwords($rowData[4]),
@@ -63,15 +63,17 @@ class DatasetFileUpload1Controller extends Controller
 
 		return redirect()
 			->back()
-			->with(["success" => "Data berhasil diimpor dan disimpan ke database."]);
-    }
+			->with([
+				"success" => "Data berhasil diimpor dan disimpan ke database.",
+			]);
+	}
 
-    /**
-     * Remove the resources from storage.
-     */
-    public function clear()
-    {
-        // Retrieve all records from the Datatrain1 table
+	/**
+	 * Remove the resources from storage.
+	 */
+	public function clear()
+	{
+		// Retrieve all records from the Datatrain1 table
 		$datasetFileUpload = DatasetFileUpload1::all();
 
 		foreach ($datasetFileUpload as $dfus) {
@@ -125,5 +127,5 @@ class DatasetFileUpload1Controller extends Controller
 				"success",
 				"All files and associated data deleted successfully.",
 			]);
-    }
+	}
 }

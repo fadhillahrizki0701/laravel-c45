@@ -4,13 +4,16 @@ use App\Http\Controllers\C45\C45Controller;
 use App\Http\Controllers\Dataset1Controller;
 use App\Http\Controllers\Dataset2Controller;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DatasetClassification1;
+use App\Http\Controllers\DatasetClassification1Controller;
+use App\Http\Controllers\DatasetClassification2;
+use App\Http\Controllers\DatasetClassification2Controller;
 use App\Http\Controllers\DatasetFileUpload1Controller;
 use App\Http\Controllers\DatasetFileUpload2Controller;
 use App\Http\Controllers\Datatest1Controller;
 use App\Http\Controllers\Datatest2Controller;
 use App\Http\Controllers\Datatrain1Controller;
 use App\Http\Controllers\Datatrain2Controller;
-use App\Http\Controllers\Klasifikasi1Controller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -64,8 +67,8 @@ Route::middleware("auth")->group(function () {
     Route::resource('/datatest1', Datatest1Controller::class);
     Route::resource('/datatest2', Datatest2Controller::class);
 
-    Route::get('/klasifikasi1', [Klasifikasi1Controller::class, 'index'])->name('klasifikasi1.index');
-    Route::resource('/klasifikasi2', Datatest2Controller::class);
+    Route::get('/klasifikasi-dataset1', [DatasetClassification1Controller::class, 'index'])->name('classification-1.index');
+    Route::get('/klasifikasi-dataset2', [DatasetClassification2Controller::class, 'index'])->name('classification-2.index');
 });
 
 Route::get('/mining-dataset-1', [C45Controller::class, 'fetchTreeDataset1'])->name('proses-mining-dataset-1');

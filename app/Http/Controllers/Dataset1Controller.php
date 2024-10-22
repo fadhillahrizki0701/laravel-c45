@@ -129,30 +129,41 @@ class Dataset1Controller extends Controller
 		DataTest1::truncate();
 
 		$dataset = Dataset1::select([
-			'nama',
-			'usia',
-			'berat_badan_per_usia',
-			'tinggi_badan_per_usia',
-			'berat_badan_per_tinggi_badan',
-		])->get()->toArray();
+			"nama",
+			"usia",
+			"berat_badan_per_usia",
+			"tinggi_badan_per_usia",
+			"berat_badan_per_tinggi_badan",
+		])
+			->get()
+			->toArray();
 
-		$dataTrain = array_slice($dataset, 0, floor(count($dataset) * $request->split_ratio));
-        $dataTest = array_slice($dataset, floor(count($dataset) * $request->split_ratio));
+		$dataTrain = array_slice(
+			$dataset,
+			0,
+			floor(count($dataset) * $request->split_ratio)
+		);
+		$dataTest = array_slice(
+			$dataset,
+			floor(count($dataset) * $request->split_ratio)
+		);
 
 		foreach ($dataTrain as &$dt) {
-			$dt['nama'] = str_replace("\x00", '', $dt['nama']);
+			$dt["nama"] = str_replace("\x00", "", $dt["nama"]);
 
 			Datatrain1::create($dt);
 		}
 
 		foreach ($dataTest as &$dt) {
-			$dt['nama'] = str_replace("\x00", '', $dt['nama']);
+			$dt["nama"] = str_replace("\x00", "", $dt["nama"]);
 
 			DataTest1::create($dt);
 		}
 
-		return redirect()->route('dataset1.index')->with([
-			'success' => 'Split Dataset berhasil dilakukan',
-		]);
+		return redirect()
+			->route("dataset1.index")
+			->with([
+				"success" => "Split Dataset berhasil dilakukan",
+			]);
 	}
 }

@@ -8,32 +8,25 @@ use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
-    public function index(string $id)
-    {
-        $profile = User::find($id);
-        $roles = DB::table('roles')->get();
+	public function index(string $id)
+	{
+		$profile = User::find($id);
+		$roles = DB::table("roles")->get();
 
-        return view('pages.profile-index', compact('profile', 'roles'));
-    }
+		return view("pages.profile-index", compact("profile", "roles"));
+	}
 
-    public function update(Request $request, string $id)
-    {
-        $profile = User::find($id);
+	public function update(Request $request, string $id)
+	{
+		$profile = User::find($id);
 
 		$rules = [
 			"name" => ["required", "string", "min:1"],
-            "email" => [
-                "required",
-				"email",
-				"string",
-				"min:1",
-            ],
+			"email" => ["required", "email", "string", "min:1"],
 		];
 
 		if ($profile->email != $request->email) {
-			$rules["email"] = [
-				"unique:users,email",
-			];
+			$rules["email"] = ["unique:users,email"];
 		}
 
 		$validation = $request->validate($rules);
@@ -52,5 +45,5 @@ class ProfileController extends Controller
 			->with([
 				"success" => "Berhasil mengubah data profil!",
 			]);
-    }
+	}
 }

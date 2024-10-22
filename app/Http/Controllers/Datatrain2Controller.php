@@ -15,16 +15,16 @@ class Datatrain2Controller extends Controller
 	{
 		if (Datatrain2::all()->isEmpty()) {
 			return view("pages.datatrain2-index", [
-				'data' => [],
-				'metrices' => [
-					'accuracy' => 0,
-					'precision' => 0,
-					'recall' => 0,
-					'f1_score' => 0,
-					'correct_predictions' => 0,
-                    'total_test_data' => 0,
+				"data" => [],
+				"metrices" => [
+					"accuracy" => 0,
+					"precision" => 0,
+					"recall" => 0,
+					"f1_score" => 0,
+					"correct_predictions" => 0,
+					"total_test_data" => 0,
 				],
-				'rules' => [],
+				"rules" => [],
 			]);
 		}
 
@@ -32,25 +32,26 @@ class Datatrain2Controller extends Controller
 		$tree = $c45->fetchTreeDataset2Internal();
 
 		$data = Datatrain2::select([
-			'usia',
-			'berat_badan_per_tinggi_badan',
-			'menu',
-			'keterangan'
-		])->get()->toArray();
+			"usia",
+			"berat_badan_per_tinggi_badan",
+			"menu",
+			"keterangan",
+		])
+			->get()
+			->toArray();
 
-		$metrices = $c45->calculateMetrices($data, [
-			'usia',
-			'berat_badan_per_tinggi_badan',
-			'menu',
-		], 'keterangan');
+		$metrices = $c45->calculateMetrices(
+			$data,
+			["usia", "berat_badan_per_tinggi_badan", "menu"],
+			"keterangan"
+		);
 
 		$rules = $c45->extractRules($tree);
 
-		return view("pages.datatrain2-index", compact(
-			'metrices',
-			'rules',
-			'data',
-		));
+		return view(
+			"pages.datatrain2-index",
+			compact("metrices", "rules", "data")
+		);
 	}
 
 	/**
@@ -66,7 +67,6 @@ class Datatrain2Controller extends Controller
 	 */
 	public function store(Request $request)
 	{
-		
 	}
 
 	/**
@@ -103,11 +103,10 @@ class Datatrain2Controller extends Controller
 
 	public function clear()
 	{
-
 	}
 
 	public function mining()
 	{
-		return view('pages.datatrain2-mining');
+		return view("pages.datatrain2-mining");
 	}
 }

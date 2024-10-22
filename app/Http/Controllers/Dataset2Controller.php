@@ -124,14 +124,23 @@ class Dataset2Controller extends Controller
 		DataTest2::truncate();
 
 		$dataset = Dataset2::select([
-            'usia',
-            'berat_badan_per_tinggi_badan',
-            'menu',
-            'keterangan'
-        ])->get()->toArray();
+			"usia",
+			"berat_badan_per_tinggi_badan",
+			"menu",
+			"keterangan",
+		])
+			->get()
+			->toArray();
 
-		$dataTrain = array_slice($dataset, 0, floor(count($dataset) * $request->split_ratio));
-        $dataTest = array_slice($dataset, floor(count($dataset) * $request->split_ratio));
+		$dataTrain = array_slice(
+			$dataset,
+			0,
+			floor(count($dataset) * $request->split_ratio)
+		);
+		$dataTest = array_slice(
+			$dataset,
+			floor(count($dataset) * $request->split_ratio)
+		);
 
 		foreach ($dataTrain as $dt) {
 			Datatrain2::create($dt);
@@ -141,8 +150,10 @@ class Dataset2Controller extends Controller
 			DataTest2::create($dt);
 		}
 
-		return redirect()->route('dataset2.index')->with([
-			'success' => 'Split Dataset berhasil dilakukan',
-		]);
+		return redirect()
+			->route("dataset2.index")
+			->with([
+				"success" => "Split Dataset berhasil dilakukan",
+			]);
 	}
 }
