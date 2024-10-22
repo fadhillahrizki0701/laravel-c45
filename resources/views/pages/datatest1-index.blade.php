@@ -43,7 +43,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ $metrices['accuracy'] }} (<span class="text-success">{{ $metrices['correct_predictions'] }}</span>/{{ $metrices['total_test_data'] }})</td>
+                                <td>{{ $metrices['accuracy'] }}% (<span class="text-success">{{ $metrices['correct_predictions'] }}</span>/{{ $metrices['total_test_data'] }})</td>
                                 <td>{{ $metrices['precision'] }}</td>
                                 <td>{{ $metrices['recall'] }}</td>
                                 <td>{{ $metrices['f1_score'] }}</td>
