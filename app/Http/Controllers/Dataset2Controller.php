@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dataset2;
+use App\Models\DataTest2;
+use App\Models\Datatrain2;
 use Illuminate\Http\Request;
 
 class Dataset2Controller extends Controller
@@ -110,6 +112,48 @@ class Dataset2Controller extends Controller
 			->route("dataset2.index")
 			->with([
 				"success" => "Data berhasil dihapus!",
+			]);
+	}
+
+	/**
+	 * Process data split
+	 */
+	public function split(Request $request)
+	{
+		Datatrain2::truncate();
+		DataTest2::truncate();
+
+		$dataset = Dataset2::select([
+			"usia",
+			"berat_badan_per_tinggi_badan",
+			"menu",
+			"keterangan",
+		])
+			->get()
+			->toArray();
+
+		$dataTrain = array_slice(
+			$dataset,
+			0,
+			floor(count($dataset) * $request->split_ratio)
+		);
+		$dataTest = array_slice(
+			$dataset,
+			floor(count($dataset) * $request->split_ratio)
+		);
+
+		foreach ($dataTrain as $dt) {
+			Datatrain2::create($dt);
+		}
+
+		foreach ($dataTest as $dt) {
+			DataTest2::create($dt);
+		}
+
+		return redirect()
+			->route("dataset2.index")
+			->with([
+				"success" => "Split Dataset berhasil dilakukan",
 			]);
 	}
 }

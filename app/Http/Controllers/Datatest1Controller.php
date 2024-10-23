@@ -5,189 +5,238 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\C45\C45Controller;
 use App\Models\Dataset1;
+use App\Models\DataTest1;
+use App\Models\Datatrain1;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory as PhpSpreadsheet;
 
 class Datatest1Controller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        if (Dataset1::all()->isEmpty()) {
-			return view("pages.datatrain2-index", [
-				'accuracy' => [
-					'data' => [
-						'train' => [],
-						'test' => [],
-					]
-				]
+	/**
+	 * Display a listing of the resource.
+	 */
+	public function index()
+	{
+		if (DataTest1::all()->isEmpty()) {
+			return view("pages.datatest1-index", [
+				"data" => [],
+				"metrices" => [
+					"accuracy" => 0,
+					"precision" => 0,
+					"recall" => 0,
+					"f1_score" => 0,
+					"correct_predictions" => 0,
+					"total_test_data" => 0,
+				],
+				"rules" => [],
 			]);
 		}
 
 		$c45 = new C45Controller();
-		$tree = $c45->fetchTreeDataset1Internal();
 
-		$data = Dataset1::select([
-			'nama',
-			'usia',
-			'berat_badan_per_usia',
-			'tinggi_badan_per_usia',
-			'berat_badan_per_tinggi_badan',
-		])->get()->toArray();
+		$dataTrain = Datatrain1::select([
+			"usia",
+			"berat_badan_per_usia",
+			"tinggi_badan_per_usia",
+			"berat_badan_per_tinggi_badan",
+		])
+			->get()
+			->toArray();
 
-		$metrices = $c45->calculate($data, [
-			'berat_badan_per_usia',
-			'tinggi_badan_per_usia',
-			'usia',
-		], 'berat_badan_per_tinggi_badan', 0.26);
+		$tree = $c45->fetchTree(
+			$dataTrain,
+			[
+				"usia",
+				"berat_badan_per_usia",
+				"tinggi_badan_per_usia",
+				"berat_badan_per_tinggi_badan",
+			],
+			"berat_badan_per_tinggi_badan"
+		);
+
+		$data = DataTest1::select([
+			"nama",
+			"usia",
+			"berat_badan_per_usia",
+			"tinggi_badan_per_usia",
+			"berat_badan_per_tinggi_badan",
+		])
+			->get()
+			->toArray();
+
+		$metrices = $c45->calculateMetricesWithTreeInput(
+			$data,
+			["berat_badan_per_usia", "tinggi_badan_per_usia", "usia"],
+			"berat_badan_per_tinggi_badan",
+			$tree
+		);
 
 		$rules = $c45->extractRules($tree);
 
-		return view("pages.datatest1-index", compact(
-			'metrices',
-			'rules',
-		));
-    }
+		return view(
+			"pages.datatest1-index",
+			compact("metrices", "rules", "data")
+		);
+	}
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+	/**
+	 * Show the form for creating a new resource.
+	 */
+	public function create()
+	{
+		//
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $c45 = new C45Controller();
-        $tree = $c45->fetchTreeDataset1Internal();
-        $data = Dataset1::select([
-            'nama',
-            'usia',
-            'berat_badan_per_usia',
-            'tinggi_badan_per_usia',
-            'berat_badan_per_tinggi_badan',
-        ])->get()->toArray();
+	/**
+	 * Store a newly created resource in storage.
+	 */
+	public function store(Request $request)
+	{
+		$c45 = new C45Controller();
 
-        $metrices = $c45->calculate($data, [
-            'berat_badan_per_usia',
-            'tinggi_badan_per_usia',
-            'usia',
-        ], 'berat_badan_per_tinggi_badan', 0.72);
+		$dataTrain = Datatrain1::select([
+			"usia",
+			"berat_badan_per_usia",
+			"tinggi_badan_per_usia",
+			"berat_badan_per_tinggi_badan",
+		])
+			->get()
+			->toArray();
 
-        $rules = $c45->extractRules($tree);
+		$tree = $c45->fetchTree(
+			$dataTrain,
+			[
+				"usia",
+				"berat_badan_per_usia",
+				"tinggi_badan_per_usia",
+				"berat_badan_per_tinggi_badan",
+			],
+			"berat_badan_per_tinggi_badan"
+		);
 
-        if (!$request->hasFile("file")) {
-            $data = $this->validate($request, [
-                "nama" => "nullable",
-                "usia" => "required",
-                "berat_badan_per_usia" => "required",
-                "tinggi_badan_per_usia" => "required",
-            ]);
+		$data = DataTest1::select([
+			"nama",
+			"usia",
+			"berat_badan_per_usia",
+			"tinggi_badan_per_usia",
+			"berat_badan_per_tinggi_badan",
+		])
+			->get()
+			->toArray();
 
-            // Prediksi label berdasarkan pohon keputusan
-            $predictedLabel = $c45->predict($tree, $data);
+		$metrices = $c45->calculateMetricesWithTreeInput(
+			$data,
+			["berat_badan_per_usia", "tinggi_badan_per_usia", "usia"],
+			"berat_badan_per_tinggi_badan",
+			$tree
+		);
 
-            // Tampilkan hasil prediksi di view
-            return view('pages.datatest1-index', compact(
-                'predictedLabel',
-                'data',
-                'rules',
-                'metrices',
-            ));
-        }
+		$rules = $c45->extractRules($tree);
 
-        // Save the uploaded file temporarily without saving its path in the model
-        $path = $request->file("file")->storeAs("temp", "uploaded_file.xlsx");
+		if (!$request->hasFile("file")) {
+			$data = $this->validate($request, [
+				"nama" => "nullable",
+				"usia" => "required",
+				"berat_badan_per_usia" => "required",
+				"tinggi_badan_per_usia" => "required",
+			]);
 
-        // Read the Excel file that has been uploaded
-        $spreadsheet = PhpSpreadsheet::load(storage_path("app/" . $path));
-        $worksheet = $spreadsheet->getActiveSheet();
+			// Prediksi label berdasarkan pohon keputusan
+			$predictedLabel = $c45->predict($tree, $data);
 
-        $classificationResults = [];
+			// Tampilkan hasil prediksi di view
+			return view(
+				"pages.datatest1-index",
+				compact("predictedLabel", "data", "rules", "metrices")
+			);
+		}
 
-        // Iterate over each row in the worksheet
-        foreach ($worksheet->getRowIterator() as $rowIndex => $row) {
-            // Skip header (assuming first row is the header)
-            if ($rowIndex == 1) {
-                continue;
-            }
+		// Save the uploaded file temporarily without saving its path in the model
+		$path = $request->file("file")->storeAs("temp", "uploaded_file.xlsx");
 
-            $cellIterator = $row->getCellIterator();
-            $cellIterator->setIterateOnlyExistingCells(false);
+		// Read the Excel file that has been uploaded
+		$spreadsheet = PhpSpreadsheet::load(storage_path("app/" . $path));
+		$worksheet = $spreadsheet->getActiveSheet();
 
-            $rowData = [];
-            foreach ($cellIterator as $cell) {
-                $rowData[] = $cell->getValue();
-            }
+		$classificationResults = [];
 
-            // Ensure the row has at least 5 columns and 'nama' is not null
-            if (count($rowData) < 5 || empty($rowData[1])) {
-                continue; // Skip invalid rows
-            }
+		// Iterate over each row in the worksheet
+		foreach ($worksheet->getRowIterator() as $rowIndex => $row) {
+			// Skip header (assuming first row is the header)
+			if ($rowIndex == 1) {
+				continue;
+			}
 
-            // Classify the data using your existing classification logic
-            $data = [
-                "usia" => ucwords($rowData[2]),
-                "berat_badan_per_usia" => ucwords($rowData[3]),
-                "tinggi_badan_per_usia" => ucwords($rowData[4]),
-            ];
+			$cellIterator = $row->getCellIterator();
+			$cellIterator->setIterateOnlyExistingCells(false);
 
-            // Assuming you have a method to classify the data, e.g., `predict()`
-            $predictedLabel = $c45->predict($tree, $data);
+			$rowData = [];
+			foreach ($cellIterator as $cell) {
+				$rowData[] = $cell->getValue();
+			}
 
-            // Store the results to display in a table
-            $classificationResults[] = [
-                "nama" => $rowData[1],
-                "usia" => ucwords($rowData[2]),
-                "berat_badan_per_usia" => ucwords($rowData[3]),
-                "tinggi_badan_per_usia" => ucwords($rowData[4]),
-                "predicted_label" => $predictedLabel,
-            ];
-        }
+			// Ensure the row has at least 5 columns and 'nama' is not null
+			if (count($rowData) < 5 || empty($rowData[1])) {
+				continue; // Skip invalid rows
+			}
 
-        // Pass the classification results to the view
-        return view('pages.datatest1-index', [
-            'predictedLabels' => $classificationResults,
-            'metrices' => $metrices,
-            'rules' => $rules,
-        ]);
-    }
+			// Classify the data using your existing classification logic
+			$data = [
+				"usia" => ucwords($rowData[2]),
+				"berat_badan_per_usia" => ucwords($rowData[3]),
+				"tinggi_badan_per_usia" => ucwords($rowData[4]),
+			];
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+			// Assuming you have a method to classify the data, e.g., `predict()`
+			$predictedLabel = $c45->predict($tree, $data);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+			// Store the results to display in a table
+			$classificationResults[] = [
+				"nama" => $rowData[1],
+				"usia" => ucwords($rowData[2]),
+				"berat_badan_per_usia" => ucwords($rowData[3]),
+				"tinggi_badan_per_usia" => ucwords($rowData[4]),
+				"predicted_label" => $predictedLabel,
+			];
+		}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+		// Pass the classification results to the view
+		return view("pages.datatest1-index", [
+			"predictedLabels" => $classificationResults,
+			"metrices" => $metrices,
+			"rules" => $rules,
+		]);
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+	/**
+	 * Display the specified resource.
+	 */
+	public function show(string $id)
+	{
+		//
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 */
+	public function edit(string $id)
+	{
+		//
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 */
+	public function update(Request $request, string $id)
+	{
+		//
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 */
+	public function destroy(string $id)
+	{
+		//
+	}
 }

@@ -26,7 +26,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ $metrices['accuracy'] }}</td>
+                                <td>{{ $metrices['accuracy'] }}% (<span class="text-success">{{ $metrices['correct_predictions'] }}</span>/{{ $metrices['total_test_data'] }})</td>
                                 <td>{{ $metrices['precision'] }}</td>
                                 <td>{{ $metrices['recall'] }}</td>
                                 <td>{{ $metrices['f1_score'] }}</td>
@@ -50,7 +50,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($metrices['data']['train'] as $dt1)
+                    @foreach ($data as $dt1)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $dt1['nama'] }}</td>

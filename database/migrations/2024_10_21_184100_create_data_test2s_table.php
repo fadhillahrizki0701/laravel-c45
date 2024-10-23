@@ -11,28 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('datatrain1', function (Blueprint $table) {
+        Schema::create('data_test2s', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
             $table->enum('usia', [
                 'Fase 1',
                 'Fase 2',
                 'Fase 3',
                 'Fase 4',
             ]);
-            $table->enum('berat_badan_per_usia', [
-                'Normal',
-                'Kurang',
-                'Sangat Kurang',
-            ]);
-            $table->enum('tinggi_badan_per_usia', [
-                'Normal',
-                'Pendek',
-                'Sangat Pendek',
-            ]);
             $table->enum('berat_badan_per_tinggi_badan', [
                 'Gizi Baik',
                 'Gizi Kurang'
+            ]);
+            $table->enum('menu', [
+                'M1',
+                'M2',
+                'M3',
+                'M4',
+
+            ]);
+            $table->enum('keterangan', [
+                'Baik',
+                'Tidak Baik',
             ]);
         });
     }
@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('datatrain1');
+        Schema::dropIfExists('data_test2s');
     }
 };

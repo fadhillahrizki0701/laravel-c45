@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('datatrain1', function (Blueprint $table) {
+        Schema::create('data_test1s', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
             $table->enum('usia', [
@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('datatrain1');
+        Schema::dropIfExists('data_test1s');
     }
 };

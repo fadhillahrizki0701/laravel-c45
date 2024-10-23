@@ -13,8 +13,26 @@ return new class extends Migration
     {
         Schema::create('datatrain2', function (Blueprint $table) {
             $table->id();
-            $table->string('path');
-            $table->timestamps();
+            $table->enum('usia', [
+                'Fase 1',
+                'Fase 2',
+                'Fase 3',
+                'Fase 4',
+            ]);
+            $table->enum('berat_badan_per_tinggi_badan', [
+                'Gizi Baik',
+                'Gizi Kurang'
+            ]);
+            $table->enum('menu', [
+                'M1',
+                'M2',
+                'M3',
+                'M4',
+            ]);
+            $table->enum('keterangan', [
+                'Baik',
+                'Tidak Baik',
+            ]);
         });
     }
 
