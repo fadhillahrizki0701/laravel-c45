@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Datatrain1 extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    public $table ='datatrain1';
-    protected $fillable =[
-        'path'
-    ];
+	public $table = "datatrain1";
+	protected $fillable = [
+		"nama",
+		"usia",
+		"berat_badan_per_usia",
+		"tinggi_badan_per_usia",
+		"berat_badan_per_tinggi_badan",
+	];
+	public $timestamps = false;
 }

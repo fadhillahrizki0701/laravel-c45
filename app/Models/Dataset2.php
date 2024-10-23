@@ -7,12 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dataset2 extends Model
 {
-    protected $fillable = [
-        'Usia',
-        'berat_badan_per_tinggi_badan',
-        'Menu',
-        'Keterangan',
-    ];
-
-    public $timestamps = false;
+	protected $fillable = [
+		"usia",
+		"berat_badan_per_tinggi_badan",
+		"menu",
+		"keterangan",
+	];
+	public $timestamps = false;
 }

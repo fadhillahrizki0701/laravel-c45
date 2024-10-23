@@ -2,160 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dataset1;
-use App\Models\Dataset2;
-use App\Models\Datatrain1;
+use App\Http\Controllers\C45\C45Controller;
 use App\Models\Datatrain2;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class Datatrain2Controller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $dataset2 = Dataset2::all();
+	/**
+	 * Display a listing of the resource.
+	 */
+	public function index()
+	{
+		if (Datatrain2::all()->isEmpty()) {
+			return view("pages.datatrain2-index", [
+				"data" => [],
+				"metrices" => [
+					"accuracy" => 0,
+					"precision" => 0,
+					"recall" => 0,
+					"f1_score" => 0,
+					"correct_predictions" => 0,
+					"total_test_data" => 0,
+				],
+				"rules" => [],
+			]);
+		}
 
-        return view('dashboard-datatrain2', compact('dataset2'));
-    }
+		$c45 = new C45Controller();
+		$tree = $c45->fetchTreeDataset2Internal();
 
+		$data = Datatrain2::select([
+			"usia",
+			"berat_badan_per_tinggi_badan",
+			"menu",
+			"keterangan",
+		])
+			->get()
+			->toArray();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+		$metrices = $c45->calculateMetrices(
+			$data,
+			["usia", "berat_badan_per_tinggi_badan", "menu"],
+			"keterangan"
+		);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        if ($request->hasFile('file')) {
-            // Simpan file yang diunggah ke dalam direktori 'uploads'
-            $path = $request->file('file')->store('uploads');
-            Datatrain2::create([
-                'path'=>$path
-            ]);
-            // Baca file yang telah disimpan
-            $data = array_map(function($row) {
-                return str_getcsv($row, ';');
-            }, file(storage_path('app/' . $path)));
-    
-            // Skip the header
-            array_shift($data);
-    
-            foreach ($data as $row) {
-                Dataset2::create([
-                    'Usia' => $row[1],
-                    'berat_badan_per_tinggi_badan' => $row[2],
-                    'Menu' => $row[3],
-                    'Keterangan' => $row[4],
-                ]);
-            }
-        }
-    
-        // return redirect()->back()->with('success', 'Data imported and file saved successfully.');
-        return redirect()->route('datatrain2.index')->with('success',  'Data imported and file saved successfully.');
-        
-    }
-    
+		$rules = $c45->extractRules($tree);
 
+		return view(
+			"pages.datatrain2-index",
+			compact("metrices", "rules", "data")
+		);
+	}
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+	/**
+	 * Show the form for creating a new resource.
+	 */
+	public function create()
+	{
+		//
+	}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+	/**
+	 * Store a newly created resource in storage.
+	 */
+	public function store(Request $request)
+	{
+	}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+	/**
+	 * Display the specified resource.
+	 */
+	public function show(string $id)
+	{
+		//
+	}
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        // Temukan record di database berdasarkan ID
-        $dataTrain = Datatrain2::findOrFail($id);
-    
-        // Hapus file dari storage
-        if (Storage::exists($dataTrain->path)) {
-            Storage::delete($dataTrain->path);
-        }
-    
-        // Hapus data terkait dari Dataset2
-        // Misalnya berdasarkan nama file, jika itu menjadi acuan
-        Dataset2::where('Usia', 'like', '%' . basename($dataTrain->path) . '%')->delete();
-    
-        // Hapus record dari Datatrain1
-        $dataTrain->delete();
-    
-        return redirect()->back()->with('success', 'File and associated data deleted successfully.');
-    }
-    
+	/**
+	 * Show the form for editing the specified resource.
+	 */
+	public function edit(string $id)
+	{
+		//
+	}
 
-    public function clear(Request $request)
-{
-    // Ambil semua record dari tabel Datatrain2
-    $dataTrains = Datatrain2::all();
+	/**
+	 * Update the specified resource in storage.
+	 */
+	public function update(Request $request, string $id)
+	{
+		//
+	}
 
-    foreach ($dataTrains as $dataTrain) {
-        // Baca file dari path yang tersimpan
-        $data = array_map(function($row) {
-            return str_getcsv($row, ';');
-        }, file(storage_path('app/' . $dataTrain->path)));
+	/**
+	 * Remove the specified resource from storage.
+	 */
+	public function destroy($id)
+	{
+		//
+	}
 
-        // Skip the header
-        array_shift($data);
+	public function clear()
+	{
+	}
 
-        // Iterasi setiap baris dari file yang diunggah
-        foreach ($data as $row) {
-            // Pastikan baris memiliki minimal 5 kolom
-            // if (count($row) < 4) {
-            //     continue; // Lewati baris yang tidak valid
-            // }
-
-            // Validasi dan hapus data dari Dataset2 berdasarkan kecocokan
-            Dataset2::where('Usia', $row[1])
-                ->where('berat_badan_per_tinggi_badan', $row[2])
-                ->where('Menu', $row[3])
-                ->where('Keterangan', $row[4])
-                ->delete();
-        }
-
-        // Hapus file dari storage setelah data dihapus
-        if (Storage::exists($dataTrain->path)) {
-            Storage::delete($dataTrain->path);
-        }
-
-        // Hapus record dari Datatrain2
-        $dataTrain->delete();
-    }
-
-    return redirect()->back()->with('success', 'Matching data and files have been deleted successfully.');
-}
-
-
-    
-
+	public function mining()
+	{
+		return view("pages.datatrain2-mining");
+	}
 }

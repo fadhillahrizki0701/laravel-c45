@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,10 +12,27 @@ return new class extends Migration
     {
         Schema::create('dataset2s', function (Blueprint $table) {
             $table->id();
-            $table->integer('Usia');
-            $table->string('berat_badan_per_tinggi_badan');
-            $table->string('Menu');
-            $table->string('Keterangan');
+            $table->enum('usia', [
+                'Fase 1',
+                'Fase 2',
+                'Fase 3',
+                'Fase 4',
+            ]);
+            $table->enum('berat_badan_per_tinggi_badan', [
+                'Gizi Baik',
+                'Gizi Kurang'
+            ]);
+            $table->enum('menu', [
+                'M1',
+                'M2',
+                'M3',
+                'M4',
+
+            ]);
+            $table->enum('keterangan', [
+                'Baik',
+                'Tidak Baik',
+            ]);
         });
     }
 

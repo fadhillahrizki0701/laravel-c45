@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,11 +12,27 @@ return new class extends Migration
     {
         Schema::create('dataset1s', function (Blueprint $table) {
             $table->id();
-            $table->string('Nama');
-            $table->integer('Usia')->nullable(); 
-            $table->string('berat_badan_per_usia');
-            $table->string('tinggi_badan_per_usia');
-            $table->string('berat_badan_per_tinggi_badan');
+            $table->string('nama');
+            $table->enum('usia', [
+                'Fase 1',
+                'Fase 2',
+                'Fase 3',
+                'Fase 4',
+            ]);
+            $table->enum('berat_badan_per_usia', [
+                'Normal',
+                'Kurang',
+                'Sangat Kurang',
+            ]);
+            $table->enum('tinggi_badan_per_usia', [
+                'Normal',
+                'Pendek',
+                'Sangat Pendek',
+            ]);
+            $table->enum('berat_badan_per_tinggi_badan', [
+                'Gizi Baik',
+                'Gizi Kurang'
+            ]);
         });
     }
 
@@ -27,6 +42,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('dataset1s');
-        
     }
 };

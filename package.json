@@ -3,11 +3,19 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "prettier-views": "prettier resources/views/**/*.blade.php --write",
+        "prettier-scripts": "prettier resources/js/**/*.{js,ts,jsx,tsx} --write",
+        "prettier-styles": "prettier resources/css/**/*.{css,scss} --write",
+        "prettier-all": "prettier **/*.{php,html,blade.php,js,ts,jsx,tsx,css,scss} --write",
+        "prettier-controllers": "prettier app/Http/Controllers/**/*.php --write",
+        "prettier-models": "prettier app/Models/**/*.php --write"
     },
     "devDependencies": {
+        "@prettier/plugin-php": "^0.22.2",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0.0",
+        "prettier": "^3.3.3",
         "vite": "^5.0.0"
     }
 }
