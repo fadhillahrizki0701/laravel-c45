@@ -123,58 +123,6 @@
         @endif
     </section>
 
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Input Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('datatest1.index') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama">
-                        </div>
-                        <div class="mb-3">
-                            <label for="usia" class="form-label">Usia<span class="text-danger">*</span></label>
-                            <select class="form-select" id="usia" name="usia">
-                                <option selected disabled>-- Silahkan Pilih --</option>
-                                <option value="{{ ucwords('fase 1') }}">Fase 1 (0-5 bulan)</option>
-                                <option value="{{ ucwords ('fase 2') }}">Fase 2 (6-11 bulan)</option>
-                                <option value="{{ ucwords ('fase 3') }}">Fase 3 (12-47 bulan)</option>
-                                <option value="{{ ucwords ('fase 4') }}">Fase 4 (48-72 bulan)</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="berat_badan_per_usia" class="form-label" title="Berat Badan Per Usia">BB/U<span class="text-danger">*</span></label>
-                            <select class="form-select" id="berat_badan_per_usia" name="berat_badan_per_usia">
-                                <option selected disabled>-- Silahkan Pilih --</option>
-                                <option value="{{ ucwords('normal') }}">Normal</option>
-                                <option value="{{ ucwords ('kurang') }}">Kurang</option>
-                                <option value="{{ ucwords ('sangat kurang') }}">Sangat Kurang</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tinggi_badan_per_usia" class="form-label" title="Tinggi Badan Per Usia">TB/U<span class="text-danger">*</span></label>
-                            <select class="form-select" id="tinggi_badan_per_usia" name="tinggi_badan_per_usia">
-                                <option selected disabled>-- Silahkan Pilih --</option>
-                                <option value="{{ ucwords('normal') }}">Normal</option>
-                                <option value="{{ ucwords('pendek') }}">Pendek</option>
-                                <option value="{{ ucwords('sangat pendek') }}">Sangat Pendek</option>
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Cek</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     @if (isset($predictedLabel) && isset($data))
         <div class="modal fade" id="classificationResult" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="classificationResult" aria-hidden="true">
             <div class="modal-dialog">

@@ -82,53 +82,6 @@
         </section>
     </section>
 
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Input Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('datatest2.index') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="usia" class="form-label">Usia</label>
-                            <select class="form-select" id="usia" name="usia">
-                                <option selected disabled>-- Silahkan Pilih --</option>
-                                <option value="{{ ucwords('fase 1') }}">Fase 1 (0-5 bulan)</option>
-                                <option value="{{ ucwords ('fase 2') }}">Fase 2 (6-11 bulan)</option>
-                                <option value="{{ ucwords ('fase 3') }}">Fase 3 (12-47 bulan)</option>
-                                <option value="{{ ucwords ('fase 4') }}">Fase 4 (48-72 bulan)</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="berat_badan_per_tinggi_badan" class="form-label">BB/TB</label>
-                            <select class="form-select" id="berat_badan_per_tinggi_badan" name="berat_badan_per_tinggi_badan">
-                                <option selected disabled>-- Silahkan Pilih --</option>
-                                <option value="{{ ucwords('gizi baik') }}">Gizi Baik</option>
-                                <option value="{{ ucwords('gizi kurang') }}">Gizi Kurang</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="menu" class="form-label">Menu Makanan</label>
-                            <select class="form-select" id="menu" name="menu" placeholder="Silahkan Pilih">
-                                <option selected disabled>-- Silahkan Pilih --</option>
-                                @for ($i = 1; $i <= 4; $i++)
-                                    <option value="M{{ $i }}">{{ "M{$i}" }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Cek</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     @if (isset($predictedLabel) && isset($data))
         <div class="modal fade" id="classificationResult" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="classificationResult" aria-hidden="true">
             <div class="modal-dialog">
