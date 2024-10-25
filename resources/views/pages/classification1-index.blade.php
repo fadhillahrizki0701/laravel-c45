@@ -82,9 +82,9 @@
                 </tbody>
             </table>
         </section>
-        
     </section>
-    <section class="bg-light my-3 p-3">
+
+    <section class="bg-light my-3 p-3 border border-1">
         @if(count($rules) > 0)
             <details>
                 <summary><h5 class="d-inline">Rules</h5></summary>
@@ -118,7 +118,6 @@
                         </li>
                     @endforeach
                 </ul>
-                <hr>
             </details>
         @endif
     </section>
