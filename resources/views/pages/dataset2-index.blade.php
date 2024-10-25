@@ -47,10 +47,10 @@ Fase 2;Gizi Baik;M2;Baik
                             <label for="usia" class="form-label">Usia (bulan)</label>
                             <select class="form-select" id="usia" name="usia">
                                 <option selected disabled>-- Silahkan Pilih --</option>
-                                <option value="{{ ucwords('fase 1') }}">Fase 1</option>
-                                <option value="{{ ucwords ('fase 2') }}">Fase 2</option>
-                                <option value="{{ ucwords ('fase 3') }}">Fase 3</option>
-                                <option value="{{ ucwords ('fase 4') }}">Fase 4</option>
+                                <option value="{{ ucwords('fase 1') }}">Fase 1 (0-5 bulan)</option>
+                                <option value="{{ ucwords ('fase 2') }}">Fase 2 (6-11 bulan)</option>
+                                <option value="{{ ucwords ('fase 3') }}">Fase 3 (12-47 bulan)</option>
+                                <option value="{{ ucwords ('fase 4') }}">Fase 4 (48-72 bulan)</option>
                             </select>
                         </div>
                         <div class="mb-3">
