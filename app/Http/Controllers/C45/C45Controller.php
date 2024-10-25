@@ -712,6 +712,10 @@ class C45Controller extends Controller
 			"total_test_data" => $totalTestData,
 			"confusion_matrix" => $confusionMatrix,
 			"predictions" => $predictions,
+			'labels' => [
+				$positiveLabel,
+				$negativeLabel
+			],
 		];
 	}
 }
