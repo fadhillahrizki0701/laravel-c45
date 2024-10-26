@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Data Testing 1')
+@section('title', 'Klasifikasi Dataset 1')
 
 @section('content')
 <section class="container p-4">
-    <h2 class="pb-4" style="color:#435EBE">Data Testing 1</h2>
+    <h2 class="pb-4" style="color:#435EBE">Klasifikasi Dataset 1</h2>
     
     @if(count($errors)>0)
         <div class="alert alert-danger">
@@ -20,16 +20,6 @@
 
     <section class="bg-light rounded border border-1 p-3">
         <section class="d-flex flex-column justify-content-between mb-4">
-            <section class="d-flex gap-4 mb-2">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                    Cek Klasifikasi
-                </button>
-                @if (isset($predictedLabel) && isset($data))
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#classificationResult">
-                        Lihat Hasil Klasifikasi
-                    </button>
-                @endif
-            </section>
             <div class="py-2 mt-2">
                 <div class="table-responsive">
                     <table class="table">
@@ -82,154 +72,88 @@
                 </tbody>
             </table>
         </section>
-        
     </section>
-    <section class="bg-light my-3 p-3">
-        @if(count($rules) > 0)
-            <details>
-                <summary><h5 class="d-inline">Rules</h5></summary>
-                <br/>
-                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary">
-                    @foreach ($rules as $rule)
-                        @php
-                            // Split the rule into lines
-                            $lines = explode("\n", trim($rule));
-                            $indentLevel = 0;  // Track indentation for nested IF statements
-                        @endphp
-                        <li>
-                            @foreach ($lines as $line)
-                                @if (strpos($line, 'IF') !== false)
-                                    @php
-                                        // Increase the indentation for nested IFs
-                                        $indentLevel++;
-                                        // Add indentation spaces based on the nesting level
-                                        $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel - 1);
-                                    @endphp
-                                    {!! $indentation . str_replace('IF', '├', $line) !!}<br>
-                                @elseif (strpos($line, 'THEN') !== false)
-                                    @php
-                                        // Reset the indentation level for THEN
-                                        $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel);
-                                    @endphp
-                                    {!! $indentation . str_replace('THEN', '┗╸', $line) !!}<br>
-                                    @php $indentLevel = 0; @endphp  {{-- Reset for next rule set --}}
-                                @endif
+
+    <section class="row gap-y-3 my-4">
+        <section class="col mb-3">
+            <section class="bg-light p-3 border border-1">
+                @if(count($rules) > 0)
+                    <details>
+                        <summary class=""><h5 class="d-inline">Rules</h5></summary>
+                        <br/>
+                        <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary border border-1  overflow-x-auto">
+                            @foreach ($rules as $rule)
+                                @php
+                                    // Split the rule into lines
+                                    $lines = explode("\n", trim($rule));
+                                    $indentLevel = 0;  // Track indentation for nested IF statements
+                                @endphp
+                                <li>
+                                    @foreach ($lines as $line)
+                                        @if (strpos($line, 'IF') !== false)
+                                            @php
+                                                // Increase the indentation for nested IFs
+                                                $indentLevel++;
+                                                // Add indentation spaces based on the nesting level
+                                                $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel - 1);
+                                            @endphp
+                                            {!! $indentation . str_replace('IF', '├', $line) !!}<br>
+                                        @elseif (strpos($line, 'THEN') !== false)
+                                            @php
+                                                // Reset the indentation level for THEN
+                                                $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel);
+                                            @endphp
+                                            {!! $indentation . str_replace('THEN', '┗╸', $line) !!}<br>
+                                            @php $indentLevel = 0; @endphp  {{-- Reset for next rule set --}}
+                                        @endif
+                                    @endforeach
+                                </li>
                             @endforeach
-                        </li>
-                    @endforeach
-                </ul>
-                <hr>
-            </details>
-        @endif
+                        </ul>
+                    </details>
+                @endif
+            </section>
+        </section>
+        <section class="col mb-3">
+            <div class="card" style="width: 100%;">
+                <div class="card-body bg-light">
+                    <h5 class="card-title">Confusion Matrix</h5>
+                    <table class="table text-nowrap my-4">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Aktual</th>
+                                <th colspan="2" class="text-center">Prediksi</th>
+                            </tr>
+                            <tr>
+                                @foreach ($metrices['labels'] as $label)
+                                    <th>{{ $label }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>{{ $metrices['labels'][0] }}</th>
+                                <td>{{ $metrices['confusion_matrix']['TP'] }}</td>
+                                <td>{{ $metrices['confusion_matrix']['TN'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ $metrices['labels'][1] }}</th>
+                                <td>{{ $metrices['confusion_matrix']['FP'] }}</td>
+                                <td>{{ $metrices['confusion_matrix']['FN'] }}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Total</th>
+                                <td>{{ $metrices['confusion_matrix']['TP'] + $metrices['confusion_matrix']['FP'] }}</td>
+                                <td>{{ $metrices['confusion_matrix']['TN'] + $metrices['confusion_matrix']['FN'] }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <button class="btn btn-info" type="button"><i class="bi bi-info-square-fill"></i> {{ $metrices['accuracy'] }}%</button>
+                </div>
+            </div>
+        </section>
     </section>
-
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Input Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('datatest1.index') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="nama" class="form-label">Nama</label>
-                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama">
-                        </div>
-                        <div class="mb-3">
-                            <label for="usia" class="form-label">Usia<span class="text-danger">*</span></label>
-                            <select class="form-select" id="usia" name="usia">
-                                <option selected disabled>-- Silahkan Pilih --</option>
-                                <option value="{{ ucwords('fase 1') }}">Fase 1 (0-5 bulan)</option>
-                                <option value="{{ ucwords ('fase 2') }}">Fase 2 (6-11 bulan)</option>
-                                <option value="{{ ucwords ('fase 3') }}">Fase 3 (12-47 bulan)</option>
-                                <option value="{{ ucwords ('fase 4') }}">Fase 4 (48-72 bulan)</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="berat_badan_per_usia" class="form-label" title="Berat Badan Per Usia">BB/U<span class="text-danger">*</span></label>
-                            <select class="form-select" id="berat_badan_per_usia" name="berat_badan_per_usia">
-                                <option selected disabled>-- Silahkan Pilih --</option>
-                                <option value="{{ ucwords('normal') }}">Normal</option>
-                                <option value="{{ ucwords ('kurang') }}">Kurang</option>
-                                <option value="{{ ucwords ('sangat kurang') }}">Sangat Kurang</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tinggi_badan_per_usia" class="form-label" title="Tinggi Badan Per Usia">TB/U<span class="text-danger">*</span></label>
-                            <select class="form-select" id="tinggi_badan_per_usia" name="tinggi_badan_per_usia">
-                                <option selected disabled>-- Silahkan Pilih --</option>
-                                <option value="{{ ucwords('normal') }}">Normal</option>
-                                <option value="{{ ucwords('pendek') }}">Pendek</option>
-                                <option value="{{ ucwords('sangat pendek') }}">Sangat Pendek</option>
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Cek</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @if (isset($predictedLabel) && isset($data))
-        <div class="modal fade" id="classificationResult" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="classificationResult" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="classificationResult">Hasil Klasifikasi</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{ route('datatest1.index') }}" method="POST">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="nama" class="form-label">Nama</label>
-                                <input type="text" class="form-control" value="{{ $data['nama'] }}" readonly>
-                            </div>
-                            <div class="mb-3">
-                                <label for="usia" class="form-label">Usia</label>
-                                <select class="form-select" id="usia" name="usia" disabled>
-                                    <option disabled>-- Silahkan Pilih --</option>
-                                    <option value="{{ ucwords('fase 1') }}" @selected(strtolower($data['usia']) == 'fase 1')>Fase 1 (0-5 bulan)</option>
-                                    <option value="{{ ucwords ('fase 2') }}" @selected(strtolower($data['usia']) == 'fase 2')>Fase 2 (6-11 bulan)</option>
-                                    <option value="{{ ucwords ('fase 3') }}" @selected(strtolower($data['usia']) == 'fase 3')>Fase 3 (12-47 bulan)</option>
-                                    <option value="{{ ucwords ('fase 4') }}" @selected(strtolower($data['usia']) == 'fase 4')>Fase 4 (48-72 bulan)</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="berat_badan_per_usia" class="form-label" title="Berat Badan Per Usia">BB/U</label>
-                                <select class="form-select" id="berat_badan_per_usia" name="berat_badan_per_usia" disabled>
-                                    <option selected disabled>-- Silahkan Pilih --</option>
-                                    <option value="{{ ucwords('normal') }}" @selected(strtolower($data['berat_badan_per_usia']) == 'normal')>Normal</option>
-                                    <option value="{{ ucwords ('kurang') }}" @selected(strtolower($data['berat_badan_per_usia']) == 'kurang')>Kurang</option>
-                                    <option value="{{ ucwords ('sangat kurang') }}" @selected(strtolower($data['berat_badan_per_usia']) == 'sangat kurang')>Sangat Kurang</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tinggi_badan_per_usia" class="form-label" title="Tinggi Badan Per Usia">TB/U</label>
-                                <select class="form-select" id="tinggi_badan_per_usia" name="tinggi_badan_per_usia" disabled>
-                                    <option selected disabled>-- Silahkan Pilih --</option>
-                                    <option value="{{ ucwords('normal') }}" @selected(strtolower($data['tinggi_badan_per_usia']) == 'normal')>Normal</option>
-                                    <option value="{{ ucwords('pendek') }}" @selected(strtolower($data['tinggi_badan_per_usia']) == 'pendek')>Pendek</option>
-                                    <option value="{{ ucwords('sangat pendek') }}" @selected(strtolower($data['tinggi_badan_per_usia']) == 'sangat pendek')>Sangat Pendek</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="berat_badan_per_tinggi_badan" class="form-label" title="Berat Badan per Tinggi Badan">Hasil Klasifikasi (BB/TB)</label>
-                                <input type="text" class="form-control" name="berat_badan_per_tinggi_badan" id="berat_badan_per_tinggi_badan" value="{{ $predictedLabel }}" readonly>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
 </section>
 @endsection

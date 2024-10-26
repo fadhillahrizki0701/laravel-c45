@@ -82,6 +82,45 @@
         </section>
     </section>
 
+    <section class="bg-light my-3 p-3 border border-1">
+        @if(count($rules) > 0)
+            <details>
+                <summary><h5 class="d-inline">Rules</h5></summary>
+                <br/>
+                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary border border-1">
+                    @foreach ($rules as $rule)
+                        @php
+                            // Split the rule into lines
+                            $lines = explode("\n", trim($rule));
+                            $indentLevel = 0;  // Track indentation for nested IF statements
+                        @endphp
+                        <li>
+                            @foreach ($lines as $line)
+                                @if (strpos($line, 'IF') !== false)
+                                    @php
+                                        // Increase the indentation for nested IFs
+                                        $indentLevel++;
+                                        // Add indentation spaces based on the nesting level
+                                        $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel - 1);
+                                    @endphp
+                                    {!! $indentation . str_replace('IF', '├', $line) !!}<br>
+                                @elseif (strpos($line, 'THEN') !== false)
+                                    @php
+                                        // Reset the indentation level for THEN
+                                        $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel);
+                                    @endphp
+                                    {!! $indentation . str_replace('THEN', '┗╸', $line) !!}<br>
+                                    @php $indentLevel = 0; @endphp  {{-- Reset for next rule set --}}
+                                @endif
+                            @endforeach
+                        </li>
+                    @endforeach
+                </ul>
+                <hr>
+            </details>
+        @endif
+    </section>
+
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -178,44 +217,5 @@
             </div>
         </div>
     @endif
-
-    <section class="bg-light my-3 p-3">
-        @if(count($rules) > 0)
-            <details>
-                <summary><h5 class="d-inline">Rules</h5></summary>
-                <br/>
-                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary">
-                    @foreach ($rules as $rule)
-                        @php
-                            // Split the rule into lines
-                            $lines = explode("\n", trim($rule));
-                            $indentLevel = 0;  // Track indentation for nested IF statements
-                        @endphp
-                        <li>
-                            @foreach ($lines as $line)
-                                @if (strpos($line, 'IF') !== false)
-                                    @php
-                                        // Increase the indentation for nested IFs
-                                        $indentLevel++;
-                                        // Add indentation spaces based on the nesting level
-                                        $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel - 1);
-                                    @endphp
-                                    {!! $indentation . str_replace('IF', '├', $line) !!}<br>
-                                @elseif (strpos($line, 'THEN') !== false)
-                                    @php
-                                        // Reset the indentation level for THEN
-                                        $indentation = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $indentLevel);
-                                    @endphp
-                                    {!! $indentation . str_replace('THEN', '┗╸', $line) !!}<br>
-                                    @php $indentLevel = 0; @endphp  {{-- Reset for next rule set --}}
-                                @endif
-                            @endforeach
-                        </li>
-                    @endforeach
-                </ul>
-                <hr>
-            </details>
-        @endif
-    </section>
 </section>
 @endsection

@@ -57,4 +57,8 @@
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Masuk</button>
+                </div>
+            </div>
+        </div>
     </div>
+</body>
