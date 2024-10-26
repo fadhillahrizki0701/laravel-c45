@@ -87,7 +87,7 @@
             <details>
                 <summary><h5 class="d-inline">Rules</h5></summary>
                 <br/>
-                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary border border-1">
+                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary border border-1  overflow-x-auto">
                     @foreach ($rules as $rule)
                         @php
                             // Split the rule into lines
