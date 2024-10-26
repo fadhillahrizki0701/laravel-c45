@@ -87,7 +87,7 @@
             <details>
                 <summary><h5 class="d-inline">Rules</h5></summary>
                 <br/>
-                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary">
+                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary border border-1">
                     @foreach ($rules as $rule)
                         @php
                             // Split the rule into lines
@@ -122,9 +122,9 @@
 
     <section>
         <div class="card" style="width: max-content;">
-            <div class="card-body">
+            <div class="card-body bg-light">
                 <h5 class="card-title">Confusion Matrix</h5>
-                <table class="table text-nowrap">
+                <table class="table text-nowrap my-4">
                     <thead>
                         <tr>
                             <th rowspan="2">Aktual</th>
@@ -151,8 +151,8 @@
                     <tfoot>
                         <tr>
                             <th>Total</th>
-                            <td>{{ $metrices['confusion_matrix']['TP'] + $metrices['confusion_matrix']['TN'] }}</td>
-                            <td>{{ $metrices['confusion_matrix']['FP'] + $metrices['confusion_matrix']['FN'] }}</td>
+                            <td>{{ $metrices['confusion_matrix']['TP'] + $metrices['confusion_matrix']['FP'] }}</td>
+                            <td>{{ $metrices['confusion_matrix']['TN'] + $metrices['confusion_matrix']['FN'] }}</td>
                         </tr>
                     </tfoot>
                 </table>
