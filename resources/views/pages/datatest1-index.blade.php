@@ -82,14 +82,14 @@
                 </tbody>
             </table>
         </section>
-        
     </section>
-    <section class="bg-light my-3 p-3">
+
+    <section class="bg-light my-3 p-3 border border-1">
         @if(count($rules) > 0)
             <details>
                 <summary><h5 class="d-inline">Rules</h5></summary>
                 <br/>
-                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary">
+                <ul style="list-style: none; margin-left: 0;" class="bg-white p-0 p-3 rounded text-secondary border border-1">
                     @foreach ($rules as $rule)
                         @php
                             // Split the rule into lines
