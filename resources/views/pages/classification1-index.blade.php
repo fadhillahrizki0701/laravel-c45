@@ -20,16 +20,6 @@
 
     <section class="bg-light rounded border border-1 p-3">
         <section class="d-flex flex-column justify-content-between mb-4">
-            <section class="d-flex gap-4 mb-2">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                    Cek Klasifikasi
-                </button>
-                @if (isset($predictedLabel) && isset($data))
-                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#classificationResult">
-                        Lihat Hasil Klasifikasi
-                    </button>
-                @endif
-            </section>
             <div class="py-2 mt-2">
                 <div class="table-responsive">
                     <table class="table">
@@ -52,6 +42,16 @@
                     </table>
                 </div>
             </div>
+            <section class="d-flex gap-4 mb-2">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Cek Klasifikasi
+                </button>
+                @if (isset($predictedLabel) && isset($data))
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#classificationResult">
+                        Lihat Hasil Klasifikasi
+                    </button>
+                @endif
+            </section>
         </section>
 
         <section class="table-responsive">
