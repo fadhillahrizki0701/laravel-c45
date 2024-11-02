@@ -81,7 +81,7 @@
             </table>
         </section>
     </section>
-
+    <section class="row gap-y-3 my-4">
     <section class="bg-light my-3 p-3 border border-1">
         @if(count($rules) > 0)
             <details>
@@ -120,6 +120,49 @@
             </details>
         @endif
     </section>
+
+    <section class="col mb-3">
+        <div class="card" style="width: 100%;">
+            <div class="card-body bg-light">
+                <h5 class="card-title">Confusion Matrix</h5>
+                <table class="table text-nowrap my-4">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Aktual</th>
+                            <th colspan="2" class="text-center">Prediksi</th>
+                        </tr>
+                        <tr>
+                            @foreach ($metrices['labels'] as $label)
+                                <th>{{ $label }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>{{ $metrices['labels'][0] }}</th>
+                            <td>{{ $metrices['confusion_matrix']['TP'] }}</td>
+                            <td>{{ $metrices['confusion_matrix']['TN'] }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ $metrices['labels'][1] }}</th>
+                            <td>{{ $metrices['confusion_matrix']['FP'] }}</td>
+                            <td>{{ $metrices['confusion_matrix']['FN'] }}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Total</th>
+                            <td>{{ $metrices['confusion_matrix']['TP'] + $metrices['confusion_matrix']['FP'] }}</td>
+                            <td>{{ $metrices['confusion_matrix']['TN'] + $metrices['confusion_matrix']['FN'] }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <button class="btn btn-info" type="button"><i class="bi bi-info-square-fill"></i> {{ $metrices['accuracy'] }}%</button>
+            </div>
+        </div>
+    </section>
+</section>
+
 
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
