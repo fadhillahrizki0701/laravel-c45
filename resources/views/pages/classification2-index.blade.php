@@ -19,31 +19,6 @@
     @include('pages.partials.session-notification')
 
     <section class="bg-light rounded border border-1 p-3">
-        <section class="d-flex flex-column justify-content-between mb-4">
-            <div class="py-2 mt-2">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr class="table-secondary">
-                                <th>Accuracy</th>
-                                <th>Precision</th>
-                                <th>Recall</th>
-                                <th>F1 Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{{ $metrices['accuracy'] }}% (<span class="text-success">{{ $metrices['correct_predictions'] }}</span>/{{ $metrices['total_test_data'] }})</td>
-                                <td>{{ $metrices['precision'] }}</td>
-                                <td>{{ $metrices['recall'] }}</td>
-                                <td>{{ $metrices['f1_score'] }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
         <section class="table-responsive">
             <table id="example" class="display" style="width:100%">
                 <thead>

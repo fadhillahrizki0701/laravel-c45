@@ -55,7 +55,7 @@
       </a>
     </li>
     <li>
-      <li class="nav-item py-3 fw-bolder">Klasifikasi</li>
+      <li class="nav-item py-3 fw-bolder">Hasil Klasifikasi</li>
     <li>
       <a href="{{ route('classification-1.index') }}" class="nav-link link-dark" style="color:#25396F;">
         <i class="bi bi-database-up"></i>

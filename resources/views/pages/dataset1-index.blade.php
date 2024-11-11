@@ -20,7 +20,7 @@
 
     <section class="bg-light rounded border border-1 p-3">
     <p class="mt-3">Ketika mengunggah file <code>.xlsx</code> atau <code>.csv</code>, harap pastikan file CSV mengikuti format di bawah ini:</p>
-<pre class="mt-2">nama;usia (bulan);BB_U;TB_U;BB_TB
+<pre class="mt-2">nama;usia;BB_U;TB_U;BB_TB
 Fitri;Fase 2;Kurang;Normal;Gizi Baik
 Yusuf;Fase 2;Normal;Pendek;Gizi Baik
 ...</pre>
