@@ -40,16 +40,7 @@ class DatasetClassification1Controller extends Controller
 			->get()
 			->toArray();
 
-		$tree = $c45->fetchTree(
-			$dataTrain,
-			[
-				"usia",
-				"berat_badan_per_usia",
-				"tinggi_badan_per_usia",
-				"berat_badan_per_tinggi_badan",
-			],
-			"berat_badan_per_tinggi_badan"
-		);
+		$tree = $c45->fetchTreeDataset1Internal();
 
 		$data = Dataset1::select([
 			"nama",

@@ -635,7 +635,7 @@ class C45Controller extends Controller
 		}
 
 		// Build decision tree using dataset
-		$tree = $this->buildTree($dataset, $label, $attributes);
+		// $tree = $this->buildTree($dataset, $label, $attributes);
 
 		$TP = $TN = $FP = $FN = 0;
 		$correctPredictions = 0;
