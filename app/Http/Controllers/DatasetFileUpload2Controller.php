@@ -40,7 +40,7 @@ class DatasetFileUpload2Controller extends Controller
 				}
 
 				$cellIterator = $row->getCellIterator();
-				$cellIterator->setIterateOnlyExistingCells(false);
+				$cellIterator->setIterateOnlyExistingCells(true);
 
 				$rowData = [];
 				foreach ($cellIterator as $cell) {
@@ -54,10 +54,10 @@ class DatasetFileUpload2Controller extends Controller
 
 				// Save data to the database
 				Dataset2::create([
-					"usia" => $rowData[1],
-					"berat_badan_per_tinggi_badan" => ucwords($rowData[2]),
-					"menu" => ucwords($rowData[3]),
-					"keterangan" => ucwords($rowData[4]),
+					"usia" => ucwords(trim($rowData[1])),
+					"berat_badan_per_tinggi_badan" => ucwords(trim($rowData[2])),
+					"menu" => ucwords(trim($rowData[3])),
+					"keterangan" => ucwords(trim($rowData[4])),
 				]);
 			}
 		}
