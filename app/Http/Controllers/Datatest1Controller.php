@@ -27,6 +27,14 @@ class Datatest1Controller extends Controller
 					"f1_score" => 0,
 					"correct_predictions" => 0,
 					"total_test_data" => 0,
+					"predictions" => [],
+					"labels" => [],
+					"confusion_matrix" => [
+						"TP" => 0,
+						"TN" => 0,
+						"FP" => 0,
+						"FN" => 0,
+					],
 				],
 				"rules" => [],
 			]);
@@ -94,16 +102,7 @@ class Datatest1Controller extends Controller
 			->get()
 			->toArray();
 
-		$tree = $c45->fetchTree(
-			$dataTrain,
-			[
-				"usia",
-				"berat_badan_per_usia",
-				"tinggi_badan_per_usia",
-				"berat_badan_per_tinggi_badan",
-			],
-			"berat_badan_per_tinggi_badan"
-		);
+		$tree = $c45->fetchTreeDataset1Internal();
 
 		$data = DataTest1::select([
 			"nama",

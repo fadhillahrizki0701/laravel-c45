@@ -553,6 +553,7 @@ class C45Controller extends Controller
 		$positiveLabel = $uniqueLabels[0];
 		$negativeLabel = $uniqueLabels[1];
 
+		$predictions = [];
 		foreach ($dataset as $testing) {
 			$predictedLabel = $this->predict($tree, $testing);
 			$actualLabel = $testing[$label];
@@ -630,6 +631,7 @@ class C45Controller extends Controller
 				"recall" => 0,
 				"f1_score" => 0,
 				"specificity" => 0,
+				"predictions" => 0,
 				"message" => "No data available for testing.",
 			];
 		}

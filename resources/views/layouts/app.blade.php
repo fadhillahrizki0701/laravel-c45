@@ -26,6 +26,10 @@
         {{-- D3js --}}
         <script defer src="{{ asset('d3js/d3.min.js') }}"></script>
 
+        <link rel="stylesheet" href="treantjs/Treant.css" type="text/css"/>
+        <script src="treantjs/vendor/raphael.js"></script>
+        <script src="treantjs/Treant.js"></script>
+
         <style>
             body {
                 margin: 0;
@@ -33,7 +37,7 @@
                 display: flex;
                 background-color: #f2f7ff;
             }
-        
+
             #c45-sidebar {
                 background-color: #d9e7ff;
                 min-width: 250px;
@@ -61,12 +65,12 @@
             #c45-sidebar .nav-link:hover {
                 background-color: #76a8ffc0;
             }
-        
+
             /* Sidebar hidden */
             #c45-sidebar.sidebar-open {
                 transform: translateX(-250px);
             }
-        
+
             #c45-content {
                 margin-left: 250px;
                 padding: 20px;
@@ -75,7 +79,7 @@
                 transition: margin-left 0.3s ease;
                 height: max-content;
             }
-        
+
             /* Content adjustment when sidebar is hidden */
             .sidebar-open ~ #c45-content {
                 margin-left: 0;
@@ -97,7 +101,7 @@
             #c45-content section.container {
                 min-height: calc(100vh - 160px);
             }
-        
+
             @media (max-width: 575.98px) {
                 #c45-sidebar {
                     background-color: #f2f7ffef;
@@ -105,11 +109,11 @@
                     left: -250px;
                     box-shadow: 0 0 6px #0000002d;
                 }
-        
+
                 #c45-sidebar.sidebar-open {
                     transform: translateX(250px);
                 }
-        
+
                 #c45-content {
                     margin-left: 0px;
                     padding: 0;
