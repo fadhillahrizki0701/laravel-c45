@@ -142,19 +142,19 @@
                             <tr>
                                 <th>{{ $metrices['labels'][0] ?? '' }}</th>
                                 <td>{{ $metrices['confusion_matrix']['TP'] ?? '' }}</td>
-                                <td>{{ $metrices['confusion_matrix']['TN'] ?? '' }}</td>
+                                <td>{{ $metrices['confusion_matrix']['FN'] ?? '' }}</td>
                             </tr>
                             <tr>
                                 <th>{{ $metrices['labels'][1] ?? '' }}</th>
                                 <td>{{ $metrices['confusion_matrix']['FP'] ?? '' }}</td>
-                                <td>{{ $metrices['confusion_matrix']['FN'] ?? '' }}</td>
+                                <td>{{ $metrices['confusion_matrix']['TN'] ?? '' }}</td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th>Total</th>
-                                <td>{{ $metrices['confusion_matrix']['TP'] ?? 0 + $metrices['confusion_matrix']['FP'] ?? 0 }}</td>
-                                <td>{{ $metrices['confusion_matrix']['TN'] ?? 0 + $metrices['confusion_matrix']['FN'] ?? 0 }}</td>
+                                <td>{{ $metrices['confusion_matrix']['TP'] + $metrices['confusion_matrix']['FP'] }}</td>
+                                <td>{{ $metrices['confusion_matrix']['FN'] + $metrices['confusion_matrix']['TN'] }}</td>
                             </tr>
                         </tfoot>
                     </table>
