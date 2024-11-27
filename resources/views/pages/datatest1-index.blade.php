@@ -5,7 +5,7 @@
 @section('content')
 <section class="container p-4">
     <h2 class="pb-4" style="color:#435EBE">Data Testing 1</h2>
-    
+
     @if(count($errors)>0)
         <div class="alert alert-danger">
             <ul>
@@ -75,7 +75,7 @@
                             <td>{{ $dt1['usia'] }}</td>
                             <td>{{ $dt1['berat_badan_per_usia'] }}</td>
                             <td>{{ $dt1['tinggi_badan_per_usia'] }}</td>
-                            <td>{{ $dt1['berat_badan_per_tinggi_badan'] }}</td> 
+                            <td>{{ $dt1['berat_badan_per_tinggi_badan'] }}</td>
                             <td><strong>{{ $dt1['predicted_label'] }}</strong></td>
                         </tr>
                     @endforeach
@@ -140,21 +140,21 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>{{ $metrices['labels'][0] }}</th>
-                            <td>{{ $metrices['confusion_matrix']['TP'] }}</td>
-                            <td>{{ $metrices['confusion_matrix']['TN'] }}</td>
+                            <th>{{ $metrices['labels'][0] ?? '' }}</th>
+                            <td>{{ $metrices['confusion_matrix']['TP'] ?? '' }}</td>
+                            <td>{{ $metrices['confusion_matrix']['TN'] ?? '' }}</td>
                         </tr>
                         <tr>
-                            <th>{{ $metrices['labels'][1] }}</th>
-                            <td>{{ $metrices['confusion_matrix']['FP'] }}</td>
-                            <td>{{ $metrices['confusion_matrix']['FN'] }}</td>
+                            <th>{{ $metrices['labels'][1] ?? '' }}</th>
+                            <td>{{ $metrices['confusion_matrix']['FP'] ?? '' }}</td>
+                            <td>{{ $metrices['confusion_matrix']['FN'] ?? '' }}</td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
                             <th>Total</th>
-                            <td>{{ $metrices['confusion_matrix']['TP'] + $metrices['confusion_matrix']['FP'] }}</td>
-                            <td>{{ $metrices['confusion_matrix']['TN'] + $metrices['confusion_matrix']['FN'] }}</td>
+                            <td>{{ $metrices['confusion_matrix']['TP'] ?? 0 + $metrices['confusion_matrix']['FP'] ?? 0 }}</td>
+                            <td>{{ $metrices['confusion_matrix']['TN'] ?? 0 + $metrices['confusion_matrix']['FN'] ?? 0 }}</td>
                         </tr>
                     </tfoot>
                 </table>
