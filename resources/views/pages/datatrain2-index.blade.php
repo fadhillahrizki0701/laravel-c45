@@ -9,7 +9,9 @@
     <section class="bg-light rounded border border-1 p-3">
         <section class="d-flex flex-column justify-content-between mb-4">
             <section class="d-flex">
+                @hasanyrole('admin|admin puskesmas')
                 <a href="{{ route('datatrain2-mining') }}" class="btn btn-success">Proses Mining</a>
+                @endhasanyrole
             </section>
         </section>
 

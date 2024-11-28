@@ -9,7 +9,7 @@
   @include('pages.partials.session-notification')
 
   <section>
-    @role('admin|admin puskesmas')
+    @role('admin')
       <button type="button" class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
           Tambah Pengguna
       </button>
@@ -42,12 +42,12 @@
                       <option disabled>-- Silahkan Pilih --</option>
                       @role('admin')
                         @foreach ($roles as $role)
-                          <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower('wali')) @disabled(strtolower($role->name) == strtolower('admin'))>{{ strtolower($role->name) == strtolower('wali') ? ucwords('Wali')." (default)" : ucwords($role->name) }}</option>
+                          <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower('orang tua')) @disabled(strtolower($role->name) == strtolower('admin'))>{{ strtolower($role->name) == strtolower('orang tua') ? ucwords('orang tua')." (default)" : ucwords($role->name) }}</option>
                         @endforeach
                       @endrole
                       @role('admin puskesmas')
                         @foreach ($roles as $role)
-                          <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower('wali')) @disabled(strtolower($role->name) == strtolower('admin') || strtolower($role->name) == strtolower('admin puskesmas'))>{{ strtolower($role->name) == strtolower('wali') ? ucwords('Wali')." (default)" : ucwords($role->name) }}</option>
+                          <option value="{{ $role->name }}" @selected(strtolower($role->name) == strtolower('orang tua')) @disabled(strtolower($role->name) == strtolower('admin') || strtolower($role->name) == strtolower('admin puskesmas'))>{{ strtolower($role->name) == strtolower('orang tua') ? ucwords('orang tua')." (default)" : ucwords($role->name) }}</option>
                         @endforeach
                       @endrole
                     </select>
@@ -74,9 +74,9 @@
               <th scope="col">Nama</th>
               <th scope="col">Email</th>
               <th scope="col">Peran</th>
-              @hasanyrole('admin|admin puskesmas')
+              @hasanyrole('admin')
                 <th scope="col">Opsi</th>
-              @endhasanyrole
+              @endrole
             </tr>
         </thead>
         <tbody>
@@ -86,7 +86,7 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ ucwords($user->roles[0]->name) }}</td>
-                    @hasanyrole('admin|admin puskesmas')
+                    @hasanyrole('admin')
                       <td>
                           <section class="d-flex gap-2">
                               <a href="{{ route('user.edit', $user->id) }}" class="btn btn-sm btn-warning text-white">
@@ -97,7 +97,7 @@
                               </button>
                           </section>
                       </td>
-                  @endhasanyrole
+                    @endrole
                 </tr>
 
                 {{-- Delete --}}

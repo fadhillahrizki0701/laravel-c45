@@ -91,6 +91,7 @@ Fase 2;Gizi Baik;M2;Baik
     <section class="bg-light rounded border border-1 rounded-3 p-1">
         <section class="d-flex flex-column flex-lg-row justify-content-between align-items-start pb-3">
             <section class="d-flex justify-content-center align-items-end">
+                @hasanyrole('admin|admin puskesmas')
                 <form action="{{ route('dataset-file-upload-2.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <label for="file">Impor data dari <code>.xlsx, .csv</code></label>
@@ -101,18 +102,20 @@ Fase 2;Gizi Baik;M2;Baik
                         </button>
                     </div>
                 </form>
-                @hasanyrole('admin|admin puskesmas')
+
                 <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     <i class="bi bi-plus"></i> Tambah Data
                 </button>
                 @endhasanyrole
             </section>
             <section class="d-flex flex-column my-3 my-lg-0 align-items-start">
-                <div>
+                 @hasanyrole('admin|admin puskesmas')
+                 <div>
                     <p class="m-0 p-0">Opsi</p>
                 </div>
+                @endhasanyrole
                 <div class="btn-group">
-                    @role('admin')
+                    @hasanyrole('admin|admin puskesmas')
                     <form action="{{ route('dataset2.split') }}" method="POST" onsubmit="return confirm('Split Dataset?');" class="d-inline">
                         @csrf
                         <div class="input-group mb-3">
@@ -130,7 +133,7 @@ Fase 2;Gizi Baik;M2;Baik
                             <i class="bi bi-x-circle"></i> Clear
                         </button>
                     </form>
-                    @endrole
+                    @endhasanyrole
                 </div>
             </section>        
         </section>

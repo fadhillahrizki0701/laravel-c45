@@ -30,6 +30,7 @@
                     </button>
                 @endif
             </section>
+            @hasanyrole('admin|admin puskesmas')
             <div class="py-2 mt-2">
                 <div class="table-responsive">
                     <table class="table">
@@ -52,8 +53,10 @@
                     </table>
                 </div>
             </div>
+            @endhasanyrole
         </section>
 
+        @hasanyrole('admin|admin puskesmas')
         <section class="table-responsive">
             <table id="example" class="display" style="width:100%">
                 <thead>
@@ -80,8 +83,10 @@
                 </tbody>
             </table>
         </section>
+        @endhasanyrole
     </section>
 
+    @hasanyrole('admin|admin puskesmas')
     <section class="row gap-y-3 my-4">
         <section class="col mb-3">
             <section class="bg-light p-3 border border-1">
@@ -163,7 +168,8 @@
             </div>
         </section>
     </section>
-
+    @endhasanyrole
+    
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
