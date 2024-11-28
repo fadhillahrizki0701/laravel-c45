@@ -15,6 +15,9 @@
     </section>
 </section>
 
+<section class="my-5">
+    <div id="tree-simple" style="width: 100%; height: 300px"> </div>
+</section>
 
 <style>
 .node circle {
@@ -35,6 +38,50 @@
 </style>
 
 <script>
+fetch("{{ route('proses-mining-dataset-2-internal') }}")
+    .then(response => response.json())
+    .then(data => {
+        console.log("Raw data:", data);
+
+        // Helper function to convert raw tree data into Treant-compatible format
+        function convertToTreantFormat(node, parent = null) {
+            const currentNode = {
+                text: { name: node.name.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') }
+            };
+
+            if (parent) {
+                currentNode.parent = parent;
+            }
+
+            const nodes = [currentNode];
+
+            if (node.children && node.children.length > 0) {
+                node.children.forEach(child => {
+                    nodes.push(...convertToTreantFormat(child.node, currentNode));
+                });
+            }
+
+            return nodes;
+        }
+
+        // Config object for Treant
+        const config = {
+            container: "#tree-simple"
+        };
+
+        // Convert the raw tree data
+        const treantData = convertToTreantFormat(data);
+
+        // Add config as the first element
+        const simple_chart_config = [config, ...treantData];
+
+        // Render the chart
+        var my_chart = new Treant(simple_chart_config);
+    })
+    .catch(error => {
+        console.error("Error fetching data:", error);
+    });
+
 document.getElementById('getMiningResultButton').addEventListener('click', (e) => {
     e.preventDefault();
 
