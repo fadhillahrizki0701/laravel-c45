@@ -26,9 +26,9 @@
         {{-- D3js --}}
         <script defer src="{{ asset('d3js/d3.min.js') }}"></script>
 
-        <link rel="stylesheet" href="treantjs/Treant.css" type="text/css"/>
-        <script src="treantjs/vendor/raphael.js"></script>
-        <script src="treantjs/Treant.js"></script>
+        <link rel="stylesheet" href="{{ asset('treantjs/Treant.css') }}" type="text/css"/>
+        <script src="{{ asset('treantjs/vendor/raphael.js') }}"></script>
+        <script src="{{ asset('treantjs/Treant.js') }}"></script>
 
         <style>
             body {
