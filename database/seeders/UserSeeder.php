@@ -30,9 +30,9 @@ class UserSeeder extends Seeder
         ])->assignRole('admin puskesmas');
 
         User::create([
-            'name' => 'wali',
-            'email' => 'wali@local',
+            'name' => 'orang tua',
+            'email' => 'ortu@local',
             'password' => Hash::make('12345678'),
-        ])->assignRole('wali');
+        ])->assignRole('orang tua');
     }
 }
