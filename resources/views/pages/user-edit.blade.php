@@ -4,7 +4,7 @@
 
 @section('content')
 <section class="container p-4">
-    <h2 class="pb-4" style="color:#435EBE">Data Pengguna | {{ $user->name }}</h2>
+    <h2 class="pb-4" style="color:#435EBE">Data Pengguna | {{ ucwords($user->name) }}</h2>
 
     @include('pages.partials.session-notification')
 

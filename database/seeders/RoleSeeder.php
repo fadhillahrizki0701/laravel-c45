@@ -33,7 +33,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'id'=> 3,
-                'name'=> 'wali',
+                'name'=> 'orang tua',
                 'guard_name'=> 'web',
                 'created_at'=> now(),
                 'updated_at'=> now(),
