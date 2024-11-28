@@ -72,4 +72,7 @@ Route::middleware("auth")->group(function () {
 });
 
 Route::get('/mining-dataset-1', [C45Controller::class, 'fetchTreeDataset1'])->name('proses-mining-dataset-1');
+Route::get('/mining-dataset-1-internal', [C45Controller::class, 'fetchTreeDataset1Internal'])->name('proses-mining-dataset-1-internal');
+
 Route::get('/mining-dataset-2', [C45Controller::class, 'fetchTreeDataset2'])->name('proses-mining-dataset-2');
+Route::get('/mining-dataset-2-internal', [C45Controller::class, 'fetchTreeDataset2Internal'])->name('proses-mining-dataset-2-internal');
