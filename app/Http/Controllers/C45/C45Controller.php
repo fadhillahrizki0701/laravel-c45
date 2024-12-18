@@ -71,134 +71,6 @@ class C45Controller extends Controller
 		];
 	}
 
-	private function countOnLabel(
-		array $data,
-		string $label,
-		string $labelValue
-	) {
-		$filter = array_filter($data, function ($_data) use (
-			$label,
-			$labelValue
-		) {
-			return $_data[$label] == $labelValue;
-		});
-
-		return count($filter);
-	}
-
-	private function tableProcess(
-		array $data,
-		string $label,
-		int $depth = 0,
-		array $attributes
-	): array {
-		$table = [];
-		$_data = $data;
-
-		// Check if data is empty
-		if (empty($_data)) {
-			return $table; // Return an empty table if no data is provided
-		}
-
-		// Calculate the overall entropy for the current node
-		$entropy = $this->entropy($_data, $label);
-		$total = count($_data);
-
-		// Get unique values of the label
-		$labelValues = array_unique(array_column($_data, $label));
-
-		// Initialize label value data for the current depth
-		$labelValueData = [];
-
-		// Count occurrences of each label value
-		foreach ($labelValues as $labelValue) {
-			$labelValueData[$labelValue] = $this->countOnLabel(
-				$_data,
-				$label,
-				$labelValue
-			);
-		}
-
-		// Add the current depth entry to the table
-		$table[] = [
-			"depth" => $depth,
-			"total" => $total,
-			"entropy" => $entropy,
-			"labelValues" => $labelValueData,
-		];
-
-		// If all instances have the same label, this is a leaf node
-		if (count($labelValues) === 1) {
-			return $table; // No need to process further, it's a pure node
-		}
-
-		$bestGain = 0;
-		$bestAttribute = null;
-
-		foreach ($attributes as $attribute) {
-			$gain = $this->gain($_data, $label, $attribute);
-			if ($gain > $bestGain) {
-				$bestGain = $gain;
-				$bestAttribute = $attribute;
-			}
-
-			// Add gain calculations to the table
-			$attributeValues = array_unique(array_column($_data, $attribute));
-			foreach ($attributeValues as $attributeValue) {
-				// Create a detailed entry for this attribute's processing
-				$subset = array_filter($_data, function ($row) use (
-					$attribute,
-					$attributeValue
-				) {
-					return $row[$attribute] == $attributeValue;
-				});
-				$subsetEntropy = $this->entropy($subset, $label);
-				$subsetCount = count($subset);
-				$subsetProbability = $subsetCount / $total;
-
-				$table[] = [
-					"depth" => $depth,
-					"attribute" => $attribute,
-					"attribute_value" => $attributeValue,
-					"subset_count" => $subsetCount,
-					"subset_entropy" => $subsetEntropy,
-					"subset_probability" => round($subsetProbability, 4),
-					"gain" => round($gain, 10),
-				];
-			}
-		}
-
-		// Recursively process deeper nodes using the best attribute for splitting
-		if ($bestAttribute) {
-			$attributeValues = array_unique(
-				array_column($_data, $bestAttribute)
-			);
-			foreach ($attributeValues as $attributeValue) {
-				$subset = array_filter($_data, function ($row) use (
-					$bestAttribute,
-					$attributeValue
-				) {
-					return $row[$bestAttribute] == $attributeValue;
-				});
-
-				if (!empty($subset)) {
-					// Recursively process this subset at a deeper level
-					$table = array_merge(
-						$table,
-						$this->tableProcess(
-							$subset,
-							$label,
-							$depth + 1,
-							$attributes
-						)
-					);
-				}
-			}
-		}
-
-		return $table;
-	}
-
 	private function buildTree(
 		array $data,
 		string $label,
@@ -371,11 +243,10 @@ class C45Controller extends Controller
 		$attributes = ["berat_badan_per_usia", "tinggi_badan_per_usia", "usia"];
 		$label = "berat_badan_per_tinggi_badan";
 
-		$table = $this->tableProcess($data, $label, 0, $attributes);
 		$tree = $this->buildTree($data, $label, $attributes);
 		$rules = $this->extractRules($tree);
 
-		$data = array_merge($tree, ["rules" => $rules], $table);
+		$data = array_merge($tree, ["rules" => $rules]);
 
 		return response()->json($data);
 	}
